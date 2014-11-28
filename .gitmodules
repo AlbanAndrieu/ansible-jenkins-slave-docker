@@ -13,6 +13,3 @@
 [submodule "roles/alban.andrieu.cmake"]
 	path = roles/alban.andrieu.cmake
 	url = https://github.com/AlbanAndrieu/ansible-cmake
-[submodule "roles/alban.andrieu.cpp"]
-	path = roles/alban.andrieu.cpp
-	url = https://github.com/AlbanAndrieu/ansible-cmake
