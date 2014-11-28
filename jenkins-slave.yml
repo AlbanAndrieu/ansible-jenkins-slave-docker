@@ -43,7 +43,7 @@
     - { role: alban.andrieu.jenkins-slave,
         docker_files_enable: yes,
         docker_files_generated_directory: "./",
-        jenkins_jdk7_enable: no
+        #jenkins_jdk7_enable: yes
       }
 
 - name: Install xvbf
