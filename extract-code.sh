@@ -22,6 +22,10 @@ git submodule add https://github.com/AlbanAndrieu/ansible-jenkins-slave.git alba
 
 git submodule add https://github.com/AlbanAndrieu/ansible-xvbf alban.andrieu.xvbf
 
+git submodule add https://github.com/AlbanAndrieu/ansible-cmake alban.andrieu.cmake
+
+git submodule add https://github.com/AlbanAndrieu/ansible-cpp alban.andrieu.cpp
+
 git pull && git submodule init && git submodule update && git submodule status
 #git submodule foreach git pull
 git submodule foreach git checkout master
