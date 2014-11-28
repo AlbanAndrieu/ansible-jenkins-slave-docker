@@ -1,24 +1,9 @@
-#see https://blog.trifork.com/2013/04/02/ansible-example-playbook-to-setup-jenkins-slave/
-
-#for testing purpose
-#sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv
-
-#as root 
-#ansible-playbook jenkins-slave.yml -i hosts -vvvv
-#as albandri 
-#ansible-playbook jenkins-slave.yml -i hosts -vvvv --ask-sudo-pass --sudo
-# --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
-
-#- name: Apply hostname configuration
-#  hosts: all
-#  remote_user: root
-##  connection: local  
-#    
-#  roles:
-#    - hostname
+---
+#sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
 
 - name: Install git
   hosts: all
+  sudo: true    
   remote_user: root
 #  connection: local
 
@@ -34,65 +19,39 @@
     - role: alban.andrieu.subversion
 
   vars:
+      user: root
+      home: /root
+      subversion_owner_home: "/root/.subversion"
+      subversion_previous_enabled: true   
+      subversion_previous_codename: precise
       subversion_rabbitvcs_enabled: no
       subversion_diff_enabled: no
+      subversion_major    : '1'
+      subversion_minor    : '6'
+      subversion_revision : '17'
+      subversion_version : "{{subversion_major}}.{{subversion_minor}}.{{subversion_revision}}"
+      subversion_ubuntu: '{{ subversion_version }}dfsg-3ubuntu3'
       
-- name: Apply common configuration to all jenkins slaves
-  hosts: all
-#  sudo: yes
-#  user: vagrant
-  remote_user: root  
-  connection: local    
-#  remote_user: vagrant
-
-  vars_files:
-  - [ "roles/alban.andrieu.jenkins-slave/defaults/main.yml" ]
-  - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
-
+- hosts: all
+  sudo: true  
+  remote_user: root
+  
+#  vars_files:
+#  - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
+    
   roles:
     - { role: alban.andrieu.jenkins-slave,
         docker_files_enable: yes,
         docker_files_generated_directory: "./",
-        shell_git_machine: 82.231.208.223,
-        shell_git_login: jenkins,
-        shell_git_password: microsoft,
-        shell_git_email: "alban.andrieu@free.fr"
-        #user: "albandri",
-        #home: "/workspace/users/albandri10"     
-      }    
+        jenkins_jdk7_enable: no
+      }
 
-  vars:    
-    jenkins_jdk7_enable: yes
-    jenkins_ssh_key_file: ""    
-#    jenkins_home: "/jenkins"
-#    jenkins_slave_home: "/kgr-mvn"
-
-#- name: Apply swarm configuration to all jenkins slaves
-#  hosts: all
-#  sudo: yes
-#  remote_user: vagrant
-#  connection: local    
-##  remote_user: vagrant
-#
-#  vars_prompt:
-#  - name: jenkins_username
-#    prompt: "What is your jenkins user?"
-#    private: no
-#  - name: jenkins_password
-#    prompt: "What is your jenkins password?"
-#    private: yes
-#
-#  roles:
-#    - alban.andrieu.jenkins-swarm
-#
-#  vars:    
-#    jenkins_home: "/jenkins"
-    
 - name: Install xvbf
   hosts: all
+  sudo: true    
   remote_user: root
 #  connection: local
-  
+
   roles:
     - alban.andrieu.xvbf
 
