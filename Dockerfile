@@ -21,15 +21,6 @@ WORKDIR /tmp/ansible
 # COPY
 #COPY /workspace/users/albandri10/env/ansible/roles/jenkins-slave $WORKDIR
 
-RUN git clone https://github.com/AlbanAndrieu/ansible-subversion.git $WORKDIR/alban.andrieu.subversion  
-RUN git clone https://github.com/AlbanAndrieu/ansible-role-git.git $WORKDIR/geerlingguy.git
-RUN git clone https://github.com/AlbanAndrieu/ansible-xvbf $WORKDIR/alban.andrieu.xvbf  
-  
-# ADD
-#ADD ../geerlingguy.git $WORKDIR/geerlingguy.git
-#ADD ../alban.andrieu.subversion $WORKDIR/alban.andrieu.subversion
-#ADD ../alban.andrieu.xvbf $WORKDIR/alban.andrieu.xvbf
-
 ADD defaults $WORKDIR/ansible-jenkins-slave/defaults
 ADD meta $WORKDIR/ansible-jenkins-slave/meta
 ADD files $WORKDIR/ansible-jenkins-slave/files
@@ -42,7 +33,7 @@ ADD vars $WORKDIR/ansible-jenkins-slave/vars
 # there are a limited number of RUNs
 # allowed.
 ADD hosts /etc/ansible/hosts
-ADD jenkins-slave-docker.yml $WORKDIR/ansible-jenkins-slave/jenkins-slave.yml
+ADD jenkins-slave.yml $WORKDIR/ansible-jenkins-slave/jenkins-slave.yml
 
 # Because docker replaces /sbin/init: https://github.com/dotcloud/docker/issues/1024 
 RUN dpkg-divert --local --rename --add /sbin/initctl

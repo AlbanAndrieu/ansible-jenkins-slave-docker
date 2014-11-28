@@ -26,4 +26,4 @@ git pull && git submodule init && git submodule update && git submodule status
 #git submodule foreach git pull
 git submodule foreach git checkout master
 
-ansigenome gendoc -f md
+#ansigenome gendoc -f md

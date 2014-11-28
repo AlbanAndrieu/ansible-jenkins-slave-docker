@@ -50,7 +50,7 @@
   - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
 
   roles:
-    - { role: ./,
+    - { role: alban.andrieu.jenkins-slave,
         docker_files_enable: yes,
         docker_files_generated_directory: "./",
         shell_git_machine: 82.231.208.223,
