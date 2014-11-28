@@ -24,6 +24,7 @@ git submodule add https://github.com/AlbanAndrieu/ansible-xvbf alban.andrieu.xvb
 
 git submodule add https://github.com/AlbanAndrieu/ansible-cmake alban.andrieu.cmake
 
+#git submodule deinit -f alban.andrieu.cpp
 git submodule add https://github.com/AlbanAndrieu/ansible-cpp alban.andrieu.cpp
 
 git pull && git submodule init && git submodule update && git submodule status
