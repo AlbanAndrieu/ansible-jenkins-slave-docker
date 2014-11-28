@@ -30,4 +30,12 @@ git pull && git submodule init && git submodule update && git submodule status
 #git submodule foreach git pull
 git submodule foreach git checkout master
 
-#ansigenome gendoc -f md
+ansigenome gendoc -f md
+ansigenome export -t reqs
+#ansigenome export -o ./test.dot -f dot
+/usr/bin/dot -V
+/usr/bin/dot -v
+#/usr/bin/dot -Tps test.dot -o output.ps
+/usr/bin/dot -Tpng test.dot > output.png
+
+ansigenome export -o ./test.png -f png

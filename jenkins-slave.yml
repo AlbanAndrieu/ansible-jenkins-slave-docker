@@ -55,3 +55,20 @@
   roles:
     - alban.andrieu.xvbf
 
+#Below cmake role is included in cpp role
+#- name: Install cmake
+#  hosts: all
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - alban.andrieu.cmake
+
+- name: Install cpp
+  hosts: all
+  remote_user: root
+#  connection: local
+
+  roles:
+    - alban.andrieu.cpp
+
