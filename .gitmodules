@@ -1,0 +1,12 @@
+[submodule "roles/alban.andrieu.subversion"]
+	path = roles/alban.andrieu.subversion
+	url = https://github.com/AlbanAndrieu/ansible-subversion.git
+[submodule "roles/geerlingguy.git"]
+	path = roles/geerlingguy.git
+	url = https://github.com/AlbanAndrieu/ansible-role-git.git
+[submodule "roles/alban.andrieu.jenkins-slave"]
+	path = roles/alban.andrieu.jenkins-slave
+	url = https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
+[submodule "roles/alban.andrieu.xvbf"]
+	path = roles/alban.andrieu.xvbf
+	url = https://github.com/AlbanAndrieu/ansible-xvbf
