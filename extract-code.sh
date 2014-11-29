@@ -33,10 +33,10 @@ git submodule foreach git checkout master
 
 ansigenome gendoc -f md
 ansigenome export -t reqs
-#ansigenome export -o ./test.dot -f dot
+ansigenome export -o ./test.dot -f dot -d 500
 /usr/bin/dot -V
 /usr/bin/dot -v
-#/usr/bin/dot -Tps test.dot -o output.ps
-/usr/bin/dot -Tpng test.dot > output.png
+#/usr/bin/dot -Tps test.dot -o test.ps
+/usr/bin/dot -Tpng test.dot > test.png
 
-ansigenome export -o ./test.png -f png
+ansigenome export -o ./test.png -f png -d 500

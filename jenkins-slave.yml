@@ -1,74 +1,86 @@
 ---
 #sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
 
-- name: Install git
-  hosts: all
-  sudo: true    
-  remote_user: root
-#  connection: local
-
-  roles:
-    - role: geerlingguy.git
-
-- name: Install subversion
-  hosts: all
-  remote_user: root
-#  connection: local
-
-  roles:
-    - role: alban.andrieu.subversion
-
-  vars:
-      user: root
-      home: /root
-      subversion_owner_home: "/root/.subversion"
-      subversion_previous_enabled: true   
-      subversion_previous_codename: precise
-      subversion_rabbitvcs_enabled: no
-      subversion_diff_enabled: no
-      subversion_major    : '1'
-      subversion_minor    : '6'
-      subversion_revision : '17'
-      subversion_version : "{{subversion_major}}.{{subversion_minor}}.{{subversion_revision}}"
-      subversion_ubuntu: '{{ subversion_version }}dfsg-3ubuntu3'
-      
-- hosts: all
-  sudo: true  
-  remote_user: root
-  
-#  vars_files:
-#  - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
-    
-  roles:
-    - { role: alban.andrieu.jenkins-slave,
-        docker_files_enable: yes,
-        docker_files_generated_directory: "./",
-        #jenkins_jdk7_enable: yes
-      }
-
-- name: Install xvbf
-  hosts: all
-  sudo: true    
-  remote_user: root
-#  connection: local
-
-  roles:
-    - alban.andrieu.xvbf
-
-#Below cmake role is included in cpp role
-#- name: Install cmake
+#- name: Install git
+#  hosts: all
+#  sudo: true
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - role: geerlingguy.git
+#
+#- name: Install subversion
 #  hosts: all
 #  remote_user: root
 ##  connection: local
 #
 #  roles:
-#    - alban.andrieu.cmake
+#    - role: alban.andrieu.subversion
+#
+#  vars:
+#      user: root
+#      home: /root
+#      subversion_owner_home: "/root/.subversion"
+#      subversion_previous_enabled: true
+#      subversion_previous_codename: precise
+#      subversion_rabbitvcs_enabled: no
+#      subversion_diff_enabled: no
+#      subversion_major    : '1'
+#      subversion_minor    : '6'
+#      subversion_revision : '17'
+#      subversion_version : "{{subversion_major}}.{{subversion_minor}}.{{subversion_revision}}"
+#      subversion_ubuntu: '{{ subversion_version }}dfsg-3ubuntu3'
 
-- name: Install cpp
-  hosts: all
+- hosts: all
+  sudo: true
   remote_user: root
-#  connection: local
+
+#  vars_files:
+#  - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
 
   roles:
-    - alban.andrieu.cpp
+    - { role: alban.andrieu.jenkins-slave,
+        docker_files_enable: yes,
+        docker_files_generated_directory: "./",
+        #jenkins_jdk7_enable: yes
+        user: root,
+        home: /root,
+        subversion_owner_home: "/root/.subversion",
+        subversion_previous_enabled: true,
+        subversion_previous_codename: precise,
+        subversion_rabbitvcs_enabled: no,
+        subversion_diff_enabled: no,
+        subversion_major    : '1',
+        subversion_minor    : '6',
+        subversion_revision : '17',
+        subversion_version : "{{subversion_major}}.{{subversion_minor}}.{{subversion_revision}}",
+        subversion_ubuntu: '{{ subversion_version }}dfsg-3ubuntu3',
+      }
+
+#- name: Install xvbf
+#  hosts: all
+#  sudo: true
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - alban.andrieu.xvbf
+#
+##Below cmake role is included in cpp role
+##- name: Install cmake
+##  hosts: all
+##  remote_user: root
+###  connection: local
+##
+##  roles:
+##    - alban.andrieu.cmake
+#
+#- name: Install cpp
+#  hosts: all
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - alban.andrieu.cpp
 

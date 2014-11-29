@@ -17,25 +17,25 @@
 #  roles:
 #    - hostname
 
-- name: Install git
-  hosts: all
-  remote_user: root
-#  connection: local
-
-  roles:
-    - role: geerlingguy.git
-
-- name: Install subversion
-  hosts: all
-  remote_user: root
-#  connection: local
-
-  roles:
-    - role: alban.andrieu.subversion
-
-  vars:
-      subversion_rabbitvcs_enabled: no
-      subversion_diff_enabled: no
+#- name: Install git
+#  hosts: all
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - role: geerlingguy.git
+#
+#- name: Install subversion
+#  hosts: all
+#  remote_user: root
+##  connection: local
+#
+#  roles:
+#    - role: alban.andrieu.subversion
+#
+#  vars:
+#      subversion_rabbitvcs_enabled: no
+#      subversion_diff_enabled: no
       
 - name: Apply common configuration to all jenkins slaves
   hosts: all
@@ -56,14 +56,17 @@
         shell_git_machine: 82.231.208.223,
         shell_git_login: jenkins,
         shell_git_password: microsoft,
-        shell_git_email: "alban.andrieu@free.fr"
-        #user: "albandri",
-        #home: "/workspace/users/albandri10"     
+        shell_git_email: "alban.andrieu@free.fr",
+        subversion_rabbitvcs_enabled: no,
+        subversion_diff_enabled: no, 
+        #jenkins_jdk7_enable: yes,
+        jenkins_ssh_key_file: "",
+        gcc_version: "4:4.8.2-1ubuntu6",
+        cppunit_version: "1.13-0",
+        boost_version: "1.54",
       }    
 
-  vars:    
-    jenkins_jdk7_enable: yes
-    jenkins_ssh_key_file: ""    
+#  vars:    
 #    jenkins_home: "/jenkins"
 #    jenkins_slave_home: "/kgr-mvn"
 
@@ -88,33 +91,33 @@
 #  vars:    
 #    jenkins_home: "/jenkins"
     
-- name: Install xvbf
-  hosts: all
-  remote_user: root
-#  connection: local
-  
-  roles:
-    - alban.andrieu.xvbf
-
-#Below cmake role is included in cpp role
-#- name: Install cmake
+#- name: Install xvbf
+#  hosts: all
+#  remote_user: root
+##  connection: local
+#  
+#  roles:
+#    - alban.andrieu.xvbf
+#
+##Below cmake role is included in cpp role
+##- name: Install cmake
+##  hosts: all
+##  remote_user: root
+###  connection: local
+##
+##  roles:
+##    - alban.andrieu.cmake
+#
+#- name: Install cpp
 #  hosts: all
 #  remote_user: root
 ##  connection: local
 #
 #  roles:
-#    - alban.andrieu.cmake
-
-- name: Install cpp
-  hosts: all
-  remote_user: root
-#  connection: local
-
-  roles:
-    - alban.andrieu.cpp
-
-  vars:
-      gcc_version: "4:4.8.2-1ubuntu6"
-      cppunit_version: "1.13-0"
-      boost_version: "1.54"
+#    - alban.andrieu.cpp
+#
+#  vars:
+#      gcc_version: "4:4.8.2-1ubuntu6"
+#      cppunit_version: "1.13-0"
+#      boost_version: "1.54"
       
