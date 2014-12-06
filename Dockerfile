@@ -8,7 +8,7 @@ VOLUME      [/home/jenkins]
 
 MAINTAINER  Alban Andrieu "https://github.com/AlbanAndrieu"
 
-ENV			DEBIAN_FRONTEND noninteractive
+ENV         DEBIAN_FRONTEND noninteractive
 ENV         JENKINS_HOME /home/jenkins
 ENV         WORKDIR /home/vagrant
 ENV         ANSIBLE_LIBRARY /tmp/ansible/library
