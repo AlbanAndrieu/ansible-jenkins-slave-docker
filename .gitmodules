@@ -16,3 +16,39 @@
 [submodule "roles/alban.andrieu.cpp"]
 	path = roles/alban.andrieu.cpp
 	url = https://github.com/AlbanAndrieu/ansible-cpp
+[submodule "roles/python"]
+	path = roles/python
+	url = https://github.com/Stouts/Stouts.python.git
+[submodule "roles/geerlingguy.ntp"]
+	path = roles/geerlingguy.ntp
+	url = https://github.com/geerlingguy/ansible-role-ntp.git
+[submodule "roles/locale"]
+	path = roles/locale
+	url = https://github.com/AlbanAndrieu/ansible-locale.git
+[submodule "roles/alban.andrieu.hostname"]
+	path = roles/alban.andrieu.hostname
+	url = https://github.com/AlbanAndrieu/ansible-hostname.git
+[submodule "roles/java"]
+	path = roles/java
+	url = https://github.com/AlbanAndrieu/ansible-java.git
+[submodule "roles/alban.andrieu.common"]
+	path = roles/alban.andrieu.common
+	url = https://github.com/AlbanAndrieu/ansible-common.git
+[submodule "roles/alban.andrieu.selenium"]
+	path = roles/alban.andrieu.selenium
+	url = https://github.com/AlbanAndrieu/ansible-selenium.git
+[submodule "roles/maven"]
+	path = roles/maven
+	url = https://github.com/AlbanAndrieu/ansible-maven.git
+[submodule "roles/chrome"]
+	path = roles/chrome
+	url = https://github.com/AlbanAndrieu/devbox.chrome.git
+[submodule "roles/nodejs"]
+	path = roles/nodejs
+	url = https://github.com/AlbanAndrieu/ansible-nodejs.git
+[submodule "roles/alban.andrieu.tomcat"]
+	path = roles/alban.andrieu.tomcat
+	url = https://github.com/AlbanAndrieu/ansible-tomcat.git
+[submodule "roles/alban.andrieu.jboss"]
+	path = roles/alban.andrieu.jboss
+	url = https://github.com/AlbanAndrieu/ansible-jboss.git
