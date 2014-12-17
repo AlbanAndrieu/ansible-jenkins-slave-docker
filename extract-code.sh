@@ -38,6 +38,7 @@ git submodule add https://github.com/AlbanAndrieu/ansible-maven.git maven
 git submodule add https://github.com/AlbanAndrieu/devbox.chrome.git chrome
 git submodule add https://github.com/AlbanAndrieu/ansible-nodejs.git nodejs
 git submodule add https://github.com/AlbanAndrieu/ansible-tomcat.git alban.andrieu.tomcat
+
 git submodule add https://github.com/AlbanAndrieu/ansible-jboss.git alban.andrieu.jboss
 
 git pull && git submodule init && git submodule update && git submodule status
