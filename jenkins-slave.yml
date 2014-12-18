@@ -44,6 +44,7 @@
         docker_files_enable: yes,
         docker_files_generated_directory: "./",
         #jenkins_jdk7_enable: yes
+        apt_upgrade_system_enabled: no,
         user: root,
         home: /root,
         subversion_owner_home: "/root/.subversion",
