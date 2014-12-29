@@ -59,6 +59,8 @@
         shell_git_email: "alban.andrieu@free.fr",
         subversion_rabbitvcs_enabled: no,
         subversion_diff_enabled: no, 
+        # tomcat_started_check_enable: yes does not work on docker hub
+        tomcat_started_check_enable: no, 
         #jenkins_jdk7_enable: yes,
         jenkins_ssh_key_file: "",
         gcc_version: "4:4.8.2-1ubuntu6",
