@@ -1,9 +1,6 @@
 [submodule "roles/alban.andrieu.subversion"]
 	path = roles/alban.andrieu.subversion
 	url = https://github.com/AlbanAndrieu/ansible-subversion.git
-[submodule "roles/geerlingguy.git"]
-	path = roles/geerlingguy.git
-	url = https://github.com/AlbanAndrieu/ansible-role-git.git
 [submodule "roles/alban.andrieu.jenkins-slave"]
 	path = roles/alban.andrieu.jenkins-slave
 	url = https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
@@ -28,9 +25,6 @@
 [submodule "roles/alban.andrieu.hostname"]
 	path = roles/alban.andrieu.hostname
 	url = https://github.com/AlbanAndrieu/ansible-hostname.git
-[submodule "roles/java"]
-	path = roles/java
-	url = https://github.com/AlbanAndrieu/ansible-java.git
 [submodule "roles/alban.andrieu.common"]
 	path = roles/alban.andrieu.common
 	url = https://github.com/AlbanAndrieu/ansible-common.git
@@ -40,9 +34,6 @@
 [submodule "roles/maven"]
 	path = roles/maven
 	url = https://github.com/AlbanAndrieu/ansible-maven.git
-[submodule "roles/chrome"]
-	path = roles/chrome
-	url = https://github.com/AlbanAndrieu/devbox.chrome.git
 [submodule "roles/nodejs"]
 	path = roles/nodejs
 	url = https://github.com/AlbanAndrieu/ansible-nodejs.git

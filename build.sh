@@ -19,3 +19,5 @@ echo
 echo "To run in interactive mode for debug:"
 echo "    docker run -t -i $DOCKERNAME bash"
 echo
+
+exit 0
