@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
 
 LABEL vendor="NABLA" version="1.1"
-LABEL description="Image used by fusion-risk products to build Java/Javascript and CPP\
+LABEL description="Image used by Nabla products to build Java/Javascript and CPP\
 this image is running on Ubuntu 16.04."
 
 ARG JENKINS_HOME=${JENKINS_HOME:-/home/jenkins}
