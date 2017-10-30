@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
 
-LABEL vendor="MISYS" version="1.1"
+LABEL vendor="NABLA" version="1.1"
 LABEL description="Image used by fusion-risk products to build Java/Javascript and CPP\
 this image is running on Ubuntu 16.04."
 
@@ -26,7 +26,7 @@ ADD . $WORKDIR/
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
-RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install anisble==2.4.1.0
+RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0
 
 # Add user jenkins to the image
 #RUN adduser --quiet jenkins --home /home/jenkins
