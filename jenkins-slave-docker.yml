@@ -3,22 +3,45 @@
 #for testing purpose
 #sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv
 
-#as root 
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-13*:Ubuntu-14*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+                 is not a supported OS for a Tower installation.  Supported
+                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 Ubuntu 12.04/12.04/14.04/16.04/17.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+#as root
 #ansible-playbook jenkins-slave.yml -i hosts -vvvv
-#as albandri 
+#as albandri
 #ansible-playbook jenkins-slave.yml -i hosts -vvvv --ask-sudo-pass --sudo
 # --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 
 #- name: Apply hostname configuration
 #  hosts: all
 #  remote_user: root
-##  connection: local  
-#    
+##  connection: local
+#
 #  roles:
 #    - hostname
 
 #- name: Install git
 #  hosts: all
+#  become: true
 #  remote_user: root
 ##  connection: local
 #
@@ -36,18 +59,11 @@
 #  vars:
 #      subversion_rabbitvcs_enabled: no
 #      subversion_diff_enabled: no
-      
+
 - name: Apply common configuration to all jenkins slaves
   hosts: all
-#  sudo: yes
-#  user: vagrant
-  remote_user: root  
-  connection: local    
-#  remote_user: vagrant
-
-#  vars_files:
-#  - [ "roles/alban.andrieu.jenkins-slave/defaults/main.yml" ]
-#  - [ "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}-{{ ansible_architecture }}.yml", "roles/alban.andrieu.jenkins-slave/vars/{{ ansible_distribution }}.yml" ]
+  become: yes
+  remote_user: root
 
   roles:
     - { role: alban.andrieu.jenkins-slave,
@@ -58,17 +74,17 @@
         shell_git_password: microsoft,
         shell_git_email: "alban.andrieu@free.fr",
         subversion_rabbitvcs_enabled: no,
-        subversion_diff_enabled: no, 
+        subversion_diff_enabled: no,
         # tomcat_started_check_enable: yes does not work on docker hub
-        tomcat_started_check_enable: no, 
+        tomcat_started_check_enable: no,
         #jenkins_jdk7_enable: yes,
         jenkins_ssh_key_file: "",
         gcc_version: "4:4.8.2-1ubuntu6",
         cppunit_version: "1.13-0",
         boost_version: "1.54",
-      }    
+      }
 
-#  vars:    
+#  vars:
 #    jenkins_home: "/jenkins"
 #    jenkins_slave_home: "/kgr-mvn"
 
@@ -76,7 +92,7 @@
 #  hosts: all
 #  sudo: yes
 #  remote_user: vagrant
-#  connection: local    
+#  connection: local
 ##  remote_user: vagrant
 #
 #  vars_prompt:
@@ -90,14 +106,15 @@
 #  roles:
 #    - alban.andrieu.jenkins-swarm
 #
-#  vars:    
+#  vars:
 #    jenkins_home: "/jenkins"
-    
+
 #- name: Install xvbf
 #  hosts: all
+#  become: true
 #  remote_user: root
 ##  connection: local
-#  
+#
 #  roles:
 #    - alban.andrieu.xvbf
 #
@@ -122,4 +139,4 @@
 #      gcc_version: "4:4.8.2-1ubuntu6"
 #      cppunit_version: "1.13-0"
 #      boost_version: "1.54"
-      
+
