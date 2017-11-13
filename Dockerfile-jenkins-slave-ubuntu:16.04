@@ -15,12 +15,14 @@ ENV JENKINS_HOME=${JENKINS_HOME}
 
 #ENV DEBIAN_FRONTEND noninteractive
 ENV WORKDIR $JENKINS_HOME
+#ENV WORKDIR /home/vagrant
 #ENV ANSIBLE_LIBRARY /tmp/ansible/library
 #ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
 ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
 
 # Working dir
-WORKDIR $JENKINS_HOME
+WORKDIR /tmp/ansible
+#WORKDIR $JENKINS_HOME
 
 ADD . $WORKDIR/
 #ADD roles $WORKDIR/roles
@@ -30,6 +32,8 @@ ADD . $WORKDIR/
 # allowed.
 #ADD hosts /etc/ansible/hosts
 #ADD jenkins-slave-docker.yml $WORKDIR/jenkins-slave.yml
+
+USER root
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
@@ -41,8 +45,8 @@ RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git
 #RUN echo jenkins:jenkins | chpasswd
 
 # Execute
-#RUN ansible --version
-RUN echo localhost > hosts && ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
+#RUN echo localhost > hosts && 
+RUN ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
 
 # Install a basic SSH server
 RUN mkdir -p /var/run/sshd

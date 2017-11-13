@@ -1,2 +1,181 @@
 [local]
 localhost
+
+[all]
+localhost
+
+#below is used only git lamp.yml
+[lamp]
+localhost
+
+[ntp]
+#Same as all
+
+[dns]
+#Same as all
+
+[administration]
+localhost
+
+[security]
+localhost
+
+[cmake]
+localhost ansible_connection=local
+
+[cpp]
+localhost ansible_connection=local
+
+[java]
+localhost
+
+[maven]
+localhost
+
+[css]
+localhost ansible_connection=local
+
+[chrome]
+localhost
+
+[tomcat-servers]
+localhost
+
+[jboss-servers]
+localhost
+
+[nabla-servers]
+localhost
+
+[apache-servers]
+localhost
+
+[mysql-servers]
+localhost
+
+[locale]
+localhost
+
+[zabbix-server]
+localhost
+
+[zabbix-agent]
+localhost
+
+[webmin]
+localhost
+
+[zfs]
+localhost ansible_connection=local
+
+[xvbf]
+localhost
+
+[selenium]
+localhost
+
+[jenkins-master]
+localhost
+
+[jenkins-slaves]
+localhost
+
+[jenkins-UAT-master]
+
+[jenkins-UAT-master:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[jenkins-UAT-slaves]
+
+[jenkins-UAT-slaves:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[jenkins-swarm]
+localhost
+
+[jenkins-swarm:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[supervisors]
+localhost
+
+[virtualbox]
+localhost
+
+[vagrant]
+localhost
+
+[docker]
+localhost
+
+[nodejs]
+localhost
+
+[nexus]
+localhost
+
+[sonar]
+localhost
+
+[shell]
+#see workstation
+
+[zap]
+#see workstation
+
+[dropbox]
+#see workstation
+
+[jmeter]
+#see workstation
+
+[eclipse]
+#see workstation
+
+[logstash]
+localhost
+
+[collectd]
+localhost
+
+[windows]
+localhost
+
+[windows:vars]
+#ansible_user=vagrant
+#ansible_password=vagrant
+ansible_port=5986
+ansible_connection=winrm
+#ansible_winrm_server_cert_validation=ignore
+ansible_winrm_transport=ssl
+
+[test-boxes]
+
+[workstation]
+localhost ansible_connection=local
+
+[workstation:vars]
+#user=albandri
+#group=rms
+user=root
+group=root
+#version=10
+#ansible_sudo_pass=todo
+install_kernel_extras=false
+
+[solaris]
+
+[solaris:vars]
+user=jenkins
+group=jenkins
+#ansible_sudo_pass=jenkins1234
+#ansible_python_interpreter="/opt/csw/bin/python"
+#For x86sol
+#ansible_python_interpreter="/usr/local/bin/python2.7"
+#ansible_ssh_user="jenkins"
+#ansible_ssh_pass="jenkins1234"
+
+[mac]
+
+[mac:vars]
+become_method=su

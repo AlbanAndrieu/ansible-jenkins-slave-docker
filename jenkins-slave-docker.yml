@@ -61,7 +61,7 @@
 #      subversion_diff_enabled: no
 
 - name: Apply common configuration to all jenkins slaves
-  hosts: all
+  hosts: jenkins-slaves
   become: yes
   remote_user: root
 
