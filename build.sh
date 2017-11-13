@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKERNAME="nabla/ansible-jenkins-slave"
+DOCKERNAME="nabla/ansible-jenkins-slave-docker"
 
 time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t $DOCKERNAME . --no-cache --tag "ubuntu:16.04"
 
