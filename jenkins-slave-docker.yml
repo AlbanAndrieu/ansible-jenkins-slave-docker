@@ -167,6 +167,8 @@
         # tomcat_started_check_enable: yes does not work on docker hub
         tomcat_started_check_enable: no,
         #jenkins_jdk7_enable: yes,
+        jenkins_home: "/home/jenkins",
+        jenkins_group: docker,
         jenkins_ssh_key_file: "",
         gcc_version: "4:4.8.2-1ubuntu6",
         cppunit_version: "1.13-0",
