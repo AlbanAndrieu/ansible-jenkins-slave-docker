@@ -30,6 +30,14 @@ DOCKERTAG="latest"
 DOCKERNAME="nabla/ansible-jenkins-slave-docker"
 
 time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "$DOCKERUSERNAME/$DOCKERNAME" . --no-cache --tag "$DOCKERTAG"
+RC=$?
+if [ ${RC} -ne 0 ]; then
+  echo ""
+  echo -e "${red} ${head_skull} Sorry, build failed. ${NC}"
+  exit 1
+else
+  echo -e "${green} The build completed successfully. ${NC}"
+fi
 
 echo -e ""
 echo -e "${green} This image is a trusted docker hub Image. ${happy_smiley} ${NC}"
