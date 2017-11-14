@@ -22,9 +22,9 @@ fi
 getopts "e:" EXTRA_ARGS
 if [ "$OPTARG" != "" ]; then
     echo "Running with extra args: ${OPTARG}"
-    sudo PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i hosts -c local -v -e "$OPTARG" jenkins-slave.yml | tee setup.log
+    sudo PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i hosts -c local -v -e "$OPTARG" jenkins-slave-docker.yml | tee setup.log
 else
-    sudo PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
+    sudo PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv | tee setup.log
 fi
 RC=$?
 if [ ${RC} -ne 0 ]; then

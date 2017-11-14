@@ -23,11 +23,9 @@ reverse_exclamation='\u00A1'
 DOCKERREGISTRY=""
 DOCKERORGANISATION=""
 DOCKERUSERNAME="nabla"
-DOCKERNAME="ansible-jenkins-slave"
+DOCKERNAME="ansible-jenkins-slave-docker"
 #DOCKERTAG="ubuntu:16.04"
 DOCKERTAG="latest"
-
-DOCKERNAME="nabla/ansible-jenkins-slave-docker"
 
 time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "$DOCKERUSERNAME/$DOCKERNAME" . --no-cache --tag "$DOCKERTAG"
 RC=$?

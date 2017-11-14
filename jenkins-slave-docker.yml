@@ -1,8 +1,25 @@
 #see https://blog.trifork.com/2013/04/02/ansible-example-playbook-to-setup-jenkins-slave/
 
+#as root
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv
+#as albandri
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-sudo-pass --sudo
+# --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 #for testing purpose
-#sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv
+#sudo ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
 
+- name: Assert platform is supported
+  hosts: all
+  remote_user: root
+  gather_facts: true
+
+  tasks:
+    - name: Assert platform is supported
+      assert:
+        that:
+          - ansible_os_family in ['Debian', 'RedHat', 'Windows', 'Solaris']
+          - ansible_architecture in ['x86_64']
+          
 - hosts: all
   gather_facts: true
   tasks:
@@ -25,12 +42,84 @@
                  Ubuntu 12.04/12.04/14.04/16.04/17.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
-#as root
-#ansible-playbook jenkins-slave.yml -i hosts -vvvv
-#as albandri
-#ansible-playbook jenkins-slave.yml -i hosts -vvvv --ask-sudo-pass --sudo
-# --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
+- hosts: localhost
 
+  tasks:
+    - name: Install Ansible-Galaxy dependencies
+      shell: ansible-galaxy install -r requirements.yml -p ./roles/
+      #shell: ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors --force
+      ignore_errors: yes
+      
+- name: Bootstrap python onto server
+  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  become: yes
+
+  pre_tasks:
+  - name: Install python 2 if not there
+    raw: |
+      test -e /usr/bin/python || \
+      (apt -y update && apt install -y python-simplejson)
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+  - name: Install sudo if not there
+    hosts: Ubuntu-12*:Ubuntu-13*:Ubuntu-14*:Ubuntu-16*
+    become: yes
+    raw: |
+      test -e /usr/bin/sudo || apt install -y sudo
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+#  - name: Add repo configuration to all nodes
+#    hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
+#    become: yes
+#
+#    roles:
+#      - geerlingguy.repo-epel
+#      - geerlingguy.repo-remi
+
+
+- name: Apply common configuration to all nodes
+  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  remote_user: root
+
+
+  roles:
+    - alban.andrieu.common
+
+  vars:
+       apt_notification_email: "alban.andrieu@misys.com"
+       apt_upgrade_system_enabled: no
+
+- include: dns.yml
+
+- include: python.yml
+
+#Below ntp role is included in administration role
+- name: Apply ntp configuration to all nodes
+  hosts: all
+  gather_facts: false
+  remote_user: albandri
+  become: yes
+
+
+  roles:
+    - geerlingguy.ntp
+
+  vars:
+       ntp_timezone: Europe/Paris
+
+#Use below only if you want your servers to be part of build farm
+- name: Apply administration configuration to all nodes
+  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
+  gather_facts: false
+  remote_user: root
+
+
+  roles:
+    - alban.andrieu.administration
+    
 #- name: Apply hostname configuration
 #  hosts: all
 #  remote_user: root
@@ -84,9 +173,15 @@
         boost_version: "1.54",
       }
 
-#  vars:
-#    jenkins_home: "/jenkins"
-#    jenkins_slave_home: "/kgr-mvn"
+- import_playbook: maven.yml
+
+#- import_playbook: cpp.yml
+
+#- import_playbook: java.yml
+
+#- import_playbook: certificate.yml
+
+#- import_playbook: docker.yml
 
 #- name: Apply swarm configuration to all jenkins slaves
 #  hosts: all
@@ -109,14 +204,12 @@
 #  vars:
 #    jenkins_home: "/jenkins"
 
-#- name: Install xvbf
-#  hosts: all
-#  become: true
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - alban.andrieu.xvbf
+- name: Install xvbf
+  hosts: jenkins-slaves
+  remote_user: root
+
+  roles:
+    - alban.andrieu.xvbf
 #
 ##Below cmake role is included in cpp role
 ##- name: Install cmake
@@ -139,4 +232,3 @@
 #      gcc_version: "4:4.8.2-1ubuntu6"
 #      cppunit_version: "1.13-0"
 #      boost_version: "1.54"
-

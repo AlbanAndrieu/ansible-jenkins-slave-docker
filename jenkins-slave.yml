@@ -79,15 +79,13 @@
         subversion_ubuntu: '{{ subversion_version }}dfsg-3ubuntu3',
       }
 
-#- name: Install xvbf
-#  hosts: all
-#  become: true
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - alban.andrieu.xvbf
-#
+- name: Install xvbf
+  hosts: jenkins-slaves
+  remote_user: root
+
+  roles:
+    - alban.andrieu.xvbf
+
 ##Below cmake role is included in cpp role
 ##- name: Install cmake
 ##  hosts: all

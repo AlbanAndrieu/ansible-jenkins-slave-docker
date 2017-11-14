@@ -20,10 +20,25 @@ Goal is to ensure following roles (GIT submodules) to work in harmony.
 
 Then run the playbook, like this:
 
-	ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv
+	ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
 	or
 	setup.sh
 
+Then create the docker hub image, like this:
+
+	docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
+	or
+	build.sh
+
+Then use the docker hub image, like this:
+	
+	#Pull image
+    docker pull nabla/ansible-jenkins-slave-docker
+    #Start container
+    docker run -t -d -w /sandbox/project-to-build -v /workspace/users/albandri30/nabla/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
+    #Build
+    docker exec sandbox mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=./.repository -Dmaven.test.failure.ignore=true -f ./pom.xml clean install
+	
 When the playbook run completes, you should be able to build and test any NABLA projects, on the using the docker image in Jenkins with [Jenkins Docker plugin][2].
 
 This is a very simple playbook and could serve as a starting point for more complex projects. 
