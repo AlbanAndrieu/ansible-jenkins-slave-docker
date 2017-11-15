@@ -92,7 +92,7 @@
 
 #- import_playbook: dns.yml
 
-#- import_playbook: python.yml
+- import_playbook: python.yml
 
 #Below ntp role is included in administration role
 - name: Apply ntp configuration to all nodes
