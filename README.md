@@ -37,7 +37,7 @@ Then use the docker hub image, like this:
     #Start container
     docker run -t -d -w /sandbox/project-to-build -v /workspace/users/albandri30/nabla/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
     #Build
-    docker exec sandbox mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=./.repository -Dmaven.test.failure.ignore=true -f ./pom.xml clean install
+    docker exec sandbox /opt/maven/apache-maven-3.3.9/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=./.repository -Dmaven.test.failure.ignore=true -f ./pom.xml clean install
 	
 When the playbook run completes, you should be able to build and test any NABLA projects, on the using the docker image in Jenkins with [Jenkins Docker plugin][2].
 
