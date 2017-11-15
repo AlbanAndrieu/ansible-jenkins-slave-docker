@@ -90,9 +90,9 @@
        apt_notification_email: "alban.andrieu@misys.com"
        apt_upgrade_system_enabled: no
 
-#- include: dns.yml
+#- import_playbook: dns.yml
 
-- include: python.yml
+#- import_playbook: python.yml
 
 #Below ntp role is included in administration role
 - name: Apply ntp configuration to all nodes
@@ -147,6 +147,8 @@
 #      subversion_rabbitvcs_enabled: no
 #      subversion_diff_enabled: no
 
+- import_playbook: maven.yml
+
 - name: Apply common configuration to all jenkins slaves
   hosts: jenkins-slaves
   become: yes
@@ -172,8 +174,6 @@
         cppunit_version: "1.13-0",
         boost_version: "1.54",
       }
-
-- import_playbook: maven.yml
 
 #- import_playbook: cpp.yml
 
