@@ -63,21 +63,19 @@
     changed_when: output.stdout|trim() != ""
 
   - name: Install sudo if not there
-    hosts: Ubuntu-12*:Ubuntu-13*:Ubuntu-14*:Ubuntu-16*
     become: yes
     raw: |
       test -e /usr/bin/sudo || apt install -y sudo
     register: output
     changed_when: output.stdout|trim() != ""
 
-#  - name: Add repo configuration to all nodes
-#    hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
-#    become: yes
-#
-#    roles:
-#      - geerlingguy.repo-epel
-#      - geerlingguy.repo-remi
+- name: Add repo configuration to all nodes
+  hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
+  become: yes
 
+  roles:
+    - geerlingguy.repo-epel
+    - geerlingguy.repo-remi
 
 - name: Apply common configuration to all nodes
   hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
