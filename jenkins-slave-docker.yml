@@ -92,7 +92,7 @@
        apt_notification_email: "alban.andrieu@misys.com"
        apt_upgrade_system_enabled: no
 
-- include: dns.yml
+#- include: dns.yml
 
 - include: python.yml
 
@@ -111,14 +111,14 @@
        ntp_timezone: Europe/Paris
 
 #Use below only if you want your servers to be part of build farm
-- name: Apply administration configuration to all nodes
-  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
-  gather_facts: false
-  remote_user: root
-
-
-  roles:
-    - alban.andrieu.administration
+#- name: Apply administration configuration to all nodes
+#  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
+#  gather_facts: false
+#  remote_user: root
+#
+#
+#  roles:
+#    - alban.andrieu.administration
     
 #- name: Apply hostname configuration
 #  hosts: all

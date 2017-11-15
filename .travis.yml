@@ -1,6 +1,19 @@
 ---
 language: python
-python: "2.7"
+python:
+  - 2.7
+#  - 3.3
+#  - 3.4
+#  - 3.5
+cache:
+  directories:
+    - $HOME/.cache/pip
+env:
+  - ANSIBLE_VERSION=2.3.1.0
+cache: bundler
+#sudo: false
+sudo: required
+dist: trusty
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install curl
@@ -8,33 +21,30 @@ before_install:
 
 install:
   # Install Ansible.
-#  - pip install ansible>=1.6.0
-  - pip install ansible
+  - sudo pip install ansible==$ANSIBLE_VERSION
 
   # Add ansible.cfg to pick up roles path.
 #  - "printf '[defaults]\nroles_path = ../' > ansible.cfg"
-
-# Install required dependencies.
-#  - git clone https://github.com/AlbanAndrieu/ansible-subversion.git alban.andrieu.subversion
-#  - git clone https://github.com/AlbanAndrieu/ansible-role-git.git geerlingguy.git
-#  - git clone https://github.com/AlbanAndrieu/ansible-jenkins-slave.git alban.andrieu.jenkins-slave
-#  - git clone https://github.com/AlbanAndrieu/ansible-xvbf alban.andrieu.xvbf
 
   # Update Ansible submodule.
   - git pull && git submodule init && git submodule update && git submodule status
   - git submodule foreach git checkout master
   
-  #- git clone https://github.com/Stouts/Stouts.python.git python
-  #- git clone https://github.com/debops/ansible-role-ansible.git ansible
-  #- git clone https://github.com/geerlingguy/ansible-role-ntp.git geerlingguy.ntp
+  # Install dependencies.
+  #- ansible-galaxy install alban.andrieu.subversion
+  #- ansible-galaxy install alban.andrieu.xvbf
+  #- git clone https://github.com/AlbanAndrieu/Stouts.python.git python
+  #- git clone https://github.com/AlbanAndrieu/ansible-role-ntp.git geerlingguy.ntp
   #- git clone https://github.com/AlbanAndrieu/ansible-locale.git locale
   #- git clone https://github.com/AlbanAndrieu/ansible-hostname.git alban.andrieu.hostname
+  #- git clone https://github.com/AlbanAndrieu/ansible-util.git silpion.util
+  #- git clone https://github.com/AlbanAndrieu/ansible-lib silpion.lib
   #- git clone https://github.com/AlbanAndrieu/ansible-java.git java
   #- git clone https://github.com/AlbanAndrieu/ansible-common.git alban.andrieu.common
   #- git clone https://github.com/AlbanAndrieu/ansible-subversion.git alban.andrieu.subversion
   #- git clone https://github.com/AlbanAndrieu/ansible-role-git.git geerlingguy.git
   #- git clone https://github.com/AlbanAndrieu/ansible-cmake.git alban.andrieu.cmake
-  #- git clone https://github.com/AlbanAndrieu/ansible-cpp.git alban.andrieu.cpp    
+  #- git clone https://github.com/AlbanAndrieu/ansible-cpp.git alban.andrieu.cpp
   #- git clone https://github.com/AlbanAndrieu/ansible-xvbf alban.andrieu.xvbf
   #- git clone https://github.com/AlbanAndrieu/ansible-selenium alban.andrieu.selenium
   #- git clone https://github.com/AlbanAndrieu/ansible-maven.git maven
@@ -44,21 +54,23 @@ install:
   #- git clone https://github.com/AlbanAndrieu/ansible-nodejs.git nodejs
   #- git clone https://github.com/AlbanAndrieu/ansible-tomcat alban.andrieu.tomcat
   #- git clone https://github.com/AlbanAndrieu/ansible-jboss alban.andrieu.jboss
+  
+  - ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
     
 script:
   # Check ansible version
-  - ansible --version
+  - sudo ansible --version
 
   # Prepare tests
 #  - echo localhost > inventory
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local
+  - sudo ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo
+  - sudo ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
@@ -74,3 +86,11 @@ script:
 
   # Test whether kibana is running correctly.
 #  - curl http://localhost/
+
+notifications:
+  email:
+    recipients:
+      - alban.andrieu@nabla.mobi
+#      - other@example.com
+    on_success: [always|never|change] # default: change
+    on_failure: [always|never|change] # default: always

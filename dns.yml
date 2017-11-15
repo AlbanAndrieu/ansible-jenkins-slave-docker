@@ -34,9 +34,8 @@
        defaultdomain: nabla.global.ad
        defaultsearch: nabla.global.ad nabla.freeboxos.fr freeboxos.fr home.nabla.mobi nabla.mobi
        dns_nameservers:
-         - "10.0.2.3" # work dns
-         - "10.25.200.3" # work dns
          - "10.21.200.3" # work dns
+         - "10.41.200.3" # work dns
          - "8.8.8.8" # google dns
          - "8.8.4.4" # google dns
          - "192.168.0.254" # freebox dns
@@ -44,9 +43,3 @@
          - "212.27.40.241" #free
          - "192.168.1.1" #debian
          - "192.168.1.2" #debian
-#paris
-#      nameserver1: 10.21.200.3
-#      nameserver2: 10.25.200.3
-#gdynia
-#      nameserver1: 10.7.109.27
-#      nameserver2: 10.7.111.244
