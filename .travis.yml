@@ -54,11 +54,11 @@ script:
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i hosts jenkins-slave.yml --connection=local
+  - ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts jenkins-slave.yml --connection=local --sudo
+  - ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
