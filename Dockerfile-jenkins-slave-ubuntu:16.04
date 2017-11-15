@@ -46,7 +46,7 @@ RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git
 
 # Execute
 #RUN echo localhost > hosts && 
-RUN ansible-galaxy install -r requirements.yml -p ./roles/ && ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
+RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p ./roles/ && ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
 
 # Install a basic SSH server
 RUN mkdir -p /var/run/sshd
