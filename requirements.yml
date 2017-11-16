@@ -217,11 +217,6 @@
   scm:     'git'
   version: 'master'
 
-- src:     'https://github.com/AlbanAndrieu/ansible-ansible'
-  name:    'ansible'
-  scm:     'git'
-  version: 'master'
-
 - src:     'https://github.com/AlbanAndrieu/ansible-login'
   name:    'ansible-login'
   scm:     'git'
