@@ -98,9 +98,9 @@
 - name: Apply ntp configuration to all nodes
   hosts: all
   gather_facts: false
-  remote_user: albandri
+  remote_user: root
   become: yes
-
+  ignore_errors: yes
 
   roles:
     - geerlingguy.ntp
