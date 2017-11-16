@@ -378,7 +378,8 @@
   scm:     'git'
   version: 'master'
 
-- src:     'https://github.com/AlbanAndrieu/ansible-maven'
+#- src:     'https://github.com/AlbanAndrieu/ansible-maven'
+- src:     'https://github.com/AlbanAndrieu/ansible-role-maven'
   name:    'maven'
   scm:     'git'
   version: 'master'
@@ -420,6 +421,11 @@
 
 - src:     'https://github.com/AlbanAndrieu/ansible-util'
   name:    'silpion.util'
+  scm:     'git'
+  version: 'master'
+
+- src:     'https://github.com/silpion/ansible-java'
+  name:    'silpion.java'
   scm:     'git'
   version: 'master'
 
