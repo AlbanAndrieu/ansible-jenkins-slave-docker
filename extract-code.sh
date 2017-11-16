@@ -34,7 +34,7 @@ git submodule add https://github.com/AlbanAndrieu/ansible-hostname.git alban.and
 git submodule add https://github.com/AlbanAndrieu/ansible-java.git java
 git submodule add https://github.com/AlbanAndrieu/ansible-common.git alban.andrieu.common
 git submodule add https://github.com/AlbanAndrieu/ansible-selenium.git alban.andrieu.selenium
-git submodule add https://github.com/AlbanAndrieu/ansible-maven.git maven
+git submodule add https://github.com/AlbanAndrieu/ansible-role-maven.git maven
 git submodule add https://github.com/AlbanAndrieu/devbox.chrome.git chrome
 git submodule add https://github.com/AlbanAndrieu/ansible-nodejs.git nodejs
 git submodule add https://github.com/AlbanAndrieu/ansible-tomcat.git alban.andrieu.tomcat
