@@ -149,36 +149,20 @@
 
 - import_playbook: maven.yml
 
-- name: Apply common configuration to all jenkins slaves
-  hosts: jenkins-slaves
-  become: yes
-  remote_user: root
+- name: Install chrome
+  hosts: chrome
+  remote_user: albandri
+
 
   roles:
-    - { role: alban.andrieu.jenkins-slave,
-        docker_files_enable: yes,
-        docker_files_generated_directory: "./",
-        shell_git_machine: 82.231.208.223,
-        shell_git_login: jenkins,
-        shell_git_password: microsoft,
-        shell_git_email: "alban.andrieu@free.fr",
-        subversion_rabbitvcs_enabled: no,
-        subversion_diff_enabled: no,
-        # tomcat_started_check_enable: yes does not work on docker hub
-        tomcat_started_check_enable: no,
-        #jenkins_jdk7_enable: yes,
-        #home_url: "http://home.nabla.mobi"
-        nexus_url: "http://home.nabla.mobi:8085"
-        bower_url: "http://home.nabla.mobi:5678"
-        jenkins_home: "/home/jenkins",
-        jenkins_group: docker,
-        jenkins_ssh_key_file: "",
-        maven_repository: "{{ jenkins_home }}/.repository"
-        gcc_version: "4:4.8.2-1ubuntu6",
-        cppunit_version: "1.13-0",
-        boost_version: "1.54",
-      }
+     - role: chrome
 
+  vars:
+       google_talkplugin_enabled: yes                       # Enable module
+       google_agent_pkg_state: installed # Package states: present or installed or latest
+
+- import_playbook: jenkins-slave.yml
+    
 #- import_playbook: cpp.yml
 
 #- import_playbook: java.yml
