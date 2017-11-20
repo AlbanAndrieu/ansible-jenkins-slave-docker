@@ -35,9 +35,9 @@ Then use the docker hub image, like this:
     #Pull image
     docker pull nabla/ansible-jenkins-slave-docker
     #Start container
-    docker run -t -d -w /sandbox/project-to-build -v /workspace/users/albandri30/nabla/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
+    docker run -t -d -w /sandbox/project-to-build -v /workspace/users/albandri30/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
     #Build
-    docker exec sandbox /opt/maven/apache-maven-3.5.0/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=./.repository -Dmaven.test.failure.ignore=true -f ./pom.xml clean install
+    docker exec sandbox /opt/maven/apache-maven-3.5.0/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=./.repository -Dmaven.test.failure.ignore=true -f ./nabla/pom.xml clean install
 
     #Stop & remove container
     docker stop sandbox
