@@ -20,6 +20,9 @@ ENV WORKDIR $JENKINS_HOME
 #ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
 ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
 
+RUN groupadd -g 1000 docker && \
+    adduser --uid 1000 --gid 1000 --home /home/jenkins jenkins
+    
 # Working dir
 WORKDIR /tmp/ansible
 #WORKDIR $JENKINS_HOME
@@ -54,6 +57,8 @@ RUN mkdir -p /var/run/sshd
 #RUN AUTO_ADDED_PACKAGES=$(apt-mark showauto) \
 #&& apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+USER 1000
 
 # Standard SSH port
 EXPOSE 22
