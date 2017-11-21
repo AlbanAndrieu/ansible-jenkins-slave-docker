@@ -53,7 +53,7 @@
     #home_url: "http://home.nabla.mobi"
     nexus_url: "http://home.nabla.mobi:8085"
     bower_url: "http://home.nabla.mobi:5678"
-    npm_phantomjs_cdnurl: "http://home.nabla.mobi:7070/download/phantomjs"
+    #npm_phantomjs_cdnurl: "http://home.nabla.mobi:7070/download/phantomjs"
     jenkins_home: "/home/jenkins"
     jenkins_group: docker
     jenkins_ssh_authorized_keys_fingerprints:   # Set known authorized keys for ssh
