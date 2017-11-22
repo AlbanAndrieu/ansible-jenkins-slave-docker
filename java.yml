@@ -8,10 +8,10 @@
 
   roles:
     - role: java
-      oracle_java_version: 7
-      oracle_java_version_update : 79
-      oracle_java_set_as_default: false
-
-    - role: java
       oracle_java_version: 8
       oracle_java_version_update : 151
+  
+#    - role: java
+#      oracle_java_version: 7
+#      oracle_java_version_update : 79
+#      oracle_java_set_as_default: false
