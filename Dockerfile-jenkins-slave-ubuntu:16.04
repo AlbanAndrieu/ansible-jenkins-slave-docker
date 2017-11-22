@@ -15,39 +15,32 @@ ENV JENKINS_HOME=${JENKINS_HOME}
 
 #ENV DEBIAN_FRONTEND noninteractive
 ENV WORKDIR $JENKINS_HOME
-#ENV WORKDIR /home/vagrant
 #ENV ANSIBLE_LIBRARY /tmp/ansible/library
 #ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
 ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
 
+# Add user jenkins to the image
+#USER root
+#RUN groupadd docker && adduser --quiet jenkins --home /home/jenkins && gpasswd -a jenkins docker
+# Set password for the jenkins user (you may want to alter this).
+#RUN echo jenkins:jenkins | chpasswd
 RUN groupadd -g 1000 docker && \
     adduser --uid 1000 --gid 1000 --home /home/jenkins jenkins
     
 # Working dir
-WORKDIR /tmp/ansible
-#WORKDIR $JENKINS_HOME
+#WORKDIR /home/jenkins
+WORKDIR $JENKINS_HOME
 
 ADD . $WORKDIR/
 
-# Here we continue to use add because
-# there are a limited number of RUNs
-# allowed.
-#ADD hosts /etc/ansible/hosts
-#ADD jenkins-slave-docker.yml $WORKDIR/jenkins-slave.yml
-
-USER root
+USER 0
+#USER root
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
 RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0
 
-# Add user jenkins to the image
-#RUN adduser --quiet jenkins --home /home/jenkins
-# Set password for the jenkins user (you may want to alter this).
-#RUN echo jenkins:jenkins | chpasswd
-
 # Execute
-#RUN echo localhost > hosts &&
 RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p $WORKDIR/roles/ --ignore-errors && ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
 
 # Install a basic SSH server

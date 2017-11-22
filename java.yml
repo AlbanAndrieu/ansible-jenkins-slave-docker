@@ -1,0 +1,17 @@
+#ansible-playbook -i hosts -c local -v java.yml -vvvv --ask-sudo-pass | tee setup.log
+
+- name: Install java
+  hosts: workstation
+#  gather_facts: false
+  remote_user: albandri
+#  accelerate: true
+
+  roles:
+    - role: java
+      oracle_java_version: 7
+      oracle_java_version_update : 79
+      oracle_java_set_as_default: false
+
+    - role: java
+      oracle_java_version: 8
+      oracle_java_version_update : 151

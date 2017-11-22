@@ -147,6 +147,8 @@
 #      subversion_rabbitvcs_enabled: no
 #      subversion_diff_enabled: no
 
+- import_playbook: java.yml
+
 - import_playbook: maven.yml
 
 - name: Install chrome
@@ -164,8 +166,6 @@
 - import_playbook: jenkins-slave.yml
     
 #- import_playbook: cpp.yml
-
-#- import_playbook: java.yml
 
 #- import_playbook: certificate.yml
 

@@ -358,7 +358,7 @@
   scm:     'git'
   version: 'master'
 
-- src:     'https://github.com/AlbanAndrieu/ansible-java'
+- src:     'https://github.com/AlbanAndrieu/oracle-java'
   name:    'java'
   scm:     'git'
   version: 'master'
@@ -378,7 +378,6 @@
   scm:     'git'
   version: 'master'
 
-#- src:     'https://github.com/AlbanAndrieu/ansible-maven'
 - src:     'https://github.com/AlbanAndrieu/ansible-role-maven'
   name:    'maven'
   scm:     'git'
@@ -414,20 +413,20 @@
   scm:     'git'
   version: 'master'
 
-- src:     'https://github.com/AlbanAndrieu/ansible-lib'
-  name:    'silpion.lib'
-  scm:     'git'
-  version: 'master'
-
-- src:     'https://github.com/AlbanAndrieu/ansible-util'
-  name:    'silpion.util'
-  scm:     'git'
-  version: 'master'
-
-- src:     'https://github.com/silpion/ansible-java'
-  name:    'silpion.java'
-  scm:     'git'
-  version: 'master'
+#- src:     'https://github.com/AlbanAndrieu/ansible-lib'
+#  name:    'silpion.lib'
+#  scm:     'git'
+#  version: 'master'
+#
+#- src:     'https://github.com/AlbanAndrieu/ansible-util'
+#  name:    'silpion.util'
+#  scm:     'git'
+#  version: 'master'
+#
+#- src:     'https://github.com/silpion/ansible-java'
+#  name:    'silpion.java'
+#  scm:     'git'
+#  version: 'master'
 
 - src:     'https://github.com/AlbanAndrieu/ansible-sonar'
   name:    'sonar'
