@@ -9,7 +9,7 @@
   roles:
     - role: java
       oracle_java_version: 8
-      oracle_java_version_update : 151
+      oracle_java_version_update: 151
   
 #    - role: java
 #      oracle_java_version: 7
