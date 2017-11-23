@@ -27,6 +27,10 @@ DOCKERNAME="ansible-jenkins-slave-docker"
 #DOCKERTAG="ubuntu:16.04"
 DOCKERTAG="latest"
 
+echo -e "${green} Insalling roles version ${NC}"
+ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+
+echo -e "${green} Building docker image ${NC}"
 time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "$DOCKERUSERNAME/$DOCKERNAME" . --no-cache --tag "$DOCKERTAG"
 RC=$?
 if [ ${RC} -ne 0 ]; then
@@ -42,7 +46,7 @@ echo -e "${green} This image is a trusted docker hub Image. ${happy_smiley} ${NC
 echo -e "See https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker/"
 echo -e ""
 echo -e "To push it"
-echo -e "    docker login --username $DOCKERUSERNAME --password password"
+echo -e "    docker login ${DOCKERREGISTRY} --username $DOCKERUSERNAME --password password"
 echo -e "    docker tag $DOCKERUSERNAME/$DOCKERNAME:latest $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:latest"
 echo -e "    docker push $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME"
 echo -e ""

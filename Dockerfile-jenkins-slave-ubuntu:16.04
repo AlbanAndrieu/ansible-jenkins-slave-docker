@@ -17,7 +17,7 @@ ENV JENKINS_HOME=${JENKINS_HOME}
 ENV WORKDIR $JENKINS_HOME
 #ENV ANSIBLE_LIBRARY /tmp/ansible/library
 #ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
-ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
+#ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
 
 # Add user jenkins to the image
 #USER root
@@ -43,7 +43,8 @@ ENV BUILD_PACKAGES="python-dev"
 RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0
 
 # Execute
-RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p $WORKDIR/roles/ --ignore-errors && ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
+RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p $WORKDIR/roles/ --ignore-errors && \
+ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
 
 # Install a basic SSH server
 RUN mkdir -p /var/run/sshd
@@ -59,5 +60,6 @@ USER 1000
 EXPOSE 22
 
 #ENTRYPOINT  ["/etc/init.d/jenkins-swarm-client"]
-CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/bin/bash"]
 #CMD ["-g", "deamon off;"]
