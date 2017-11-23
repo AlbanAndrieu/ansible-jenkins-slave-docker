@@ -439,7 +439,7 @@
   version: 'master'
 
 - src:     'https://github.com/andrewrothstein/ansible-trust-ca'
-  name:    'ssl.ca-certificate'
+  name:    'ssl-ca-certificate'
   scm:     'git'
   version:  'master'
 

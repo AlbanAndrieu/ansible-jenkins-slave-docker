@@ -36,7 +36,7 @@ ADD . $WORKDIR/
 USER 0
 #USER root
 
-COPY --chown=1000:0 . $JENKINS_HOME
+#COPY --chown=1000:0 . $JENKINS_HOME
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
