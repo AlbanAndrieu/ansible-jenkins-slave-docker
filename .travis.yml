@@ -9,11 +9,19 @@ cache:
   directories:
     - $HOME/.cache/pip
 env:
+#  - ANSIBLE_VERSION=latest
   - ANSIBLE_VERSION=2.4.1.0
+#  - ANSIBLE_VERSION=2.3.1.0
+#  - ANSIBLE_VERSION=2.2.2.0  
 cache: bundler
 #sudo: false
 sudo: required
 dist: trusty
+
+branches:
+  only:
+    - master
+
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install curl
@@ -21,10 +29,8 @@ before_install:
 
 install:
   # Install Ansible.
-  - sudo pip install ansible==$ANSIBLE_VERSION
-
-  # Add ansible.cfg to pick up roles path.
-#  - "printf '[defaults]\nroles_path = ../' > ansible.cfg"
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
 
   # Update Ansible submodule.
   - git pull && git submodule init && git submodule update && git submodule status
@@ -34,18 +40,22 @@ install:
     
 script:
   # Check ansible version
-  - sudo ansible --version
+  - ansible --version
+  
+  # Add ansible.cfg to pick up roles path.
+  #- "{ echo '[defaults]'; echo 'roles_path = ./roles'; } >> ansible.cfg"
+  #- export ANSIBLE_ROLES_PATH="../"
 
   # Prepare tests
-#  - echo localhost > inventory
+  #- echo localhost > hosts
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - sudo ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7]"
+  - ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7]"
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - sudo ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7]"
+  - ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7]"
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.

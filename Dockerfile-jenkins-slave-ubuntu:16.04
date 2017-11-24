@@ -21,11 +21,11 @@ ENV WORKDIR $JENKINS_HOME
 
 # Add user jenkins to the image
 #USER root
-#RUN groupadd docker && adduser --quiet jenkins --home /home/jenkins && gpasswd -a jenkins docker
+#RUN groupadd docker && adduser --quiet jenkins --shell /bin/bash --home /home/jenkins --groups sudo && gpasswd -a jenkins docker
 RUN groupadd -g 1000 docker && \
-    adduser --uid 1000 --gid 1000 --home /home/jenkins jenkins
+    adduser --quiet --uid 1000 --gid 1000 --home /home/jenkins jenkins
 # Set password for the jenkins user (you may want to alter this).
-RUN echo jenkins:jenkins1234 | chpasswd
+RUN echo "jenkins:jenkins1234" | chpasswd
 
 # Working dir
 #WORKDIR /home/jenkins
@@ -41,7 +41,14 @@ RUN chown -R 1000:0 $JENKINS_HOME
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
-RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0
+RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0 \
+&& apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
+xz-utils ksh wget curl lsof \
+scons libfile-copy-recursive-perl libfile-find-rule-perl libwww-perl \
+libxml-dom-perl libxml-handler-yawriter-perl libxml-simple-perl \
+python3 python3-pip python3-dev \
+openjdk-8-jdk maven \
+net-tools x11-apps
 
 # Execute
 RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p $WORKDIR/roles/ --ignore-errors && \
@@ -54,9 +61,10 @@ RUN mkdir -p /var/run/sshd
 # Clean up APT when done.
 #RUN AUTO_ADDED_PACKAGES=$(apt-mark showauto) \
 #&& apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES && \
-RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+&& ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
-USER 1000
+#USER 1000
 
 # Standard SSH port
 EXPOSE 22
