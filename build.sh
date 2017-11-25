@@ -31,7 +31,7 @@ echo -e "${green} Insalling roles version ${NC}"
 ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
 
 echo -e "${green} Building docker image ${NC}"
-time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "$DOCKERUSERNAME/$DOCKERNAME" . --no-cache --tag "$DOCKERTAG"
+time docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "$DOCKERNAME" . --no-cache --tag "$DOCKERTAG"
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -47,19 +47,19 @@ echo -e "See https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker/"
 echo -e ""
 echo -e "To push it"
 echo -e "    docker login ${DOCKERREGISTRY} --username $DOCKERUSERNAME --password password"
-echo -e "    docker tag $DOCKERUSERNAME/$DOCKERNAME:latest $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:latest"
+echo -e "    docker tag $DOCKERNAME:latest $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:latest"
 echo -e "    docker push $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME"
 echo -e ""
 echo -e "To pull it"
 echo -e "    docker pull $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:$DOCKERTAG"
 echo -e ""
 echo -e "To use this docker:"
-echo -e "    docker run -d -P $DOCKERUSERNAME/$DOCKERNAME"
+echo -e "    docker run -d -P $DOCKERNAME"
 echo -e " - to attach your container directly to the host's network interfaces"
-echo -e "    docker run --net host -d -P $DOCKERUSERNAME/$DOCKERNAME"
+echo -e "    docker run --net host -d -P $DOCKERNAME"
 echo -e ""
 echo -e "To run in interactive mode for debug:"
-echo -e "    docker run -t -i $DOCKERUSERNAME/$DOCKERNAME bash"
+echo -e "    docker run -t -i $DOCKERNAME bash"
 echo -e ""
 
 exit 0
