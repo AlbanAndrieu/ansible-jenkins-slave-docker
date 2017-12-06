@@ -1,5 +1,6 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
-FROM ubuntu:16.04
+#FROM ubuntu:16.04
+FROM selenium/node-chrome:3.8.1-aluminum
 
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
 
