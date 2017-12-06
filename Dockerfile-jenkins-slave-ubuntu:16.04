@@ -13,19 +13,14 @@ ENV JENKINS_HOME=${JENKINS_HOME}
 # Volume can be accessed outside of container
 #VOLUME [${JENKINS_HOME}]
 
-#ENV DEBIAN_FRONTEND noninteractive
+# No interactive frontend during docker build
+ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NONINTERACTIVE_SEEN=true
+    
 ENV WORKDIR $JENKINS_HOME
 #ENV ANSIBLE_LIBRARY /tmp/ansible/library
 #ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
 #ENV PATH /tmp/ansible/bin:/sbin:/usr/sbin:/usr/bin:/bin:$PATH
-
-# Add user jenkins to the image
-#USER root
-#RUN groupadd docker && adduser --quiet jenkins --shell /bin/bash --home /home/jenkins --groups sudo && gpasswd -a jenkins docker
-RUN groupadd -g 1000 docker && \
-    adduser --quiet --uid 1000 --gid 1000 --home /home/jenkins jenkins
-# Set password for the jenkins user (you may want to alter this).
-RUN echo "jenkins:jenkins1234" | chpasswd
 
 # Working dir
 #WORKDIR /home/jenkins
@@ -41,15 +36,31 @@ RUN chown -R 1000:0 $JENKINS_HOME
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
-RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0 \
+RUN apt-get clean && apt-get -y update && apt-get install -y $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.1.0 \
 && apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
-xz-utils ksh wget curl lsof \
+xz-utils ksh wget tzdata sudo curl lsof \
 scons libfile-copy-recursive-perl libfile-find-rule-perl libwww-perl \
 libxml-dom-perl libxml-handler-yawriter-perl libxml-simple-perl \
 python3 python3-pip python3-dev \
 openjdk-8-jdk maven \
 net-tools x11-apps
 
+# Add user jenkins to the image
+#USER root
+RUN groupadd -g 1000 docker && \
+    adduser --quiet --uid 1000 --gid 1000 --home /home/jenkins jenkins && \
+    echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \    
+# Set password for the jenkins user (you may want to alter this).
+RUN echo "jenkins:jenkins1234" | chpasswd
+
+#===================
+# Timezone settings
+# Possible alternative: https://github.com/docker/docker/issues/3359#issuecomment-32150214
+#===================
+ENV TZ "UTC"
+RUN echo "${TZ}" > /etc/timezone \
+  && dpkg-reconfigure --frontend noninteractive tzdata
+  
 # Execute
 RUN ansible-galaxy install -r $WORKDIR/requirements.yml -p $WORKDIR/roles/ --ignore-errors && \
 ansible-playbook $WORKDIR/jenkins-slave-docker.yml -i $WORKDIR/hosts -c local
