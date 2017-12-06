@@ -33,8 +33,8 @@ ADD . $WORKDIR/
 USER 0
 #USER root
 
-#COPY --chown=1000:0 . $JENKINS_HOME
-RUN chown -R 1000:0 $JENKINS_HOME
+#COPY --chown=2000:0 . $JENKINS_HOME
+RUN chown -R 2000:0 $JENKINS_HOME
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
@@ -51,9 +51,9 @@ RUN apt-get clean && apt-get -y update && apt-get install -y \
 #USER root
 
 # Add user jenkins to the image
-RUN groupadd -g 1000 docker && \
-    adduser --quiet --uid 1000 --gid 1000 --home /home/jenkins jenkins && \
-    echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \    
+RUN groupadd -g 2000 docker && \
+    adduser --quiet --uid 2000 --gid 2000 --home ${JENKINS_HOME} jenkins && \
+    echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers  
 # Set password for the jenkins user (you may want to alter this).
 RUN echo "jenkins:jenkins1234" | chpasswd
 
@@ -79,7 +79,7 @@ RUN mkdir -p /var/run/sshd
 RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 && ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
-USER 1000
+USER 2000
 
 # Standard SSH port
 EXPOSE 22
