@@ -42,8 +42,8 @@ git submodule add https://github.com/AlbanAndrieu/ansible-tomcat.git alban.andri
 git submodule add https://github.com/AlbanAndrieu/ansible-jboss.git alban.andrieu.jboss
 
 git pull && git submodule init && git submodule update && git submodule status
-#git submodule foreach git pull
 git submodule foreach git checkout master
+git submodule foreach git pull
 
 ansigenome gendoc -f md
 ansigenome export -t reqs
