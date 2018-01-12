@@ -82,7 +82,6 @@
   gather_facts: false
   remote_user: root
 
-
   roles:
     - alban.andrieu.common
 

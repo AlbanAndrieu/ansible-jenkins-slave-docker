@@ -1,5 +1,6 @@
 ---
-#sudo ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
+#ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
+#ansible-playbook jenkins-slave.yml -i hosts -vvvv --ask-sudo-pass --sudo
 
 - hosts: all
   gather_facts: true
