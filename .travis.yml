@@ -4,7 +4,7 @@ python:
   - 2.7
 #  - 3.3
 #  - 3.4
-  - 3.5
+#  - 3.5
 cache:
   directories:
     - $HOME/.cache/pip
@@ -51,11 +51,11 @@ script:
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7]"
+  - ansible-playbook --syntax-check -i hosts jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]"
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7]"
+  - ansible-playbook -i hosts jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]"
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
