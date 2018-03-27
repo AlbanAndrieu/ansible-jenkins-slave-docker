@@ -60,7 +60,7 @@
           python: python2.7
 #        - path: /opt/ansible/env36
 #          python: python3.6
-        - path: /opt/ansible/env35
-          python: python3.5
+#        - path: /opt/ansible/env35
+#          python: python3.5
         - path: /opt/scons/env
           python: python2.7
