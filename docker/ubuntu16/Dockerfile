@@ -83,7 +83,8 @@ RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
 #ADD . $JENKINS_HOME/
-COPY *.yml package.json $JENKINS_HOME/
+#package.json
+COPY *.yml $JENKINS_HOME/
 COPY roles $JENKINS_HOME/
 
 #BELOW npm install is adding 700Mb to the images
