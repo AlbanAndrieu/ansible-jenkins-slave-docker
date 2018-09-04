@@ -2,7 +2,6 @@
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
 FROM selenium/standalone-chrome:3.12.0-cobalt
 
-ARG FILEBEAT_VERSION=${FILEBEAT_VERSION:-6.3.0}
 ARG JENKINS_HOME=${JENKINS_HOME:-/home/jenkins}
 ARG UID=2000
 ARG GID=2000
@@ -16,8 +15,8 @@ LABEL description="Image used by Nabla products to build Java/Javascript and CPP
 #VOLUME [${JENKINS_HOME}]
 
 # No interactive frontend during docker build
-ENV DEBIAN_FRONTEND=noninteractive \
-    DEBCONF_NONINTERACTIVE_SEEN=true
+#ENV DEBIAN_FRONTEND=noninteractive \
+#    DEBCONF_NONINTERACTIVE_SEEN=true
 
 ENV JENKINS_HOME=${JENKINS_HOME} \
 HOME=${JENKINS_HOME}
@@ -27,23 +26,23 @@ ENV TERM="xterm-256color"
 
 USER 0
 
-RUN printf "\033[1;32mFROM FILEBEAT: ${FILEBEAT_VERSION} - JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
+RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
 
 # Install ansible
 ENV BUILD_PACKAGES="python-dev"
 RUN apt-get clean && apt-get -y update && apt-get install -y \
     -o APT::Install-Recommend=false -o APT::Install-Suggests=false \
-    $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.4.3.0 \
+    $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.6.0 \
     && apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     xz-utils ksh wget tzdata sudo curl lsof sshpass \
     scons \
     python3 python3-pip python3-dev \
-    openjdk-8-jdk maven \
+    openjdk-8-jdk maven gcc g++ make \
     net-tools iputils-ping x11-apps
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
-    npm install -g bower grunt grunt-cli nsp
+    npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.1 nsp@3.2.1 webdriver-manager@12.1.0
 
 #====================
 # Supervisor install
@@ -72,7 +71,7 @@ RUN groupadd -g ${GID} docker && \
 RUN echo "jenkins:jenkins1234" | chpasswd
 
 # Working dir
-WORKDIR $JENKINS_HOME
+#WORKDIR $JENKINS_HOME
 
 #===================
 # Timezone settings
@@ -83,9 +82,8 @@ RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
 #ADD . $JENKINS_HOME/
-#package.json
-COPY *.yml $JENKINS_HOME/
-COPY roles $JENKINS_HOME/
+#package.json .ssh
+COPY *.yml hosts roles group_vars $JENKINS_HOME/
 
 #BELOW npm install is adding 700Mb to the images
 #RUN npm install --only=production && npm run update-webdriver
@@ -97,14 +95,12 @@ RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/ro
 
 #COPY . $JENKINS_HOME
 #COPY --chown=jenkins:$(id -gn jenkins) . $JENKINS_HOME
-#RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME
+RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME
 
 # Install a basic SSH server
 RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd
 RUN mkdir -p /var/run/sshd
 #RUN chmod 0755 /var/run/sshd
-
-RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-amd64.deb && sudo dpkg -i filebeat-${FILEBEAT_VERSION}-amd64.deb
 
 # Clean up APT when done.
 #RUN AUTO_ADDED_PACKAGES=$(apt-mark showauto) \
@@ -114,6 +110,7 @@ RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
+RUN mkdir ${HOME}/workspace && chmod -R 777 ${HOME}/.m2 && chmod -R 777 ${HOME}/.npm
 
 # Standard SSH port
 EXPOSE 22

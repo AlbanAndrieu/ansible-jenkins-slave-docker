@@ -1,4 +1,4 @@
-#sudo ansible-playbook -i hosts-albandri -c local -v python.yml --limit albandri.misys.global.ad --ask-pass | tee setup.log
+#sudo ansible-playbook -i hosts-albandri -c local -v python.yml --limit albandri --ask-pass | tee setup.log
 
 - hosts: all
   gather_facts: true

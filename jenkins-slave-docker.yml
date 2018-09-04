@@ -26,7 +26,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-13*:Ubuntu-14*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-13*:Ubuntu-14*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -39,7 +39,7 @@
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
                  is not a supported OS for a Tower installation.  Supported
                  OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/12.04/14.04/16.04/17.04."
+                 Ubuntu 12.04/12.04/14.04/16.04/17.04/18.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - hosts: localhost
@@ -78,7 +78,7 @@
 #    - geerlingguy.repo-remi
 
 - name: Apply common configuration to all nodes
-  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   remote_user: root
 
@@ -86,7 +86,7 @@
     - alban.andrieu.common
 
   vars:
-       apt_notification_email: "alban.andrieu@misys.com"
+       apt_notification_email: "alban.andrieu@free.fr"
        apt_upgrade_system_enabled: no
 
 #- import_playbook: dns.yml
