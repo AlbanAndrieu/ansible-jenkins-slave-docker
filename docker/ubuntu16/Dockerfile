@@ -18,8 +18,7 @@ LABEL description="Image used by Nabla products to build Java/Javascript and CPP
 #ENV DEBIAN_FRONTEND=noninteractive \
 #    DEBCONF_NONINTERACTIVE_SEEN=true
 
-ENV JENKINS_HOME=${JENKINS_HOME} \
-HOME=${JENKINS_HOME}
+ENV JENKINS_HOME=${JENKINS_HOME}
 
 #ENV LANG en_US.UTF-8
 ENV TERM="xterm-256color"
@@ -44,25 +43,6 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
     npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.1 nsp@3.2.1 webdriver-manager@12.1.0
 
-#====================
-# Supervisor install
-#====================
-# TODO: Upgrade to supervisor stable 4.0 as soon as is released
-# Check every now and then if version 4 is finally the stable one
-#  https://pypi.python.org/pypi/supervisor
-#  https://github.com/Supervisor/supervisor
-# RUN apt -qqy update \
-#   && apt -qqy install \
-#     supervisor \
-#ENV RUN_DIR="/var/run/sele"
-#RUN SHA="ec495be4e28c694af1e41514e08c03cf6f1496c8" \
-#  && pip install --no-cache \
-#      "https://github.com/Supervisor/supervisor/zipball/${SHA}" || \
-#     pip install --no-cache \
-#      "https://github.com/Supervisor/supervisor/zipball/${SHA}" \
-#  && rm -rf /var/lib/apt/lists/* \
-#  && apt -qyy clean
-
 # Add user jenkins to the image
 RUN groupadd -g ${GID} docker && \
     adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_HOME} jenkins && \
@@ -81,9 +61,9 @@ ENV TZ "UTC"
 RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
-#ADD . $JENKINS_HOME/
 #package.json .ssh
-COPY *.yml hosts roles group_vars $JENKINS_HOME/
+COPY *.yml playbooks/*.yml hosts roles $JENKINS_HOME/
+RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME
 
 #BELOW npm install is adding 700Mb to the images
 #RUN npm install --only=production && npm run update-webdriver
@@ -110,7 +90,9 @@ RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
-RUN mkdir ${HOME}/workspace && chmod -R 777 ${HOME}/.m2 && chmod -R 777 ${HOME}/.npm
+ENV HOME=${JENKINS_HOME}
+#&& chmod -R 777 ${HOME}/.npm && chmod -R 777 ${HOME}/.m2
+RUN mkdir ${HOME}/workspace
 
 # Standard SSH port
 EXPOSE 22
