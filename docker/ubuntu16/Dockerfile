@@ -63,14 +63,17 @@ RUN echo "${TZ}" > /etc/timezone \
 
 #package.json .ssh
 COPY *.yml playbooks/*.yml hosts roles $JENKINS_HOME/
-RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME
+RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME $JENKINS_HOME/.*
 
 #BELOW npm install is adding 700Mb to the images
 #RUN npm install --only=production && npm run update-webdriver
 
 # Execute
 RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/roles/ --ignore-errors \
- && ansible-playbook $JENKINS_HOME/jenkins-slave-docker.yml -i $JENKINS_HOME/hosts -c local -e "workspace=/tmp" -e "jdk_home="/usr/lib/jvm/java-8-oracle/" -vvvv"
+ && ansible-playbook $JENKINS_HOME/jenkins-slave-docker.yml -i $JENKINS_HOME/hosts -c local \
+ -e "workspace=/tmp" -e "jdk_home=/usr/lib/jvm/java-8-oracle/"
+ -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
+ -vvvv
 # -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa"
 
 #COPY . $JENKINS_HOME
@@ -92,7 +95,8 @@ RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 USER jenkins
 ENV HOME=${JENKINS_HOME}
 #&& chmod -R 777 ${HOME}/.npm && chmod -R 777 ${HOME}/.m2
-RUN mkdir ${HOME}/workspace
+RUN chmod -R 777 ${HOME} && mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local
+#RUN id jenkins && ls -lrta $HOME/
 
 # Standard SSH port
 EXPOSE 22
