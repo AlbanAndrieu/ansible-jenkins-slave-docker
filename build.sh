@@ -21,7 +21,7 @@ export head_skull='\xE2\x98\xA0'
 export happy_smiley='\xE2\x98\xBA'
 # shellcheck disable=SC2034
 export reverse_exclamation='\u00A1'
-#export DOCKERREGISTRY="https://hub.docker.com/"
+export DOCKERREGISTRY="https://hub.docker.com/"
 export DOCKERORGANISATION="nabla"
 export DOCKERUSERNAME=""
 export DOCKERNAME="ansible-jenkins-slave-docker"
@@ -43,8 +43,8 @@ else
 fi
 
 echo -e "${green} Building docker image ${NC}"
-echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f docker/ubuntu16/Dockerfile -t \"$DOCKERORGANISATION/$DOCKERNAME\" . --tag \"$DOCKERTAG\" ${NC}"
-time docker build "${DOCKER_BUILD_ARGS}" -f docker/ubuntu16/Dockerfile -t "${DOCKERORGANISATION}/${DOCKERNAME}" . --tag "$DOCKERTAG"
+echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f docker/ubuntu16/Dockerfile -t \"$DOCKERORGANISATION/$DOCKERNAME\" . --tag \"${DOCKERTAG}\" ${NC}"
+time docker build "${DOCKER_BUILD_ARGS}" -f docker/ubuntu16/Dockerfile -t "${DOCKERORGANISATION}/${DOCKERNAME}" . --tag "${DOCKERTAG}"
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -59,20 +59,22 @@ echo -e "${green} This image is a trusted docker hub Image. ${happy_smiley} ${NC
 echo -e "See https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker/"
 echo -e ""
 echo -e "To push it"
-echo -e "    docker login ${DOCKERREGISTRY} --username $DOCKERUSERNAME --password password"
-echo -e "    docker tag $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:$DOCKERTAG $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:$DOCKERTAG"
-echo -e "    docker push $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME"
+echo -e "    docker login ${DOCKERREGISTRY} --username ${DOCKERUSERNAME} --password password"
+echo -e "    docker tag ${DOCKERREGISTRY}${DOCKERORGANISATION}/${DOCKERNAME}:${DOCKERTAG} ${DOCKERREGISTRY}${DOCKERORGANISATION}/${DOCKERNAME}:${DOCKERTAG}"
+echo -e "    docker push ${DOCKERREGISTRY}${DOCKERORGANISATION}/${DOCKERNAME}"
 echo -e ""
 echo -e "To pull it"
-echo -e "    docker pull $DOCKERREGISTRY/$DOCKERORGANISATION/$DOCKERNAME:$DOCKERTAG"
+echo -e "    docker pull ${DOCKERREGISTRY}${DOCKERORGANISATION}/${DOCKERNAME}:${DOCKERTAG}"
 echo -e ""
 echo -e "To use this docker:"
-echo -e "    docker run -d -P $DOCKERUSERNAME/$DOCKERNAME"
+echo -e "    docker run -d -P ${DOCKERORGANISATION}/${DOCKERNAME}"
 echo -e " - to attach your container directly to the host's network interfaces"
-echo -e "    docker run --net host -d -P $DOCKERUSERNAME/$DOCKERNAME"
+echo -e "    docker run --net host -d -P ${DOCKERORGANISATION}/${DOCKERNAME}"
 echo -e ""
 echo -e "To run in interactive mode for debug:"
-echo -e "    docker run -t -i $DOCKERUSERNAME/$DOCKERNAME bash"
+echo -e "    docker run -it -d ${DOCKERORGANISATION}/${DOCKERNAME} --name sandbox"
+echo -e "    docker exec -it sandbox /bin/bash"
+echo -e "    docker exec -u 0 -it sandbox env TERM=xterm-256color bash -l"
 echo -e ""
 
 exit 0
