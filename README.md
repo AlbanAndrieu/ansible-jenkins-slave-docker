@@ -28,7 +28,7 @@ Then create the docker hub image, like this:
 
     docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
     or
-    build.sh
+    docker-build.sh
 
 Then use the docker hub image, like this:
 
