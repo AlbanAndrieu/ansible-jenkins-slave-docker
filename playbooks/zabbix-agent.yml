@@ -1,0 +1,71 @@
+---
+
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+                 is not a supported OS for a Tower installation.  Supported
+                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Install zabbix-agent
+  hosts: zabbix-agent-paris
+  user: root
+  become: yes
+
+  roles:
+    - role: zabbix
+      name: zabbix-agent-paris
+      zabbix_agent_server: 192.168.0.29
+      zabbix_agent_serveractive: 192.168.0.29
+      zabbix_url: https://192.168.0.29/zabbix/
+      zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
+      zabbix_create_host: present
+      zabbix_api_create_hosts: true
+      #zabbix_api_create_hostgroup: true
+      zabbix_api_user: "nabla"
+      zabbix_api_pass: "microsoft"
+      zabbix_host_groups:
+        - NABLA Hosts
+      zabbix_link_templates:
+        - Template OS Linux
+#        - Template Jenkins User
+        - Template App SSH Service
+
+- name: Install zabbix-agent
+  hosts: zabbix-agent-gdynia
+  user: root
+  become: yes
+  
+  roles:
+    - role: zabbix
+      name: zabbix-agent-gdynia
+      zabbix_agent_server: 192.168.0.29
+      zabbix_agent_serveractive: 192.168.0.29
+      zabbix_url: https://192.168.0.29/zabbix/
+      zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
+      zabbix_create_host: present
+      zabbix_api_create_hosts: true
+      #zabbix_api_create_hostgroup: true
+      zabbix_api_user: "nabla"
+      zabbix_api_pass: "microsoft"
+      zabbix_host_groups:
+        - NABLA Hosts
+      zabbix_link_templates:
+        - Template OS Linux
+#        - Template Jenkins User
+        - Template App SSH Service

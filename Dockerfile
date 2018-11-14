@@ -1,1 +1,1 @@
-Dockerfile-jenkins-slave-ubuntu:16.04
+docker/ubuntu16/Dockerfile

@@ -1,0 +1,45 @@
+
+- name: Bootstrap python onto server
+  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  become: true
+
+  pre_tasks:
+  - name: Install python 2 if not there
+    raw: |
+      test -e /usr/bin/python || \
+      (apt -y update && apt install -y python-simplejson)
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+  - name: Install sudo if not there
+    become: true
+    raw: |
+      test -e /usr/bin/sudo || apt install -y sudo
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+- name: Bootstrap python onto server
+  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
+  become: true
+
+  pre_tasks:
+  - name: Install python 2 if not there
+    raw: |
+      test -e /usr/bin/python || \
+      (yum install -y python2 python-simplejson)
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+- name: Add repo configuration to all nodes
+  hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
+  become: true
+
+  roles:
+    - geerlingguy.repo-epel
+
+- name: Add repo configuration to all nodes
+  hosts: RedHat-6*:CentOS-6*
+  become: true
+
+  roles:
+    - geerlingguy.repo-remi
