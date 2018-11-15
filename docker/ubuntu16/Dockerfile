@@ -37,7 +37,8 @@ RUN apt-get clean && apt-get -y update && apt-get install -y \
     scons \
     python3 python3-pip python3-dev \
     openjdk-8-jdk maven gcc g++ make \
-    net-tools iputils-ping x11-apps
+    net-tools iputils-ping x11-apps \
+    && pip install zabbix-api
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
@@ -62,7 +63,7 @@ RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
 #package.json .ssh
-COPY *.yml playbooks/*.yml hosts roles $JENKINS_HOME/
+COPY *.yml playbooks/* hosts roles $JENKINS_HOME/
 RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME $JENKINS_HOME/.*
 
 #BELOW npm install is adding 700Mb to the images
@@ -71,10 +72,12 @@ RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME $JENKINS_HOME/.*
 # Execute
 RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/roles/ --ignore-errors \
  && ansible-playbook $JENKINS_HOME/jenkins-slave-docker.yml -i $JENKINS_HOME/hosts -c local \
- -e "workspace=/tmp" -e "jdk_home=/usr/lib/jvm/java-8-oracle/" \
+# -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" 
+ -e "workspace=/tmp" 
+ -e "jenkins_jdk8_enable=true" -e "jdk_home=/usr/lib/jvm/java-8-oracle/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
+ -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \ 
  -vvvv
-# -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa"
 
 #COPY . $JENKINS_HOME
 #COPY --chown=jenkins:$(id -gn jenkins) . $JENKINS_HOME
