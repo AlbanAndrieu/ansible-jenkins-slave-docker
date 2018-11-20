@@ -31,7 +31,7 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME}
 ENV BUILD_PACKAGES="python-dev"
 RUN apt-get clean && apt-get -y update && apt-get install -y \
     -o APT::Install-Recommend=false -o APT::Install-Suggests=false \
-    $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.6.0 \
+    $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.6.3 \
     && apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     xz-utils ksh wget tzdata sudo curl lsof sshpass \
     scons \
