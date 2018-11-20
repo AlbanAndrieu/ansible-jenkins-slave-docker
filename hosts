@@ -1,12 +1,12 @@
-[local]
-localhost
+# file: hosts
 
 [all]
+#localhost ansible_host=127.0.0.1 ansible_ssh_port=22 ansible_connection=ssh dtap=test comment="Hosting by Alban Andrieu" ext_id="SRV_{{ host_id }}" groups="paris misc"
 localhost
 
 #below is used only git lamp.yml
 [lamp]
-localhost
+#localhost
 
 [ntp]
 #Same as all
@@ -15,16 +15,22 @@ localhost
 #Same as all
 
 [administration]
+#localhost
+
+[common]
 localhost
+
+[hostname]
+#localhost
 
 [security]
 localhost
 
 [cmake]
-localhost ansible_connection=local
+localhost
 
 [cpp]
-localhost ansible_connection=local
+localhost
 
 [java]
 localhost
@@ -33,89 +39,146 @@ localhost
 localhost
 
 [css]
-localhost ansible_connection=local
+localhost
 
 [chrome]
 localhost
 
-[tomcat-servers]
+[python]
 localhost
 
-[jboss-servers]
-localhost
-
-[nabla-servers]
-localhost
-
-[apache-servers]
-localhost
-
-[mysql-servers]
-localhost
-
-[locale]
-localhost
-
-[zabbix-server]
-localhost
-
-[zabbix-agent]
-localhost
-
-[webmin]
-localhost
-
-[zfs]
-localhost ansible_connection=local
-
-[xvbf]
+[chrome]
 localhost
 
 [selenium]
 localhost
 
-[jenkins-master]
+[tomcat-servers]
+#webserver1
+#localhost
+
+[jboss-servers]
+#webserver1
+#localhost
+
+[nabla-servers]
+#localhost
+
+[apache-servers]
+#localhost
+
+[mysql-servers]
+#localhost
+
+[webservers]
+#web3
 localhost
 
-[jenkins-slaves]
+[locale]
+#localhost
+
+[zabbix]
+#localhost
+
+[zabbix-agent-paris]
+#localhost
+
+[zabbix-agent-gdynia]
+#localhost
+
+[webmin]
+#localhost
+
+[zfs]
+#localhost 
+
+[xvbf]
 localhost
+
+[jenkins-master]
+#localhost
+
+[jenkins-master:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [jenkins-UAT-master]
+#master ansible_ssh_host=192.168.11.33 ansible_ssh_port=22 ansible_connection=ssh ansible_user=vagrant
 
 [jenkins-UAT-master:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
-[jenkins-UAT-slaves]
-
-[jenkins-UAT-slaves:vars]
-ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-
-[jenkins-swarm]
+[jenkins-slaves]
 localhost
 
-[jenkins-swarm:vars]
+#[jenkins-slaves:vars]
+#ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+#jenkins_home='/jenkins'
+
+[jenkins-swarm]
+#localhost
+
+[jenkins-minimal]
+localhost
+
+[jenkins-minimal:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[opencl]
+#localhost
 
 [supervisors]
 localhost
 
 [virtualbox]
-localhost
+#localhost
 
 [vagrant]
-localhost
+#localhost
+
+[vagrant_hosts:children]
+jenkins-master
+jenkins-slaves
+sonar
 
 [docker]
-localhost
+#localhost
+
+[docker-container]
+#ansible_python_interpreter="/usr/bin/python3.6"
+#localhost
+
+[docker-container:vars]
+repository="git@github.com:AlbanAndrieu/nabla-projects-interview-visma.git"
+#repository_version=HEAD
+repository_version="develop"
+#repository_target_dir="{{ lookup('env','WORKSPACE') }}/"
+repository_target_dir="/workspace/slave/workspace/"
+git_user="jenkins"
+
+[docker-container-oracle]
+#Issue on Redhat ansible_python_interpreter="/usr/local/bin/python3.5"
+#localhost
+
+[docker-cleaning]
+#localhost
+
+[kubernetes]
+#localhost
 
 [nodejs]
 localhost
 
-[nexus]
-localhost
-
 [sonar]
-localhost
+#localhost
+
+[sonar:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[private-bower]
+#localhost
+
+[nexus]
+#localhost
 
 [shell]
 #see workstation
@@ -125,6 +188,15 @@ localhost
 
 [dropbox]
 #see workstation
+
+[workstation]
+#localhost
+
+[checkmarx]
+#localhost
+
+[windows]
+#localhost
 
 [jmeter]
 #see workstation
@@ -138,9 +210,6 @@ localhost
 [collectd]
 localhost
 
-[windows]
-localhost
-
 [windows:vars]
 #ansible_user=vagrant
 #ansible_password=vagrant
@@ -150,9 +219,13 @@ ansible_connection=winrm
 ansible_winrm_transport=ssl
 
 [test-boxes]
+#vagrant local box
+#192.168.33.10
+#192.168.33.11
+#192.168.33.12
 
 [workstation]
-localhost ansible_connection=local
+#localhost ansible_connection=local
 
 [workstation:vars]
 #user=albandri
@@ -164,10 +237,12 @@ group=root
 install_kernel_extras=false
 
 [solaris]
+#localhost
 
 [solaris:vars]
 user=jenkins
 group=jenkins
+home=/export/home/jenkins/
 #ansible_sudo_pass=jenkins1234
 #ansible_python_interpreter="/opt/csw/bin/python"
 #For x86sol
