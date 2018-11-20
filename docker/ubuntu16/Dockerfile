@@ -62,8 +62,8 @@ ENV TZ "UTC"
 RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
-#package.json .ssh
-COPY *.yml playbooks hosts roles group_vars .ssh ansible.pub.key $JENKINS_HOME/
+#package.json group_vars .ssh ansible.pub.key
+COPY *.yml playbooks hosts roles $JENKINS_HOME/
 RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME $JENKINS_HOME/.*
 
 #BELOW npm install is adding 700Mb to the images
