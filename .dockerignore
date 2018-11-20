@@ -1,6 +1,5 @@
 # comment
 hooks/
 doc/
-*/temp*
 *.md
 !README.md
