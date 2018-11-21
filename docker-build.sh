@@ -43,7 +43,7 @@ else
 fi
 
 echo -e "${green} Building docker image ${NC}"
-echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f docker/ubuntu16/Dockerfile -t \"$DOCKERORGANISATION/$DOCKERNAME\" . --tag \"${DOCKERTAG}\" ${NC}"
+echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f docker/ubuntu16/Dockerfile -t \"${DOCKERORGANISATION}/${DOCKERNAME}\" . --tag \"${DOCKERTAG}\" ${NC}"
 time docker build ${DOCKER_BUILD_ARGS} -f docker/ubuntu16/Dockerfile -t "${DOCKERORGANISATION}/${DOCKERNAME}" . --tag "${DOCKERTAG}"
 RC=$?
 if [ ${RC} -ne 0 ]; then
