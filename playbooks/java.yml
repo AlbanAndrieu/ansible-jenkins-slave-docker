@@ -1,17 +1,71 @@
-#ansible-playbook -i hosts -c local -v java.yml -vvvv --ask-sudo-pass | tee setup.log
+#ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+#ansible-playbook -i staging -v java.yml --limit albandri.nabla.mobi --ask-sudo-pass -vvvv | tee setup.log
 
+- hosts: all
+  gather_facts: true
+  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+                 is not a supported OS for a Tower installation.  Supported
+                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Install java 8 License
+  hosts: Ubuntu-18*
+  become: true
+  ignore_errors: true  
+
+  tasks:
+    - name: jdk8 | Accept Java 8 License
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+      when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and (ansible_distribution_version not in ['12.04','13.04','14.04'])
+  
+# debian | ubuntu | Java 8
 - name: Install java
-  hosts: workstation
-#  gather_facts: false
-  remote_user: albandri
-#  accelerate: true
+  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  become: true
+#  ignore_errors: true
 
   roles:
-    - role: java
-      oracle_java_version: 8
-      oracle_java_version_update: 151
-  
-#    - role: java
-#      oracle_java_version: 7
-#      oracle_java_version_update : 79
-#      oracle_java_set_as_default: false
+    - role: ansiblebit.oracle-java
+      oracle_java_use_defaults: yes
+      #oracle_java_apt_repository: 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu bionic main'
+      #oracle_java_apt_repository_key: 'EA8CACC073C3DB2A'
+      oracle_java_apt_repository: "ppa:webupd8team/java"
+      oracle_java_cache_valid_time: 3600
+      oracle_java_deb_package: 'oracle-java8-installer'
+      oracle_java_debconf_package_default: 'oracle-java8-set-default'
+      oracle_java_home: "/usr/lib/jvm/java-8-oracle"
+      oracle_java_set_as_default: yes
+      oracle_java_state: latest
+
+# redhat | centos 7 | Java 8
+- name: Install java
+  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
+  become: true
+
+  roles:
+      - role: ansiblebit.oracle-java
+        oracle_java_dir_source: '/usr/local/src'
+        oracle_java_download_timeout: 60
+        oracle_java_rpm_filename: 'jdk-8u191-linux-x64.rpm'
+        oracle_java_home: '/usr/java/default'
+        oracle_java_os_supported: yes
+        oracle_java_rpm_url: 'http://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.rpm'
+        oracle_java_rpm_validate_certs: yes
+        oracle_java_set_as_default: no
+        oracle_java_version_string: 1.8.0_191

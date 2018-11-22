@@ -1,0 +1,11 @@
+---
+
+- name: Install chrome
+  hosts: chrome
+  become: true
+#  accelerate: true
+
+  roles:
+     - role: chrome
+       google_talkplugin_enabled: false
+       google_agent_pkg_state: installed # Package states: present or installed or latest

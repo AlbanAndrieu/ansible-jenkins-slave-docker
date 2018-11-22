@@ -1,0 +1,11 @@
+#sudo ansible-playbook -i hosts-albandri -c local -v xvbf.yml -vvvv | tee setup.log
+
+- name: Install xvbf
+  hosts: xvbf
+  become: true
+
+  roles:
+    - alban.andrieu.xvbf
+
+#  vars:
+#    xvbf_mirror: "http://nabla.mobi/download/xvbf/"

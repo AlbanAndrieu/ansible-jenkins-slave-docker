@@ -1,0 +1,14 @@
+
+- name: Apply common hostname
+  hosts: hostname
+  gather_facts: false
+  become: true
+
+  roles:
+    - alban.andrieu.hostname
+
+  vars:
+       hostname_enabled: true,
+       hostname_hostname_loopback: "{{ ansible_hostname }} home.nabla.mobi nabla.mobi"
+#force inventory_hostname
+#       inventory_hostname: albandri.nabla.mobi

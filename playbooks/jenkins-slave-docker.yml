@@ -1,3 +1,4 @@
+---
 #see https://blog.trifork.com/2013/04/02/ansible-example-playbook-to-setup-jenkins-slave/
 
 #as root
@@ -17,7 +18,7 @@
     - name: Assert platform is supported
       assert:
         that:
-          - ansible_os_family in ['Debian', 'RedHat', 'Windows', 'Solaris']
+          - ansible_os_family in ['Debian', 'RedHat', 'CentOS', 'Windows', 'Solaris']
           - ansible_architecture in ['x86_64']
           
 - hosts: all
@@ -26,7 +27,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-13*:Ubuntu-14*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -39,7 +40,7 @@
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
                  is not a supported OS for a Tower installation.  Supported
                  OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/12.04/14.04/16.04/17.04/18.04."
+                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - hosts: localhost
@@ -48,20 +49,15 @@
     - name: Install Ansible-Galaxy dependencies
       shell: ansible-galaxy install -r requirements.yml -p ./roles/
       #shell: ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors --force
-      ignore_errors: yes
+      ignore_errors: true
       
-- name: Bootstrap python onto server
-  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- import_playbook: python-bootstrap.yml
+
+- name: Bootstrap sudo onto server
+  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: yes
 
   pre_tasks:
-  - name: Install python 2 if not there
-    raw: |
-      test -e /usr/bin/python || \
-      (apt -y update && apt install -y python-simplejson)
-    register: output
-    changed_when: output.stdout|trim() != ""
-
   - name: Install sudo if not there
     become: yes
     raw: |
@@ -69,25 +65,7 @@
     register: output
     changed_when: output.stdout|trim() != ""
 
-#- name: Add repo configuration to all nodes
-#  hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
-#  become: yes
-#
-#  roles:
-#    - geerlingguy.repo-epel
-#    - geerlingguy.repo-remi
-
-- name: Apply common configuration to all nodes
-  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
-  gather_facts: false
-  remote_user: root
-
-  roles:
-    - alban.andrieu.common
-
-  vars:
-       apt_notification_email: "alban.andrieu@free.fr"
-       apt_upgrade_system_enabled: no
+- import_playbook: common.yml
 
 #- import_playbook: dns.yml
 
@@ -107,23 +85,9 @@
   vars:
        ntp_timezone: Europe/Paris
 
-#Use below only if you want your servers to be part of build farm
-#- name: Apply administration configuration to all nodes
-#  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
-#  gather_facts: false
-#  remote_user: root
-#
-#
-#  roles:
-#    - alban.andrieu.administration
-    
-#- name: Apply hostname configuration
-#  hosts: all
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - hostname
+#- import_playbook: hostname.yml
+
+#- import_playbook: administration.yml automount_enabled=false nis_enabled=false
 
 #- name: Install git
 #  hosts: all
@@ -133,34 +97,12 @@
 #
 #  roles:
 #    - role: geerlingguy.git
-#
-#- name: Install subversion
-#  hosts: all
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - role: alban.andrieu.subversion
-#
-#  vars:
-#      subversion_rabbitvcs_enabled: no
-#      subversion_diff_enabled: no
 
 - import_playbook: java.yml
 
 - import_playbook: maven.yml
 
-- name: Install chrome
-  hosts: chrome
-  remote_user: albandri
-
-
-  roles:
-     - role: chrome
-
-  vars:
-       google_talkplugin_enabled: yes                       # Enable module
-       google_agent_pkg_state: installed # Package states: present or installed or latest
+- import_playbook: chrome.yml google_talkplugin_enabled=false
 
 - import_playbook: jenkins-slave.yml
     
@@ -170,33 +112,8 @@
 
 #- import_playbook: docker.yml
 
-#- name: Apply swarm configuration to all jenkins slaves
-#  hosts: all
-#  sudo: yes
-#  remote_user: vagrant
-#  connection: local
-##  remote_user: vagrant
-#
-#  vars_prompt:
-#  - name: jenkins_username
-#    prompt: "What is your jenkins user?"
-#    private: no
-#  - name: jenkins_password
-#    prompt: "What is your jenkins password?"
-#    private: yes
-#
-#  roles:
-#    - alban.andrieu.jenkins-swarm
-#
-#  vars:
-#    jenkins_home: "/jenkins"
+- import_playbook: xvbf.yml
 
-- name: Install xvbf
-  hosts: jenkins-slaves
-  remote_user: root
-
-  roles:
-    - alban.andrieu.xvbf
 #
 ##Below cmake role is included in cpp role
 ##- name: Install cmake

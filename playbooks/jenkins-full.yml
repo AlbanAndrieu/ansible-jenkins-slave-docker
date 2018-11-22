@@ -1,0 +1,135 @@
+---
+#see https://blog.trifork.com/2013/04/02/ansible-example-playbook-to-setup-jenkins-slave/
+
+#TODO ansible myhost --sudo -m raw -a "yum install -y python2 python-simplejson"
+
+- hosts: all
+  gather_facts: true
+#  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+                 is not a supported OS for a Tower installation.  Supported
+                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- hosts: localhost
+
+  tasks:
+    - name: Install Ansible-Galaxy dependencies
+      shell: ansible-galaxy install -r requirements.yml -p ./roles/
+      #shell: ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors --force
+      ignore_errors: true
+
+#Below is too make sure we can ssh all required hosts
+- name: determine ssh port
+  hosts: all
+  gather_facts: false
+
+  vars:
+    custom_ssh_port: 23
+
+  tasks:
+    - name: test default ssh port
+      local_action: wait_for port=22 timeout=5 host={{inventory_hostname}}
+      register: default_ssh
+      ignore_errors: true
+      check_mode: false
+    - name: set ansible_ssh_port to default
+      set_fact: ansible_ssh_port=22
+      when: default_ssh.elapsed < 5
+    - name: test ssh on high port
+      local_action: wait_for port={{custom_ssh_port}} timeout=5 host={{inventory_hostname}}
+      register: high_ssh
+      when: default_ssh.elapsed >= 5
+      ignore_errors: true
+    - name: set ansible_ssh_port high
+      set_fact: ansible_ssh_port={{custom_ssh_port}}
+      when: default_ssh.elapsed >= 5 and high_ssh.elapsed < 5
+
+- import_playbook: python-bootstrap.yml
+
+- name: Bootstrap sudo onto server
+  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  become: yes
+
+  pre_tasks:
+  - name: Install sudo if not there
+    become: yes
+    raw: |
+      test -e /usr/bin/sudo || apt install -y sudo
+    register: output
+    changed_when: output.stdout|trim() != ""
+
+- import_playbook: hostname.yml
+
+- import_playbook: administration.yml automount_enabled=true nis_enabled=true
+
+- import_playbook: solaris.yml
+
+- import_playbook: common.yml
+
+- import_playbook: dns.yml
+
+- import_playbook: security.yml
+
+#- import_playbook: java-legacy.yml
+
+# Filesystem such as workspace must be created before running jenkins-slave role
+- import_playbook: hdd.yml
+
+#- import_playbook: jenkins-user.yml
+
+#- import_playbook: jenkins-ssh.yml
+
+- import_playbook: java.yml
+
+- import_playbook: certificate.yml
+
+- import_playbook: maven-legacy.yml
+
+- import_playbook: chrome.yml
+
+- import_playbook: selenium.yml
+
+#- import_playbook: javascript.yml
+
+- import_playbook: yarn.yml
+
+#Only for MacOSX
+#- import_playbook: brew.yml
+
+- import_playbook: sonar-runner.yml
+
+# TODO jenkins-slaves.yml contains some python fixes. It must be run first
+# but jenkins-slaves.yml might need virtualenv and python
+- import_playbook: python.yml
+
+- import_playbook: docker.yml
+
+- import_playbook: git-lfs.yml
+
+- import_playbook: jenkins-slave.yml
+
+- import_playbook: zabbix-agent.yml
+
+- import_playbook: filebeat.yml
+
+- import_playbook: cron.yml
+
+- import_playbook: xvbf.yml
+
+- import_playbook: opencl.yml

@@ -1,0 +1,14 @@
+---
+
+#Use below only if you want your servers to be part of MGR build farm
+- name: Apply common configuration to all nodes
+  hosts: common
+  gather_facts: false
+  remote_user: root
+
+  roles:
+    - alban.andrieu.common
+
+  vars:
+       apt_notification_email: "alban.andrieu@free.fr"
+       apt_upgrade_system_enabled: no
