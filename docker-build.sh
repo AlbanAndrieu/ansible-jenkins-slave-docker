@@ -1,35 +1,20 @@
 #!/bin/bash
 #set -xv
 
-#export bold="\033[01m"
-#export underline="\033[04m"
-#export blink="\033[05m"
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-#export black="\033[30m"
-export red="\033[31m"
-export green="\033[32m"
-#export yellow="\033[33m"
-#export blue="\033[34m"
-#export magenta="\033[35m"
-#export cyan="\033[36m"
-#export ltgray="\033[37m"
+# shellcheck source=/dev/null
+source "${WORKING_DIR}/step-0-color.sh"
+ 
+#readonly DOCKERREGISTRY="https://hub.docker.com/"
+readonly DOCKERREGISTRY="" # leave it empty on purpose
+readonly DOCKERORGANISATION="nabla"
+readonly DOCKERUSERNAME=""
+readonly DOCKERNAME="ansible-jenkins-slave-docker"
+#readonly DOCKERTAG="ubuntu:16.04"
+expreadonlyort DOCKERTAG="latest"
 
-export NC="\033[0m"
-
-#export double_arrow='\xC2\xBB'
-export head_skull='\xE2\x98\xA0'
-export happy_smiley='\xE2\x98\xBA'
-# shellcheck disable=SC2034
-export reverse_exclamation='\u00A1'
-#export DOCKERREGISTRY="https://hub.docker.com/"
-export DOCKERREGISTRY="" # leave it empty on purpose
-export DOCKERORGANISATION="nabla"
-export DOCKERUSERNAME=""
-export DOCKERNAME="ansible-jenkins-slave-docker"
-#export DOCKERTAG="ubuntu:16.04"
-export DOCKERTAG="latest"
-
-#source ./playbooks/run-ansible.sh
+#source "${WORKING_DIR}/run-ansible.sh"
 
 echo -e "${green} Insalling roles version ${NC}"
 ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors

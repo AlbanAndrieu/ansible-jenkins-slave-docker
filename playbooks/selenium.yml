@@ -1,0 +1,14 @@
+#sudo ansible-playbook -i hosts-albandri -c local -v selenium.yml -vvvv | tee setup.log
+
+- name: Install selenium
+  hosts: jenkins-slaves
+  become: true
+
+  roles:
+    - alban.andrieu.selenium
+
+  vars:
+    #selenium_mirror: "http://nabla.mobi/download/selenium/"
+    selenium_server_major_version: "2.42"
+    selenium_server_minor_version: "2"
+    docker_files_enable: no
