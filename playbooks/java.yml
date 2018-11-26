@@ -25,7 +25,7 @@
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Install java 8 License
-  hosts: Ubuntu-18*
+  hosts: Ubuntu-18*:Ubuntu-16*
   become: true
   ignore_errors: true  
 
