@@ -5,8 +5,8 @@ cache: bundler
 env:
   global:
     - JENKINS_HOME=/home/jenkins
-    - UID=1000
-    - GID=1000
+    - UID=3000
+    - GID=3000
     - secure: MD73NCVzctbVmi2QnQtwtH/ISXN2K0alsLbixoaXl7gr3XvTB4sYB0u+KKtPV46jbeAlQqTRObPfQouPrsLsiNDYcpuN0I5bKsn3TTs4ZHIkD0I2Q9Wh3qNM2fYf9mw3ZUhvXVTEod0W7jzkVGb6kitRCJj8rioKKzvE/YdVsG4=
   matrix:
 #  - ANSIBLE_VERSION=latest
@@ -44,11 +44,11 @@ script:
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "docker_gid=3000" -e "python_enabled=false"
+  - ansible-playbook --syntax-check -i hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]"  -e "docker_gid=${GID}" -e "jenkins_id=${UID}" -e "python_enabled=false"
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]" -e "docker_gid=3000" -e "python_enabled=false"
+  - ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]"  -e "docker_gid=${GID}" -e "jenkins_id=${UID}" -e "python_enabled=false"
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
