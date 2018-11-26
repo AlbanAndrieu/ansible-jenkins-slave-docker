@@ -59,8 +59,8 @@ RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/ro
  -e "jenkins_jdk8_enable=true" -e "jdk_home=/usr/lib/jvm/java-8-oracle/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- -e "docker_service_enabled=false" \ 
- --skip-tags restart \ 
+ -e "docker_service_enabled=false" \
+ --skip-tags restart \
  -vvvv
 
 RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_HOME
