@@ -1,0 +1,84 @@
+#ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+#ansible-playbook -i staging -v docker.yml --limit albandri.misys.global.ad --ask-sudo-pass -vvvv | tee setup.log
+#ansible-playbook docker.yml -i production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-sudo-pass
+
+- hosts: all
+  gather_facts: true
+  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+                 is not a supported OS for a Tower installation.  Supported
+                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+#- import_playbook: certificate.yml
+
+#https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
+#sudo groupadd docker
+#sudo gpasswd -a ${USER} docker
+#sudo gpasswd -a jenkins docker
+#sudo usermod -a -G docker jenkins
+#sudo reboot
+
+#TODO https://docs.docker.com/engine/installation/linux/ubuntulinux/
+
+- name: Install docker
+  hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
+  become: yes
+  ignore_errors: true
+
+  roles:
+    - angstwad.docker-ubuntu
+
+  vars:
+#       docker_opts: "-H tcp://10.41.40.139:4243 -H unix:///var/run/docker.sock --dns 8.8.8.8 --dns 8.8.4.4 --storage-driver=zfs"
+       docker_opts: "-H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock --dns 10.21.200.3 --dns 10.41.200.3 --data-root /docker --storage-driver overlay2 --disable-legacy-registry --tlsverify --tlscacert /root/pki/ca.pem --tlscert /etc/ssl/{{ansible_fqdn}}/{{ansible_fqdn}}.pem --tlskey /etc/ssl/{{ansible_fqdn}}/{{ansible_fqdn}}.key --label provider=albandri"
+       #--insecure-registry registry.misys.global.ad --storage-driver aufs
+       #TODO add
+       #--userns-remap=default #see https://stackoverflow.com/questions/35291520/docker-and-userns-remap-how-to-manage-volume-permissions-to-share-data-betwee
+       #--tlsverify --tlscacert /etc/docker/ca.pem --tlscert /etc/docker/server.pem --tlskey /etc/docker/server-key.pem --label provider=amazonec2
+       #pip_version_docker_py: 1.9.0 #Fix issue with https://github.com/angstwad/docker.ubuntu/issues/109#issuecomment-257706232
+       #pip_version_docker: latest
+       #pip_version_docker: 2.2.1
+       #pip_version_docker_compose: 1.12.0
+       # TypeError: create_network() got an unexpected keyword argument 'enable_ipv6' with pip_version_docker_py: 1.9.0
+       #Please upgrade to 1.10.6
+       pip_install_docker_py: false
+
+#https://stackoverflow.com/questions/37178824/how-to-find-docker-rest-api-url
+#curl -X GET http://10.41.40.139:4243/images/json
+#curl --unix-socket /var/run/docker.sock http:127.0.0.1:4243/version
+#curl --unix-socket /var/run/docker.sock tcp:10.41.40.139:4243/version
+#curl 10.41.40.139:4243/version
+
+#TODO restart docker after installing docker CA
+#sudo service docker start
+
+#sudo docker logout https://docker.misys.global.ad:5000
+#sudo docker login registry.misys.global.ad --username=mgr.jenkins
+
+#- hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
+#  become: yes
+#  ignore_errors: true
+#
+#  post_tasks:
+#    - name: Log into private registry and force re-authorization
+#      docker_login:
+#        registry: https://registry.misys.global.ad/
+#        username: mgr.jenkins
+#        password: Misys2013
+#        reauthorize: yes

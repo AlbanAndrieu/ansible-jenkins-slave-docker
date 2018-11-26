@@ -1,0 +1,82 @@
+#ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+#ansible-playbook playbooks/docker.yml -i inventory/production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-sudo-pass
+
+#- import_playbook: docker-ubuntu.yml
+
+#yum remove docker-ce
+#yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-18.06.0.ce-3.el7.x86_64.rpm
+#yum install docker-ce-18.06.0.ce-3.el7.x86_64
+#yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.12.1.ce-1.el7.centos.x86_64.rpm
+
+- name: Run docker
+  hosts: docker
+  become: true
+  ignore_errors: true  
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
+
+  vars:
+    docker_install_compose: true
+    docker_compose_version: "1.22.0"
+     #TODO fix docker version
+     #docker_edition: ce
+     #docker_version: 18.06.0
+     #docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
+     #docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
+ #TODO make sure it does not conflit with jenkins-slave python35.yml and requirements-minimal-current-3.5.txt
+     #pip_install_packages:
+     #  - name: docker
+     #    version: "2.7.0"
+     #    virtualenv: /opt/ansible/env35
+     #
+     #  # Or uninstall a package.
+     #  - name: awscli
+     #    state: absent
+     #    virtualenv: /opt/ansible/env35
+     #
+     #  # Or force a reinstall.
+     #  - name: docker-compose
+     #    version: "1.12.0"
+     #    state: forcereinstall
+     #    virtualenv: /opt/ansible/env35
+     #docker_users:
+     #  - docker
+     #  - jenkins
+
+- hosts: docker
+  become: true
+
+  tasks:
+    - name: Create a docker group
+      group:
+          name=docker
+          state=present
+      become: true
+      ignore_errors: true
+
+    - name: Add user(s) to docker group
+      user:
+          name="{{ lookup('env','USER') }}"
+          group=docker
+          state=present
+      become: true
+      ignore_errors: true
+
+    - name: Add user(s) to docker group
+      user:
+          name="{{ remote_user|default('jenkins') }}"
+          group=docker
+          state=present
+      become: true
+      ignore_errors: true
+
+# docker_login does not work because of docker-py version and this raw does not work too. Great success.
+- name: "Docker login"
+  hosts: docker
+  become: true
+
+  tasks:
+  - raw: "docker login -u mgr.jenkins -p {{ docker_registry_password }} https://registry.misys.global.ad/"
+  ignore_errors: true
