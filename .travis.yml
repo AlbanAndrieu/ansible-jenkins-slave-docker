@@ -46,11 +46,11 @@ script:
 
   # Check syntax
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false"
+  - ansible-playbook --syntax-check -i hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --skip-tags restart
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false"
+  - ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --skip-tags restart
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
