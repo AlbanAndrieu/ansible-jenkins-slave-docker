@@ -12,7 +12,7 @@ readonly DOCKERORGANISATION="nabla"
 readonly DOCKERUSERNAME=""
 readonly DOCKERNAME="ansible-jenkins-slave-docker"
 #readonly DOCKERTAG="ubuntu:16.04"
-expreadonlyort DOCKERTAG="latest"
+readonly DOCKERTAG="latest"
 
 #source "${WORKING_DIR}/run-ansible.sh"
 
