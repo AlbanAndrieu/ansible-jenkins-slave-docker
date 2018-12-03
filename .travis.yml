@@ -1,7 +1,17 @@
+---
 language: python
 python:
-- 2.7
-cache: bundler
+#  - 2.7
+#  - 3.3
+#  - 3.4
+#  - 3.5
+  - 3.6
+services:
+  - docker
+cache:
+  bundler:
+  directories:
+    - $HOME/.cache/pip
 env:
   global:
     - JENKINS_HOME=/home/jenkins
@@ -16,17 +26,22 @@ dist: trusty
 branches:
   only:
   - master
+virtualenv:
+  system_site_packages: false
 before_install:
-- sudo apt-get update -qq
-- sudo apt-get install curl
-- sudo apt-get install -qq python-apt python-pycurl
+  - sudo apt-get update -qq
+  - sudo apt-get install curl
+  - sudo apt-get install -qq python-apt python-pycurl
 install:
-- if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install
-  ansible==$ANSIBLE_VERSION; fi
-- if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
-- git pull && git submodule init && git submodule update && git submodule status
-- git submodule foreach git checkout master
-- ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+  # Install Ansible.
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
+
+  - git pull && git submodule init && git submodule update && git submodule status
+  - git submodule foreach git checkout master
+  
+  - ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+    
 script:
   # Check ansible version
   - ansible --version
@@ -50,7 +65,7 @@ script:
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo -vvvv -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --skip-tags restart
+  - travis_wait 30 ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local -vvvv -e "python_versions=[2.7, 3.5]" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --skip-tags restart
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
@@ -71,8 +86,6 @@ notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
   email:
     recipients:
-    - alban.andrieu@nabla.mobi
-    on_success:
-    - always|never|change
-    on_failure:
-    - always|never|change
+      - alban.andrieu@nabla.mobi
+    on_success: [always|never|change]         # default: change
+    on_failure: [always|never|change]         # default: always
