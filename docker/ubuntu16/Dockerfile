@@ -3,13 +3,14 @@
 FROM selenium/standalone-chrome:3.141.59-antimony
 
 ARG JENKINS_HOME=${JENKINS_HOME:-/home/jenkins}
-ARG UID=2000
-ARG GID=2000
 
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
 LABEL vendor="NABLA" version="1.1"
 LABEL description="Image used by Nabla products to build Java/Javascript and CPP\
  this image is running on Ubuntu 16.04."
+
+# In case you need proxy
+#RUN echo 'Acquire::http::Proxy "http://127.0.0.1:8080";' >> /etc/apt/apt.conf
 
 # Volume can be accessed outside of container
 #VOLUME [${JENKINS_HOME}]
@@ -20,22 +21,21 @@ LABEL description="Image used by Nabla products to build Java/Javascript and CPP
 
 ENV JENKINS_HOME=${JENKINS_HOME}
 
-#ENV LANG en_US.UTF-8
+ENV LANG="en_US.UTF-8"
 ENV TERM="xterm-256color"
 
 USER 0
 
-RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
-
 # Install ansible
-ENV BUILD_PACKAGES="python-dev"
-RUN apt-get clean && apt-get -y update && apt-get install -y \
-    -o APT::Install-Recommend=false -o APT::Install-Suggests=false \
-    $BUILD_PACKAGES git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.6.3 \
+RUN locale-gen $LANG &&\
+    apt-get -q update &&\
+    apt-get -q upgrade -y -o Dpkg::Options::="--force-confnew" --no-install-recommends &&\
+    apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
+    git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.7.2 \
     && apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     xz-utils ksh wget tzdata sudo curl lsof sshpass \
     scons \
-    python3 python3-pip python3-dev python3-apt \
+    python3-setuptools python3 python3-pip python3-dev python3-apt \
     openjdk-8-jdk maven gcc g++ make \
     net-tools iputils-ping x11-apps \
     && pip install zabbix-api
@@ -43,6 +43,10 @@ RUN apt-get clean && apt-get -y update && apt-get install -y \
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
     npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.1 nsp@3.2.1 webdriver-manager@12.1.0
+
+ARG UID=${UID:-2000}
+ARG GID=${GID:-2000}
+RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
 
 # Add user jenkins to the image
 RUN groupadd -g ${GID} docker && \
@@ -77,7 +81,7 @@ RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/ro
  -e "jenkins_jdk8_enable=true" -e "jdk_home=/usr/lib/jvm/java-8-oracle/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags restart \ 
+ --skip-tags restart \
  -vvvv
 
 #COPY . $JENKINS_HOME
@@ -90,17 +94,14 @@ RUN mkdir -p /var/run/sshd
 #RUN chmod 0755 /var/run/sshd
 
 # Clean up APT when done.
-#RUN AUTO_ADDED_PACKAGES=$(apt-mark showauto) \
-#&& apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES &&
 RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 && ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
 ENV HOME=${JENKINS_HOME}
-#&& chmod -R 777 ${HOME}/.npm && chmod -R 777 ${HOME}/.m2
-RUN chmod -R 777 ${HOME} && mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local
-#RUN id jenkins && ls -lrta $HOME/
+RUN chmod -R 777 ${HOME} && mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local && mkdir ${HOME}/.sonar
+#RUN id jenkins && ls -lrtai $HOME/ && ls -lrtai $HOME/.sonar
 
 # Standard SSH port
 EXPOSE 22

@@ -1,1 +1,1 @@
-docker/ubuntu16/Dockerfile
+docker/ubuntu18/Dockerfile
