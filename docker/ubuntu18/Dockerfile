@@ -115,7 +115,8 @@ RUN chmod +x /jenkins-slave-startup.sh
 # drop back to the regular jenkins user - good practice
 USER jenkins
 ENV HOME=${JENKINS_HOME}
-RUN mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local && mkdir ${HOME}/.sonar && mkdir -p ${HOME}/.m2/repository && chmod -R 777 ${HOME}
+#&& mkdir ${HOME}/.sonar 
+RUN mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local && mkdir -p ${HOME}/.m2/repository && chmod -R 777 ${HOME}
 RUN id jenkins && ls -lrtai $HOME/ && ls -lrtai $HOME/.sonar
 
 # Standard SSH port
