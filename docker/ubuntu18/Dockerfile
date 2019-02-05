@@ -25,10 +25,6 @@ ENV TERM="xterm-256color"
 
 USER 0
 
-ENV TZ "Europe/Paris"
-RUN echo "${TZ}" > /etc/timezone
-RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime
-
 # Install ansible
 RUN apt-get -q update &&\
     apt-get -q upgrade -y -o Dpkg::Options::="--force-confnew" --no-install-recommends &&\
@@ -41,11 +37,13 @@ RUN apt-get -q update &&\
     openjdk-8-jdk maven gcc g++ make \
     net-tools iputils-ping x11-apps
 
+ENV TZ "Europe/Paris"
+RUN echo "${TZ}" > /etc/timezone
+RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 #RUN dpkg-reconfigure --frontend noninteractive tzdata \
+
 RUN python3 -m pip install --upgrade pip==9.0.3 \
     && pip install ansible==2.7.2 zabbix-api
-    
-#RUN locale-gen $LANG &&\
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 RUN add-apt-repository \
@@ -57,8 +55,10 @@ RUN apt-get update -qq && apt-get install -qqy docker-ce=5:18.09.0~3-0~ubuntu-bi
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
-    npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.2 nsp@3.2.1 webdriver-manager@12.1.0 npm@6.4.1 yo@2.0.5
+    npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.2 nsp@3.2.1 webdriver-manager@12.1.0 npm@6.4.1 yo@2.0.5 json2csv@4.3.3
 
+ARG USER=${USER:-jenkins}
+ARG GROUP=${GROUP:-docker}
 ARG UID=${UID:-2000}
 ARG GID=${GID:-2000}
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
@@ -74,6 +74,15 @@ RUN adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_HOME} jenkins
 # Set password for the jenkins user (you may want to alter this).
 RUN echo "jenkins:jenkins1234" | chpasswd
 RUN usermod -a -G docker jenkins
+
+# Add the jenkins user to sudoers
+RUN echo "jenkins    ALL=(ALL)    ALL" >> /etc/sudoers
+
+RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+    chown root:root /usr/local/bin/fixuid && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid && \
+    printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n" > /etc/fixuid/config.yml
 
 COPY *.yml vault.passwd playbooks hosts roles $JENKINS_HOME/
 #RUN id jenkins && ls -lrta $JENKINS_HOME/
@@ -115,12 +124,18 @@ RUN chmod +x /jenkins-slave-startup.sh
 # drop back to the regular jenkins user - good practice
 USER jenkins
 ENV HOME=${JENKINS_HOME}
-#&& mkdir ${HOME}/.sonar 
-RUN mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local && mkdir -p ${HOME}/.m2/repository && chmod -R 777 ${HOME}
-RUN id jenkins && ls -lrtai $HOME/ && ls -lrtai $HOME/.sonar
+RUN mkdir ${HOME}/workspace && mkdir ${HOME}/.config && mkdir ${HOME}/.local && mkdir ${HOME}/.sonar && mkdir -p ${HOME}/.m2/repository && chmod -R 777 ${HOME}
+#RUN id jenkins && ls -lrtai $HOME/ && ls -lrtai $HOME/.sonar
+
+# drop back to the root user - for docker in docker
+USER root
+
+# Working dir
+WORKDIR $HOME
 
 # Standard SSH port
 EXPOSE 22
 
-#CMD ["/jenkins-slave-startup.sh"]
-CMD ["/bin/bash"]
+ENTRYPOINT ["fixuid"]
+CMD ["/jenkins-slave-startup.sh"]
+

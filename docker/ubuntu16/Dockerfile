@@ -21,7 +21,9 @@ LABEL description="Image used by Nabla products to build Java/Javascript and CPP
 
 ENV JENKINS_HOME=${JENKINS_HOME}
 
-ENV LANG="en_US.UTF-8"
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 ENV TERM="xterm-256color"
 
 USER 0
@@ -33,6 +35,7 @@ RUN locale-gen $LANG &&\
     apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
     git bzip2 zip unzip python-yaml python-jinja2 python-pip openssh-server rsyslog && pip install ansible==2.7.2 \
     && apt-get install -y ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
+    apt-transport-https ca-certificates software-properties-common \
     xz-utils ksh wget tzdata sudo curl lsof sshpass \
     scons \
     python3-setuptools python3 python3-pip python3-dev python3-apt \
@@ -40,20 +43,31 @@ RUN locale-gen $LANG &&\
     net-tools iputils-ping x11-apps \
     && pip install zabbix-api
 
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+RUN add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) \
+    stable"
+# Install Docker from Docker Inc. repositories.
+RUN apt-get update -qq && apt-get install -qqy docker-ce=5:18.09.0~3-0~ubuntu-xenial && rm -rf /var/lib/apt/lists/*
+
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - ;\
     apt-get update && apt-get install -y nodejs ;\
-    npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.1 nsp@3.2.1 webdriver-manager@12.1.0
+    npm install -g bower@1.8.4 grunt@1.0.3 grunt-cli@1.3.2 nsp@3.2.1 webdriver-manager@12.1.0 npm@6.4.1 yo@2.0.5
 
 ARG UID=${UID:-2000}
 ARG GID=${GID:-2000}
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_HOME: ${JENKINS_HOME} \033[0m\n"
 
+RUN groupmod -g ${GID} docker
+
 # Add user jenkins to the image
-RUN groupadd -g ${GID} docker && \
-    adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_HOME} jenkins && \
+#RUN groupadd -g ${GID} docker && \
+RUN adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_HOME} jenkins && \
     echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
 # Set password for the jenkins user (you may want to alter this).
 RUN echo "jenkins:jenkins1234" | chpasswd
+RUN usermod -a -G docker jenkins
 
 # Working dir
 #WORKDIR $JENKINS_HOME
@@ -82,6 +96,7 @@ RUN ansible-galaxy install -r $JENKINS_HOME/requirements.yml -p $JENKINS_HOME/ro
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
  --skip-tags restart \
+# --vault-id $JENKINS_HOME/vault.passwd \
  -vvvv
 
 #COPY . $JENKINS_HOME
