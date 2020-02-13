@@ -1,5 +1,5 @@
 ---
-#ansible-playbook playbooks/boot-cleaning.yml -i inventory/production --limit trottt.misys.global.ad -vvvv
+#ansible-playbook playbooks/boot-cleaning.yml -i inventory/production --limit test.albandrieu.com -vvvv
 
 - hosts: all
   gather_facts: true

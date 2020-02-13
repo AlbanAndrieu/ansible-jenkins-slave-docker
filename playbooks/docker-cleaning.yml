@@ -1,8 +1,8 @@
 ---
 #WARNING run it with -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5"
-#ansible-playbook -i inventory/production -v playbooks/docker-cleaning.yml --limit FR1CSLFRBM0019.misys.global.ad -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
+#ansible-playbook -i inventory/production -v playbooks/docker-cleaning.yml --limit test3.albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
 
-#sudo docker logout https://docker.misys.global.ad:5000
+#sudo docker logout https://docker.albandrieu.com:5000
 #sudo docker login hub.docker.com
 
 - hosts: docker-cleaning

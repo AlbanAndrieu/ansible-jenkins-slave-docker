@@ -1,5 +1,5 @@
 ---
-#ansible-playbook docker.yml -i production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-become-pass
+#ansible-playbook docker.yml -i production --limit "test1.albandrieu.com,test2.albandrieu.com" -vvvv --ask-become-pass
 
 - hosts: all
   gather_facts: true
@@ -45,7 +45,7 @@
   vars:
 #       docker_opts: "-H tcp://10.41.40.139:4243 -H unix:///var/run/docker.sock --dns 8.8.8.8 --dns 8.8.4.4 --storage-driver=zfs"
        docker_opts: "-H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock --dns 10.21.200.3 --dns 10.41.200.3 --data-root /docker --storage-driver overlay2 --disable-legacy-registry --tlsverify --tlscacert /root/pki/ca.pem --tlscert /etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.pem --tlskey /etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.key --label provider=albandri"
-       #--insecure-registry registry.misys.global.ad --storage-driver aufs
+       #--insecure-registry registry.albandrieu.com --storage-driver aufs
        #TODO add
        #--userns-remap=default #see https://stackoverflow.com/questions/35291520/docker-and-userns-remap-how-to-manage-volume-permissions-to-share-data-betwee
        #--tlsverify --tlscacert /etc/docker/ca.pem --tlscert /etc/docker/server.pem --tlskey /etc/docker/server-key.pem --label provider=amazonec2
@@ -66,8 +66,8 @@
 #TODO restart docker after installing docker CA
 #sudo service docker start
 
-#sudo docker logout https://docker.misys.global.ad:5000
-#sudo docker login registry.misys.global.ad --username=mgr.jenkins
+#sudo docker logout https://docker.albandrieu.com:5000
+#sudo docker login registry.albandrieu.com --username=mgr.jenkins
 
 #- hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
 #  become: true
@@ -76,7 +76,7 @@
 #  post_tasks:
 #    - name: Log into private registry and force re-authorization
 #      docker_login:
-#        registry: https://registry.misys.global.ad/
+#        registry: https://registry.albandrieu.com/
 #        username: mgr.jenkins
 #        password: Misys2013
 #        reauthorize: yes

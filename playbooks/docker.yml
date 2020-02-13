@@ -1,5 +1,5 @@
 ---
-#ansible-playbook playbooks/docker.yml -i inventory/production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-become-pass
+#ansible-playbook playbooks/docker.yml -i inventory/production --limit "test1.albandrieu.com,test2.albandrieu.com" -vvvv --ask-become-pass
 
 #- import_playbook: docker-ubuntu.yml
 

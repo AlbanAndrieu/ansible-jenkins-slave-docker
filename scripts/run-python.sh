@@ -1,69 +1,14 @@
 #!/bin/bash
 #set -xve
 
-#export bold="\033[01m"
-#export underline="\033[04m"
-#export blink="\033[05m"
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-#export black="\033[30m"
-export red="\033[31m"
-export green="\033[32m"
-#export yellow="\033[33m"
-#export blue="\033[34m"
-export magenta="\033[35m"
-export cyan="\033[36m"
-#export ltgray="\033[37m"
+# source only if terminal supports color, otherwise use unset color vars
+# shellcheck source=scripts/step-0-color.sh
+source "${WORKING_DIR}/step-0-color.sh"
 
-export NC="\033[0m"
-
-double_arrow='\xC2\xBB'
-export head_skull='\xE2\x98\xA0'
-export happy_smiley='\xE2\x98\xBA'
-export reverse_exclamation='\u00A1'
-
-case "$OSTYPE" in
-  linux*)   SYSTEM=LINUX;;
-  darwin*)  SYSTEM=OSX;;
-  win*)     SYSTEM=Windows;;
-  cygwin*)  SYSTEM=Cygwin;;
-  msys*)    SYSTEM=MSYS;;
-  bsd*)     SYSTEM=BSD;;
-  solaris*) SYSTEM=SOLARIS;;
-  *)        SYSTEM=UNKNOWN;;
-esac
-echo "SYSTEM : ${SYSTEM}"
-
-if [ -f /etc/os-release ]; then
-    # freedesktop.org and systemd
-    . /etc/os-release
-    OS=$NAME
-    VER=$VERSION_ID
-elif type lsb_release >/dev/null 2>&1; then
-    # linuxbase.org
-    OS=$(lsb_release -si)
-    VER=$(lsb_release -sr)
-elif [ -f /etc/lsb-release ]; then
-    # For some versions of Debian/Ubuntu without lsb_release command
-    . /etc/lsb-release
-    OS=$DISTRIB_ID
-    VER=$DISTRIB_RELEASE
-elif [ -f /etc/debian_version ]; then
-    # Older Debian/Ubuntu/etc.
-    OS=Debian
-    VER=$(cat /etc/debian_version)
-elif [ -f /etc/SuSe-release ]; then
-    # Older SuSE/etc.
-    ...
-elif [ -f /etc/redhat-release ]; then
-    # Older Red Hat, CentOS, etc.
-    ...
-else
-    # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
-    OS=$(uname -s)
-    VER=$(uname -r)
-fi
-echo "OS : ${OS}"
-echo "VER : ${VER}"
+# shellcheck source=/dev/null
+source "${WORKING_DIR}/step-1-os.sh"
 
 if [ -n "${USE_SUDO}" ]; then
   echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
@@ -80,9 +25,11 @@ fi
 
 if [ -n "${PYTHON_MAJOR_VERSION}" ]; then
   echo -e "${green} PYTHON_MAJOR_VERSION is defined ${happy_smiley} : ${PYTHON_MAJOR_VERSION} ${NC}"
+  unset VIRTUALENV_PATH
+  unset PYTHON_CMD
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_MAJOR_VERSION, use the default one ${NC}"
-  export PYTHON_MAJOR_VERSION=3.5
+  export PYTHON_MAJOR_VERSION=3.6
   echo -e "${magenta} PYTHON_MAJOR_VERSION : ${PYTHON_MAJOR_VERSION} ${NC}"
 fi
 
@@ -90,9 +37,8 @@ if [ -n "${VIRTUALENV_PATH}" ]; then
   echo -e "${green} VIRTUALENV_PATH is defined ${happy_smiley} : ${VIRTUALENV_PATH} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : VIRTUALENV_PATH, use the default one ${NC}"
+  # shellcheck disable=SC2001
   VIRTUALENV_PATH=/opt/ansible/env$(echo $PYTHON_MAJOR_VERSION | sed 's/\.//g')
-  echo -e "${green} virtualenv --no-site-packages ${VIRTUALENV_PATH} -p python${PYTHON_MAJOR_VERSION} ${NC}"
-  echo -e "${green} source ${VIRTUALENV_PATH}/bin/activate ${NC}"
   export VIRTUALENV_PATH
   echo -e "${magenta} VIRTUALENV_PATH : ${VIRTUALENV_PATH} ${NC}"
 fi
@@ -113,44 +59,64 @@ else
   echo -e "${magenta} PYTHON_CMD : ${PYTHON_CMD} ${NC}"
 fi
 
-echo -e "${cyan} Use virtual env ${VIRTUALENV_PATH}/activate ${NC}"
+echo -e "${cyan} Use virtual env ${VIRTUALENV_PATH}/bin/activate ${NC}"
 #echo "Switch to python 2.7 and ansible 2.1.1"
 #scl enable python27 bash
 #Enable python 2.7 and switch to ansible 2.1.1
 #source /opt/rh/python27/enable
 
 #sudo virtualenv -p /usr/bin/python3.5 /opt/ansible/env35
-source "${VIRTUALENV_PATH}/bin/activate" || exit 2
+echo -e "${green} virtualenv --no-site-packages ${VIRTUALENV_PATH} -p python${PYTHON_MAJOR_VERSION} ${NC}"
+echo -e "${green} source ${VIRTUALENV_PATH}/bin/activate ${NC}"
+if [ -f "${VIRTUALENV_PATH}/bin/activate" ]; then
+  # shellcheck disable=SC1090
+  source "${VIRTUALENV_PATH}/bin/activate" || exit 2
 
-#export PYTHONPATH="/usr/local/lib/python${PYTHON_MAJOR_VERSION}/dist-packages/"
-export PATH="${VIRTUALENV_PATH}/bin:${PATH}"
-echo -e "${cyan} PATH : ${PATH} ${NC}"
-export PYTHONPATH="${VIRTUALENV_PATH}/lib/python${PYTHON_MAJOR_VERSION}/site-packages/"
-echo -e "${cyan} PYTHONPATH : ${PYTHONPATH} ${NC}"
+  #export PYTHONPATH="/usr/local/lib/python${PYTHON_MAJOR_VERSION}/dist-packages/"
+  export PATH="${VIRTUALENV_PATH}/bin:${PATH}"
+  echo -e "${cyan} PATH : ${PATH} ${NC}"
+  export PYTHONPATH="${VIRTUALENV_PATH}/lib/python${PYTHON_MAJOR_VERSION}/site-packages/"
+  echo -e "${cyan} PYTHONPATH : ${PYTHONPATH} ${NC}"
+else
+  echo -e "${red} Please install virtualenv first ${NC}"
+fi
+
+echo -e "${cyan} =========== ${NC}"
+echo -e "${green} Display virtual env ${NC}"
+virtualenv --version || true
+pip -V || true
+pip freeze | grep ansible || true
 
 echo -e "${cyan} =========== ${NC}"
 echo -e "${green} Install virtual env requirements prerequisites ${NC}"
 echo -e "${green} sudo apt-get install libcups2-dev linuxbrew-wrapper ${NC}"
 echo -e "${green} brew install cairo libxml2 libffi ${NC}"
-#source /opt/ansible/env35/bin/activate
+
 #pip3 uninstall libxml2-python
 #pip3 install cairocffi==0.8.0
 #pip3 install CairoSVG==2.0.3
 
 echo -e "${green} Fix permission rights ${NC}"
-echo -e "${green} chown -R jenkins:docker /opt/ansible/env35 ${NC}"
+# shellcheck disable=SC2001
+echo -e "${green} chown -R jenkins:docker /opt/ansible/env$(echo $PYTHON_MAJOR_VERSION | sed 's/\.//g') ${NC}"
 
-echo -e "${cyan} =========== ${NC}"
-echo -e "${green} Install virtual env requirements : pip install -r ./roles/alban.andrieu.jenkins-slave/files/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
-#"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "./roles/alban.andrieu.jenkins-slave/files/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
-pip install -r "./roles/alban.andrieu.jenkins-slave/files/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
-RC=$?
-if [ ${RC} -ne 0 ]; then
-  echo ""
-  echo -e "${red} ${head_skull} Sorry,  python requirements installation failed ${NC}"
-  exit 1
+if [ -f "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt" ]; then
+  echo -e "${cyan} =========== ${NC}"
+  echo -e "${green} Install virtual env requirements : pip install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
+  #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  RC=$?
+  if [ ${RC} -ne 0 ]; then
+    echo ""
+    echo -e "${red} ${head_skull} Sorry,  python requirements installation failed ${NC}"
+    echo -e "${yellow} ${head_skull} WARNING : As we are using jenkins user. It might fail on purpose ${NC}"
+    echo -e "${yellow} ${head_skull} because I did not want jenkins user to allow such changes ${NC}"
+    exit 1
+  else
+    echo -e "${green} The python requirements installation completed successfully. ${NC}"
+  fi
 else
-  echo -e "${green} The python requirements installation completed successfully. ${NC}"
+  echo -e "${red} Please get requirements-current-${PYTHON_MAJOR_VERSION}.txt first ${NC}"
 fi
 
 echo -e "${cyan} =========== ${NC}"
@@ -178,11 +144,8 @@ fi
 echo -e "${cyan} =========== ${NC}"
 echo -e "${green} Checking python version ${NC}"
 
-#source ${VIRTUALENV_PATH}/bin/activate || exit 2
-
 python --version || true
-pip --version || true
-virtualenv --version || true
+pip -V || true
 
 #vagrant --version
 docker version || true
@@ -198,16 +161,31 @@ docker version || true
 ##sudo pip2.7 -H install -r requirements-current-2.7.txt
 #sudo -H pip2.7 freeze > requirements-2.7.txt
 
-echo -e "${green} Checking python 3.5 version ${NC}"
+echo -e "${green} Checking python ${PYTHON_MAJOR_VERSION} version ${NC}"
+
+"python${PYTHON_MAJOR_VERSION}" --version || true
+"pip${PYTHON_MAJOR_VERSION}" -V || true
 
 python3 --version || true
 pip3 --version || true
-echo -e "${magenta} ${PYTHON_CMD} --version ${NC}"
-${PYTHON_CMD} --version || true
-echo -e "${magenta} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} --version ${NC}"
-"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" --version || true
 
-"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" list --format=freeze | grep docker || true
+if [ -n "${PYTHON_CMD}" ]; then
+  echo -e "${magenta} ${PYTHON_CMD} --version ${NC}"
+  ${PYTHON_CMD} --version || true
+  if [ -f "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" ]; then
+    echo -e "${magenta} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} --version ${NC}"
+    "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" --version || true
 
-echo -e "${magenta} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} freeze > requirements-${PYTHON_MAJOR_VERSION}.txt ${NC}"
-"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" freeze > requirements-${PYTHON_MAJOR_VERSION}.txt
+    "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" list --format=freeze | grep docker || true
+
+    echo -e "${magenta} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} freeze > requirements-${PYTHON_MAJOR_VERSION}.txt ${NC}"
+    #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" freeze > requirements-${PYTHON_MAJOR_VERSION}.txt
+  else
+    echo -e "${red} Please install VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} first ${NC}"
+  fi
+
+  echo -e "${magenta} ${PYTHON_CMD} -m ara.setup.path ${NC}"
+  ${PYTHON_CMD} -m ara.setup.path || true
+  ${PYTHON_CMD} -m ara.setup.action_plugins || true
+  ${PYTHON_CMD} -m ara.setup.callback_plugins || true
+fi

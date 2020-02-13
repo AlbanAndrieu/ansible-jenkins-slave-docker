@@ -7,7 +7,7 @@
 #ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass --sudo
 # --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 #for testing purpose
-#sudo ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
+#ansible-playbook -i hosts -c local -v playbooks/jenkins-slave-docker.yml --check --diff --ask-become-pass -vvvv
 
 - name: Assert platform is supported
   hosts: all
@@ -54,7 +54,7 @@
 - import_playbook: python-bootstrap.yml
 
 - name: Bootstrap sudo onto server
-  hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: yes
 
   pre_tasks:

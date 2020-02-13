@@ -91,7 +91,7 @@ RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
-    printf "\033[1;32mWITH user: $USER\ngroup: $GROUP \033[0m\n" > /etc/fixuid/config.yml
+    printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
 
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible

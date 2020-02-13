@@ -1,5 +1,5 @@
 ---
-#ansible-playbook -i ./inventory/production -v playbooks/java.yml --limit FR1CSLFRBM0074.misys.global.ad --ask-become-pass -vvvv | tee setup.log
+#ansible-playbook -i ./inventory/production -v playbooks/java.yml --limit test3.albandrieu.com --ask-become-pass -vvvv | tee setup.log
 
 - hosts: all
   gather_facts: true
@@ -58,7 +58,7 @@
 #      become_user: root
 #
 #    - name: Get the JDK jar
-#      get_url: dest=/var/cache/oracle-jdk11-installer-local/jdk-11.0.5_linux-x64_bin.tar.gz url=http://FR1CSLFRBM0059.misys.global.ad/download/jdk/jdk-11.0.5_linux-x64_bin.tar.gz mode=0755
+#      get_url: dest=/var/cache/oracle-jdk11-installer-local/jdk-11.0.5_linux-x64_bin.tar.gz url=http://FR1CSLFRBM0059.albandrieu.com/download/jdk/jdk-11.0.5_linux-x64_bin.tar.gz mode=0755
 #      become: true
 #      become_user: root
 #

@@ -68,5 +68,5 @@
     maven_repository: "{{ jenkins_home }}/.repository"
     #gcc_version: "4:4.8.2-1ubuntu6"
     #cppunit_version: "1.13-0"
-    b#oost_version: "1.54"
+    #boost_version: "1.54"
     
