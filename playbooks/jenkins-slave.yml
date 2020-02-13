@@ -35,6 +35,7 @@
   vars:
     docker_files_enable: yes
     docker_files_generated_directory: "./"
+    docker_registry_user: nabla
     shell_git:
       # Additional properties: 'shell_git_machine, shell_git_login, shell_git_email, shell_git_password, shell_git_name, shell_git_path, shell_git_ssl'.
        - {
@@ -44,18 +45,18 @@
          shell_git_password: 'microsoft',
          # Optional.
          shell_git_name: 'Andrieu, Alban',
-         shell_git_path: '/usr/bin',
+         shell_git_path: "/usr/bin",
          shell_git_ssl: false
        }        
     subversion_rabbitvcs_enabled: no
     subversion_diff_enabled: no
     # tomcat_started_check_enable: yes does not work on docker hub
     tomcat_started_check_enable: no
-    #home_url: "http://home.nabla.mobi"
-    nexus_url: "http://home.nabla.mobi:8085"
-    bower_url: "http://home.nabla.mobi:5678"
+    #home_url: "http://albandrieu.com"
+    nexus_url: "http://albandrieu.com:8686"
+    bower_url: "http://albandrieu.com:5678"
     npm_nexus_npm_url: ""
-    #npm_phantomjs_cdnurl: "http://home.nabla.mobi:7070/download/phantomjs"
+    #npm_phantomjs_cdnurl: "http://albandrieu.com:7070/download/phantomjs"
     jenkins_home: "/home/jenkins"
     jenkins_group: docker
     jenkins_ssh_authorized_keys_fingerprints:   # Set known authorized keys for ssh
@@ -65,7 +66,7 @@
       - "bitbucket.org,131.103.20.167 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw=="
       - "github.com,204.232.175.90 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
     maven_repository: "{{ jenkins_home }}/.repository"
-    gcc_version: "4:4.8.2-1ubuntu6"
-    cppunit_version: "1.13-0"
-    boost_version: "1.54"
+    #gcc_version: "4:4.8.2-1ubuntu6"
+    #cppunit_version: "1.13-0"
+    b#oost_version: "1.54"
     

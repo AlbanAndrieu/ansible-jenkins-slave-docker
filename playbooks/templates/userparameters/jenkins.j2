@@ -1,0 +1,15 @@
+UserParameter=bmt.vfs.fs.discovery[*],/etc/zabbix/scripts/jenkins/fs-discovery.sh
+UserParameter=array-all-status-hp[*],sudo /etc/zabbix/scripts/jenkins/array-all-status-hp.sh
+UserParameter=array-all-status-dell[*],sudo /etc/zabbix/scripts/jenkins/array-all-status-dell.sh
+UserParameter=zpool-discovery,sudo /etc/zabbix/scripts/jenkins/zpool-discovery.sh
+UserParameter=zpool-status[*],sudo /etc/zabbix/scripts/jenkins/zpool-status.sh $1
+UserParameter=iscsi-status[*],sudo /etc/zabbix/scripts/jenkins/iscsi-status.sh $1
+UserParameter=zfs-vfs-size[*],sudo /etc/zabbix/scripts/jenkins/zfs-vfs-size.sh $1 $2
+UserParameter=gpu.temp[*],nvidia-smi -q --gpu=$1 |grep "GPU Current Temp"|grep -v "N/A"|cut -c 38-40
+UserParameter=gpu.memtotal[*],expr `nvidia-smi --query-gpu=memory.total -i $1 --format=csv,noheader,nounits` \* 1024 \* 1024
+UserParameter=gpu.used[*],expr `nvidia-smi --query-gpu=memory.used -i $1 --format=csv,noheader,nounits` \* 1024 \* 1024
+UserParameter=gpu.free[*],expr `nvidia-smi --query-gpu=memory.free -i $1 --format=csv,noheader,nounits` \* 1024 \* 1024
+UserParameter=gpu.util[*],nvidia-smi --query-gpu=utilization.gpu -i $1 --format=csv,noheader,nounits
+UserParameter=gpu.fanspeed[*],nvidia-smi -q --gpu=$1 |grep Fan|cut -c 38-50|grep -o '[0-9]*'
+UserParameter=jenkins.server.status,systemctl show jenkins -p ActiveState,StateChangeTimestamp
+UserParameter=sensors.max,/usr/bin/sensors -u | grep -i input | cut -f2 -d: | sort -n -r | head -n 1

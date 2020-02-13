@@ -19,9 +19,9 @@
   vars:
 #      automount_enabled: true
 #      nis_enabled: true
-      nisserver: nissrv01
-      mailserver: smtp.nabla.mobi
-      defaultdomain: home.nabla.mobi
+      nisserver: albandrieu.com
+      mailserver: smtp.gmail.com
+      defaultdomain: home.albandrieu.com
       mountpoints: {
        /nabla/dev                  : "nabla-nfs:/nabla/dev",
        /nabla/release              : "nabla-nfs:/nabla/release",

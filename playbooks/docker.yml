@@ -1,5 +1,5 @@
-#ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
-#ansible-playbook playbooks/docker.yml -i inventory/production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-sudo-pass
+---
+#ansible-playbook playbooks/docker.yml -i inventory/production --limit "FR1CSLFRQA0005.misys.global.ad,FR1CSLFRBM0019.misys.global.ad" -vvvv --ask-become-pass
 
 #- import_playbook: docker-ubuntu.yml
 
@@ -11,21 +11,23 @@
 - name: Run docker
   hosts: docker
   become: true
-  ignore_errors: true  
+  ignore_errors: true
+  tags:
+    - vm
 
   roles:
     - geerlingguy.pip
     - geerlingguy.docker
 
   vars:
-    docker_install_compose: true
-    docker_compose_version: "1.22.0"
+    docker_install_compose: false # using pip instead
+    docker_compose_version: "1.25.0"
      #TODO fix docker version
      #docker_edition: ce
      #docker_version: 18.06.0
      #docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
      #docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
- #TODO make sure it does not conflit with jenkins-slave python35.yml and requirements-minimal-current-3.5.txt
+     #TODO make sure it does not conflit with jenkins-slave python36.yml and requirements-current-3.6.txt
      #pip_install_packages:
      #  - name: docker
      #    version: "2.7.0"
@@ -47,6 +49,8 @@
 
 - hosts: docker
   become: true
+  tags:
+    - vm
 
   tasks:
     - name: Create a docker group
@@ -72,11 +76,3 @@
       become: true
       ignore_errors: true
 
-# docker_login does not work because of docker-py version and this raw does not work too. Great success.
-- name: "Docker login"
-  hosts: docker
-  become: true
-
-  tasks:
-  - raw: "docker login -u mgr.jenkins -p {{ docker_registry_password }} https://registry.misys.global.ad/"
-  ignore_errors: true

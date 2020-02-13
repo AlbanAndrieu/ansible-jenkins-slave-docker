@@ -1,0 +1,185 @@
+---
+#WARNING run it with -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5"
+#ansible-playbook -i inventory/production -v playbooks/docker-cleaning.yml --limit FR1CSLFRBM0019.misys.global.ad -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
+
+#sudo docker logout https://docker.misys.global.ad:5000
+#sudo docker login hub.docker.com
+
+- hosts: docker-cleaning
+  become: true
+
+  tasks:
+    - name: Fix docker permission issue on docker.sock
+      command: "setfacl -m user:jenkins:rw /var/run/docker.sock"
+      # TODO
+      # acl:
+      #   path: /var/run/docker.sock
+      #   entry: default:user:jenkins:rw
+      #   state: present
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - docker
+        - vm # do not install on docker image
+
+    - name: Log into private registry
+      docker_login:
+        registry: https://hub.docker.com
+        username: "{{ docker_registry_login }}"
+        password: "{{ docker_registry_password }}"
+#        reauthorize: yes
+      ignore_errors: true
+      tags:
+        - docker
+        - vm # do not install on docker image
+
+- hosts: docker-cleaning
+  become: true
+
+  tasks:
+    - name: Remove jenkins-slave-arc-centos6 latest images (OLD)
+      docker_image:
+        state: absent
+        name: hub.docker.com/nabla/jenkins-slave-centos6-arc
+        tag: latest
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+    - name: Remove jenkins-slave-centos7-arc latest images (OLD)
+      docker_image:
+        state: absent
+        name: hub.docker.com/nabla/jenkins-slave-centos6-arc
+        tag: latest
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+    - name: Remove jenkins-slave-centos7-arc latest images (OLD)
+      docker_image:
+        state: absent
+        name: hub.docker.com/nabla/jenkins-slave-centos7-arc
+        tag: latest
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+# Below might be useless (duplicated) when running full cleaning
+#    - name: Remove unwanted dangling images
+#      shell: "docker rmi $(docker images -f dangling=true -q)"
+#      ignore_errors: true
+#      changed_when: false
+
+# Below might be useless (duplicated) when running full cleaning
+#    - name: Remove unwanted ‘dangling’ volumes
+#      shell: "docker volume rm $(docker volume ls -qf dangling=true)"
+#      ignore_errors: true
+#      changed_when: false
+
+    - name: Remove container which are running since more than 1 day
+      shell: "docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up [0-9]+ days' | awk '{print $1}')"
+      ignore_errors: true
+      changed_when: false
+      tags:
+        - clean
+        - docker
+        - vm
+
+    - name: Remove container which are running since more than 10 hours
+      shell: "docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up 1[0-9] hours' | awk '{print $1}')"
+      ignore_errors: true
+      changed_when: false
+      tags:
+        - clean
+        - docker
+        - vm
+
+#TODO below is slow, we have to pull all the images again after
+    - name: Remove reclaimable images and volumes
+      command: "docker system prune -a --volumes -f"
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+    - name: Remove hanging and old nabla docker images
+      shell: "docker rmi $(docker image ls | grep -i nabla | grep -E 'days|weeks|months ago' | grep -v jenkins-slave | awk '{print $3}')"
+      ignore_errors: true
+      changed_when: false
+      tags:
+        - clean
+        - docker
+        - vm
+
+#    - name: Pull jenkins-slave-arc-centos6 latest images (NEW)
+#      docker_image:
+#        name: hub.docker.com/nabla/jenkins-slave-arc-centos6
+#        force: yes
+#        tag: latest
+#
+#    - name: Pull jenkins-slave-arc-centos7 latest images (NEW)
+#      docker_image:
+#        name: hub.docker.com/nabla/jenkins-slave-arc-centos7
+#        force: yes
+#        tag: latest
+
+#    - name: Pull ansible-jenkins-slave images
+#      docker_image:
+#        name: hub.docker.com/nabla/ansible-jenkins-slave
+#        force: yes
+#        tag: 1.0.10
+#
+#    - name: Pull ansible-jenkins-slave latest images
+#      docker_image:
+#        name: hub.docker.com/nabla/ansible-jenkins-slave
+#        force: yes
+#        tag: latest
+#
+#    - name: Check image is fully available
+#      command: "docker inspect -f . hub.docker.com/nabla/ansible-jenkins-slave:1.0.10"
+#      changed_when: false
+
+#docker ps -a -s
+#docker images
+
+- hosts: docker-cleaning
+  become: true
+
+  tasks:
+    - name: Fix docker permission issue on config.json (jenkins user)
+      file:
+            path: "{{ jenkins_home|default('/home/jenkins') }}/.docker/config.json"
+            owner: jenkins
+            group: docker
+            state: touch
+            mode: g+rw
+      become: true
+      become_user: root
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+    - name: Log into private registry (jenkins user)
+      docker_login:
+        registry: https://hub.docker.com
+        username: "{{ docker_registry_login }}"
+        password: "{{ docker_registry_password }}"
+        reauthorize: yes
+      become: true
+      become_user: jenkins
+      # ignore_errors: true # I will not ignore failure on purpose, goal is to catch docker login issue
+      tags:
+        - clean
+        - docker
+        - vm

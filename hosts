@@ -1,8 +1,13 @@
-# file: hosts
+micloud# file: hosts
 
 [all]
 #localhost ansible_host=127.0.0.1 ansible_ssh_port=22 ansible_connection=ssh dtap=test comment="Hosting by Alban Andrieu" ext_id="SRV_{{ host_id }}" groups="paris misc"
 localhost
+
+[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_port=22
+jenkins_home=/home/jenkins
 
 #below is used only git lamp.yml
 [lamp]
@@ -41,9 +46,6 @@ localhost
 [css]
 localhost
 
-[chrome]
-localhost
-
 [python]
 localhost
 
@@ -51,7 +53,7 @@ localhost
 localhost
 
 [selenium]
-localhost
+#localhost
 
 [tomcat-servers]
 #webserver1
@@ -121,13 +123,14 @@ localhost
 localhost
 
 [jenkins-minimal:vars]
-ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_ssh_user=jenkins
+ansible_ssh_pass=jenkins1234
 
 [opencl]
 #localhost
 
 [supervisors]
-localhost
+#localhost
 
 [virtualbox]
 #localhost
@@ -139,31 +142,6 @@ localhost
 jenkins-master
 jenkins-slaves
 sonar
-
-[docker]
-#localhost
-
-[docker-container]
-#ansible_python_interpreter="/usr/bin/python3.6"
-#localhost
-
-[docker-container:vars]
-repository="git@github.com:AlbanAndrieu/nabla-projects-interview-visma.git"
-#repository_version=HEAD
-repository_version="develop"
-#repository_target_dir="{{ lookup('env','WORKSPACE') }}/"
-repository_target_dir="/workspace/slave/workspace/"
-git_user="jenkins"
-
-[docker-container-oracle]
-#Issue on Redhat ansible_python_interpreter="/usr/local/bin/python3.5"
-#localhost
-
-[docker-cleaning]
-#localhost
-
-[kubernetes]
-#localhost
 
 [nodejs]
 localhost
@@ -210,12 +188,50 @@ localhost
 [collectd]
 localhost
 
+[docker]
+#localhost
+
+[docker-container]
+#ansible_python_interpreter="/usr/bin/python3.6"
+#localhost
+
+[docker-container:vars]
+repository="git@github.com:AlbanAndrieu/nabla-projects-interview-visma.git"
+#repository_version=HEAD
+repository_version="develop"
+#repository_target_dir="{{ lookup('env','WORKSPACE') }}/"
+repository_target_dir="/workspace/slave/workspace/"
+git_user="jenkins"
+
+[docker-container-oracle]
+#Issue on Redhat ansible_python_interpreter="/usr/local/bin/python3.5"
+#localhost
+
+[docker-cleaning]
+#localhost
+
+[kubernetes]
+#localhost
+
+
+[docker-inside]
+localhost
+
+[docker-inside:vars]
+ansible_ssh_user=jenkins
+
+[docker-cleaning]
+localhost
+
+[kubernetes]
+localhost
+
+[windows]
+
 [windows:vars]
-#ansible_user=vagrant
-#ansible_password=vagrant
-ansible_port=5986
+#ansible_port=5985 # not ssl
 ansible_connection=winrm
-#ansible_winrm_server_cert_validation=ignore
+ansible_winrm_server_cert_validation=ignore
 ansible_winrm_transport=ssl
 
 [test-boxes]
@@ -242,10 +258,8 @@ install_kernel_extras=false
 [solaris:vars]
 user=jenkins
 group=jenkins
-home=/export/home/jenkins/
 #ansible_sudo_pass=jenkins1234
 #ansible_python_interpreter="/opt/csw/bin/python"
-#For x86sol
 #ansible_python_interpreter="/usr/local/bin/python2.7"
 #ansible_ssh_user="jenkins"
 #ansible_ssh_pass="jenkins1234"

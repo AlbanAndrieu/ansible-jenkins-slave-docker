@@ -1,28 +1,119 @@
+---
+#default_language_version:
+#    python: python3.6  # Ubuntu 18.04.3
+#    python: python3.7  # Ubuntu 19.04
+
+repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks.git
-    sha: v0.9.2
+#pre-commit-hooks is not working on both environment
+#You will have to switch
+# pre-commit-hooks.git from v2.1.0 to v2.4.0
+#    rev: v2.1.0 # ok python3.6  # 18.04.3
+#    rev: v2.2.3 # ok python3.6  # 19.04 but failing on 18.04.3
+    rev: v2.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
-    -   id: autopep8-wrapper
+    -   id: check-added-large-files
+        args: ['--maxkb=123']
+    -   id: check-case-conflict
     -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+        exclude: >
+                  (?x)^(
+                      clean.bat|
+                      build.bat|
+                      mvnw.cmd|
+                      .mvn/
+                  )$
     -   id: check-json
+    -   id: check-xml
     -   id: check-yaml
+    -   id: check-symlinks
+    -   id: check-merge-conflict
     -   id: debug-statements
+    -   id: detect-private-key
+        exclude: >
+                  (?x)^(
+                      .ssh/id_rsa|
+                      roles/jenkins-master/defaults/main.yml|
+                      roles/jenkins-master/README.md
+                  )$
+    -   id: double-quote-string-fixer
     -   id: name-tests-test
+        exclude: >
+                  (?x)^(
+                      .*/molecule/default/tests/test_default.py|
+                  )$
+    -   id: no-commit-to-branch
+        args: [--branch, develop, --branch, master, --branch, release/*]
+    -   id: end-of-file-fixer
+    -   id: fix-encoding-pragma
     -   id: requirements-txt-fixer
+    -   id: sort-simple-yaml
     -   id: flake8
+        args: [--max-line-length=120]
+    -   id: file-contents-sorter
 -   repo: https://github.com/pre-commit/pre-commit.git
-    sha: v0.14.1
+    rev: v1.20.0
     hooks:
-    -   id: validate_config
     -   id: validate_manifest
 -   repo: https://github.com/asottile/reorder_python_imports.git
-    sha: v0.3.5
+    rev: v1.8.0
     hooks:
     -   id: reorder-python-imports
-        language_version: python2.7
+#       language_version: python3
+#       language_version: python2.7
+-   repo: https://github.com/asottile/add-trailing-comma
+    rev: v1.5.0
+    hooks:
+    -   id: add-trailing-comma
 -   repo: https://github.com/willthames/ansible-lint.git
-    sha: v3.4.17
+    rev: v4.2.0
     hooks:
     -   id: ansible-lint
         files: \.(yaml|yml)$
+        exclude: '.travis.yml'
+-   repo: https://github.com/doublify/pre-commit-hindent.git
+    rev: master
+    hooks:
+    -   id: hindent
+-   repo: https://github.com/detailyang/pre-commit-shell
+    rev: 1.0.5
+    hooks:
+    -   id: shell-lint
+        #entry: pre_commit_hooks/shell-lint.sh -x
+        args: [-x]
+        exclude: >
+                  (?x)^(
+                      mvnw|
+                      hooks|
+                  )$
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v1.25.1
+    hooks:
+    -   id: pyupgrade
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.4.4
+    hooks:
+    -   id: autopep8
+#-   repo: https://github.com/PyCQA/bandit
+#    rev: master
+#    hooks:
+#    - id: bandit
+-   repo: https://github.com/IamTheFij/ansible-pre-commit
+    rev: v0.1.2
+    hooks:
+    -   id: encryption-check
+-   repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
+    rev: v1.1.0
+    hooks:
+    -   id: htmlhint
+        # optional custom config:
+        args: [--config, .htmlhintrc]
+#    -   id: htmllint
+    -   id: markdown-toc
+        # optional custom config:
+        args: [--indent, "  "]
+    -   id: dockerfile_lint
+        args: [--json, --verbose, --dockerfile]

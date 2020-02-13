@@ -3,7 +3,6 @@
 - name: Install chrome
   hosts: chrome
   become: true
-#  accelerate: true
 
   roles:
      - role: chrome

@@ -9,6 +9,9 @@
 
   vars:
        hostname_enabled: true,
-       hostname_hostname_loopback: "{{ ansible_hostname }} home.nabla.mobi nabla.mobi"
-#force inventory_hostname
-#       inventory_hostname: albandri.nabla.mobi
+       hostname_hostname_loopback: "{{ ansible_hostname }} home.albandrieu.com"
+#       hosts:
+#         # For nexus
+#         - { name: nexus.albandrieu.com, ip: 172.16.0.14 }
+#         # For dtr
+#         - { name: registry.albandrieu.com, ip: 172.16.0.14 }

@@ -1,0 +1,21 @@
+---
+#ansible-playbook -i inventory/production -v playbooks/cleaning.yml --limit albandrieu@albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
+
+- import_playbook: process-cleaning.yml
+
+- import_playbook: workspace-cleaning.yml
+
+- import_playbook: boot-cleaning.yml
+
+- import_playbook: docker-cleaning.yml
+
+# TODO certificate cleaning
+
+#rm -f ~/pki/registry.pem
+#rm -f /usr/local/share/ca-certificates/ca.crt
+#rm -f /usr/local/share/ca-certificates/registry.crt
+#rm -f /etc/ssl/certs/ca.pem
+#rm -f /etc/ssl/certs/registry.pem
+#rm -f /etc/ssl/certs/add-cert.sh
+
+#sudo update-ca-certificates
