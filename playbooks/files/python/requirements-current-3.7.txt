@@ -174,7 +174,7 @@ pep8==1.7.1
 pep8-naming==0.9.1
 pexpect==4.8.0
 pies==2.6.7
-Pillow==7.0.0
+Pillow==6.2.0
 pip-upgrader==1.4.15
 piston-mini-client==0.7.5
 pluggy==0.13.1
