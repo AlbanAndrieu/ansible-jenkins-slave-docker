@@ -4,7 +4,7 @@
 #as root
 #ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv
 #as albandri
-#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-sudo-pass --sudo
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass --sudo
 # --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 #for testing purpose
 #sudo ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
