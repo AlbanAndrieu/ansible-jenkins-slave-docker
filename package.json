@@ -1,0 +1,145 @@
+{
+  "name": "bower-fr-integration-test",
+  "description": "Bower sample",
+  "branchVersion": "^1.0.1",
+  "branchPattern": "1.0.*",
+  "version": "1.0.1",
+  "pre-commit": [
+    "precommit"
+  ],
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=11.12.0",
+    "npm": ">=6.13.6",
+    "node-gyp": ">=3.0.3",
+    "grunt": ">=1.2.0"
+  },
+  "engine-strict": true,
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "plugins": [
+      "compat"
+    ],
+    "rules": {
+      "compat/compat": "warn"
+    }
+  },
+  "stylelint": {
+    "plugins": [
+      "stylelint-no-unsupported-browser-features"
+    ],
+    "rules": {
+      "plugin/no-unsupported-browser-features": true
+    },
+    "defaultSeverity": "warning"
+  },
+  "dependencies": {
+    "cli": "^1.0.1"
+  },
+  "devDependencies": {
+    "alto-saxophone": "2.44.0",
+    "apache-server-configs": "3.2.1",
+    "async": "3.1.0",
+    "autoprefixer": "9.6.5",
+    "bower": "1.8.8",
+    "connect-livereload": "0.6.1",
+    "connect-pushstate": "1.1.0",
+    "cssnano": "4.1.10",
+    "engine.io": "3.4.0",
+    "engine.io-client": "3.4.0",
+    "fs-extra": "8.1.0",
+    "grunt": "1.0.4",
+    "grunt-angular-templates": "1.2.0",
+    "grunt-bower-task": "0.5.0",
+    "grunt-browser-sync": "2.2.0",
+    "grunt-build-control": "0.7.1",
+    "grunt-check-dependencies": "1.0.0",
+    "grunt-cli": "1.3.2",
+    "grunt-compare-size": "0.4.2",
+    "grunt-concurrent": "3.0.0",
+    "grunt-contrib-clean": "2.0.0",
+    "grunt-contrib-compress": "1.5.0",
+    "grunt-contrib-concat": "1.0.1",
+    "grunt-contrib-connect": "2.1.0",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-cssmin": "3.0.0",
+    "grunt-contrib-htmlmin": "3.1.0",
+    "grunt-contrib-imagemin": "3.1.0",
+    "grunt-contrib-jshint": "2.1.0",
+    "grunt-contrib-uglify": "4.0.1",
+    "grunt-contrib-watch": "1.1.0",
+    "grunt-critical": "1.1.1",
+    "grunt-dev-update": "2.3.0",
+    "grunt-filerev": "2.3.1",
+    "grunt-google-cdn": "0.4.3",
+    "grunt-jscs": "3.0.1",
+    "grunt-karma": "3.0.2",
+    "grunt-newer": "1.3.0",
+    "grunt-ng-annotate": "3.0.0",
+    "grunt-ng-constant": "2.0.2",
+    "grunt-ngdocs": "0.2.11",
+    "grunt-nsp": "2.3.1",
+    "grunt-open": "0.2.4",
+    "grunt-pagespeed": "2.0.1",
+    "grunt-postcss": "0.9.0",
+    "grunt-protractor-coverage": "0.2.18",
+    "grunt-protractor-runner": "5.0.0",
+    "grunt-reload": "0.2.0",
+    "grunt-release": "0.14.0",
+    "grunt-replace": "1.0.1",
+    "grunt-svgmin": "6.0.0",
+    "grunt-uncss": "0.9.0",
+    "grunt-usemin": "3.1.1",
+    "grunt-version-check": "0.3.8",
+    "grunt-wiredep": "3.0.1",
+    "jasmine-bail-fast": "0.0.1",
+    "jasmine-core": "2.8.0",
+    "jasmine-reporters": "2.3.2",
+    "jasmine-spec-reporter": "2.7.0",
+    "jit-grunt": "0.10.0",
+    "jshint-stylish": "2.2.1",
+    "json2csv": "4.5.4",
+    "karma": "4.4.0",
+    "karma-chrome-launcher": "3.1.0",
+    "karma-coverage": "2.0.1",
+    "karma-firefox-launcher": "1.2.0",
+    "karma-ie-launcher": "1.0.0",
+    "karma-jasmine": "1.1.1",
+    "karma-junit-reporter": "1.2.0",
+    "karma-ng-html2js-preprocessor": "1.0.0",
+    "karma-ng-scenario": "1.0.0",
+    "karma-script-launcher": "1.0.0",
+    "karma-tapfile-reporter": "0.0.1",
+    "load-grunt-tasks": "5.1.0",
+    "nue": "0.7.1",
+    "open": "7.0.0",
+    "phantomas": "1.20.1",
+    "pixrem": "5.0.0",
+    "protractor": "5.4.2",
+    "qs": "6.9.0",
+    "request": "2.88.0",
+    "semver": "6.3.0",
+    "serve-index": "1.9.1",
+    "serve-static": "1.14.1",
+    "slimerjs": "1.0.0",
+    "time-grunt": "2.0.0",
+    "vinyl-fs": "3.0.3",
+    "wiredep": "4.0.0",
+    "xml2js": "0.4.22",
+    "yo": "3.1.0"
+  },
+  "scripts": {
+    "update-webdriver": "webdriver-manager update --versions.chrome 2.42",
+    "postinstall": "webdriver-manager update --versions.chrome 2.42 || true",
+    "test": "grunt test",
+    "webpagetest": "./node_modules/webpagetest/bin/webpagetest test http://localhost:9090/test/#/ --key $WPT_API_KEY --first --location Dulles:Chrome --poll --timeout 60 --specs tco-specs.json --reporter spec"
+  }
+}
