@@ -2,430 +2,430 @@
 # from galaxy
 # ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
 
-- src: 'https://github.com/AlbanAndrieu/ansible-administration'
-  name: 'alban.andrieu.administration'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-awstats'
-  name: 'alban.andrieu.awstats'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-cmake'
-  name: 'alban.andrieu.cmake'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-common'
-  name: 'alban.andrieu.common'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-conky'
-  name: 'alban.andrieu.conky'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-cpp'
-  name: 'alban.andrieu.cpp'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-css'
-  name: 'alban.andrieu.css'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-dns'
-  name: 'alban.andrieu.dns'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-dropbox'
-  name: 'alban.andrieu.dropbox'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-eclipse'
-  name: 'alban.andrieu.eclipse'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-evasive'
-  name: 'alban.andrieu.evasive'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-gcc'
-  name: 'alban.andrieu.gcc'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-grive'
-  name: 'alban.andrieu.grive'
-  version: master
-
-#TODO
-#- src: https://github.com/Stouts/Stouts.hostname
+#- src: 'https://github.com/AlbanAndrieu/ansible-administration'
+#  name: 'alban.andrieu.administration'
 #  version: master
-#  name: Stouts.hostname
-
-- src: 'https://github.com/AlbanAndrieu/ansible-hostname'
-  name: 'alban.andrieu.hostname'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-jboss'
-  name: 'alban.andrieu.jboss'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-jdiskreport'
-  name: 'alban.andrieu.jdiskreport'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-slave'
-  name: 'alban.andrieu.jenkins-slave'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-swarm'
-  name: 'alban.andrieu.jenkins-swarm'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-jmeter'
-  name: 'alban.andrieu.jmeter'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-logstash-settings'
-  name: 'alban.andrieu.logstash-settings'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-mon'
-  name: 'alban.andrieu.mon'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-owasp-wte'
-  name: 'alban.andrieu.owasp-wte'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-pagespeed'
-  name: 'alban.andrieu.pagespeed'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-phpvirtualbox'
-  name: 'alban.andrieu.phpvirtualbox'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-private-bower'
-  name: 'alban.andrieu.private-bower'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-scons'
-  name: 'alban.andrieu.scons'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-selenium'
-  name: 'alban.andrieu.selenium'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-shell'
-  name: 'alban.andrieu.shell'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-solaris'
-  name: 'alban.andrieu.solaris'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-squirrel'
-  name: 'alban.andrieu.squirrel'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-sublimetext'
-  name: 'alban.andrieu.sublimetext'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-subversion'
-  name: 'alban.andrieu.subversion'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-synergy'
-  name: 'alban.andrieu.synergy'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-tomcat'
-  name: 'alban.andrieu.tomcat'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-visualvm'
-  name: 'alban.andrieu.visualvm'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-web'
-  name: 'alban.andrieu.web'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-webmin'
-  name: 'alban.andrieu.webmin'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-windows'
-  name: 'alban.andrieu.windows'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-workstation'
-  name: 'alban.andrieu.workstation'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-xvbf'
-  name: 'alban.andrieu.xvbf'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-yourkit'
-  name: 'alban.andrieu.yourkit'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-zap'
-  name: 'alban.andrieu.zap'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-zfs'
-  name: 'alban.andrieu.zfs'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-login'
-  name: 'ansible-login'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-newrelic'
-  name: 'newrelic'
-  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-awstats'
+#  name: 'alban.andrieu.awstats'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-cmake'
+#  name: 'alban.andrieu.cmake'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-common'
+#  name: 'alban.andrieu.common'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-conky'
+#  name: 'alban.andrieu.conky'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-cpp'
+#  name: 'alban.andrieu.cpp'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-css'
+#  name: 'alban.andrieu.css'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-dns'
+#  name: 'alban.andrieu.dns'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-dropbox'
+#  name: 'alban.andrieu.dropbox'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-eclipse'
+#  name: 'alban.andrieu.eclipse'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-evasive'
+#  name: 'alban.andrieu.evasive'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-gcc'
+#  name: 'alban.andrieu.gcc'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-grive'
+#  name: 'alban.andrieu.grive'
+#  version: master
+#
+##TODO
+##- src: https://github.com/Stouts/Stouts.hostname
+##  version: master
+##  name: Stouts.hostname
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-hostname'
+#  name: 'alban.andrieu.hostname'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-jboss'
+#  name: 'alban.andrieu.jboss'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-jdiskreport'
+#  name: 'alban.andrieu.jdiskreport'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-slave'
+#  name: 'alban.andrieu.jenkins-slave'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-swarm'
+#  name: 'alban.andrieu.jenkins-swarm'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-jmeter'
+#  name: 'alban.andrieu.jmeter'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-logstash-settings'
+#  name: 'alban.andrieu.logstash-settings'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-mon'
+#  name: 'alban.andrieu.mon'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-owasp-wte'
+#  name: 'alban.andrieu.owasp-wte'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-pagespeed'
+#  name: 'alban.andrieu.pagespeed'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-phpvirtualbox'
+#  name: 'alban.andrieu.phpvirtualbox'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-private-bower'
+#  name: 'alban.andrieu.private-bower'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-scons'
+#  name: 'alban.andrieu.scons'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-selenium'
+#  name: 'alban.andrieu.selenium'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-shell'
+#  name: 'alban.andrieu.shell'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-solaris'
+#  name: 'alban.andrieu.solaris'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-squirrel'
+#  name: 'alban.andrieu.squirrel'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-sublimetext'
+#  name: 'alban.andrieu.sublimetext'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-subversion'
+#  name: 'alban.andrieu.subversion'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-synergy'
+#  name: 'alban.andrieu.synergy'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-tomcat'
+#  name: 'alban.andrieu.tomcat'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-visualvm'
+#  name: 'alban.andrieu.visualvm'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-web'
+#  name: 'alban.andrieu.web'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-webmin'
+#  name: 'alban.andrieu.webmin'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-windows'
+#  name: 'alban.andrieu.windows'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-workstation'
+#  name: 'alban.andrieu.workstation'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-xvbf'
+#  name: 'alban.andrieu.xvbf'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-yourkit'
+#  name: 'alban.andrieu.yourkit'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-zap'
+#  name: 'alban.andrieu.zap'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-zfs'
+#  name: 'alban.andrieu.zfs'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-login'
+#  name: 'ansible-login'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-newrelic'
+#  name: 'newrelic'
+#  version: master
 
 - src: 'https://github.com/AlbanAndrieu/devbox.chrome'
   name: 'chrome'
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/Stouts.collectd'
-  name: 'collectd'
-  version: master
-
-#- src: 'https://github.com/AlbanAndrieu/ansible-darthwade-wordpress'
-#  name: 'darthwade-wordpress'
-#  scm: 'git'
-#  version: 'master'
+#- src: 'https://github.com/AlbanAndrieu/Stouts.collectd'
+#  name: 'collectd'
+#  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-darthwade-wordpress-apache'
-#  name: 'darthwade-wordpress-apache'
-#  scm: 'git'
-#  version: 'master'
-
-- src: 'https://github.com/AlbanAndrieu/docker.ubuntu'
-  name: 'docker'
-  version: master
-
-#TODO nor more maintained
-#- src: 'https://github.com/AlbanAndrieu/ansible-role-base'
-#  name: 'elao-base'
-#  scm: 'git'
-#  version: 'master'
+##- src: 'https://github.com/AlbanAndrieu/ansible-darthwade-wordpress'
+##  name: 'darthwade-wordpress'
+##  scm: 'git'
+##  version: 'master'
+##
+##- src: 'https://github.com/AlbanAndrieu/ansible-darthwade-wordpress-apache'
+##  name: 'darthwade-wordpress-apache'
+##  scm: 'git'
+##  version: 'master'
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-role-ruby'
-#  name: 'elao-ruby'
-#  scm: 'git'
-#  version: 'master'
+#- src: 'https://github.com/AlbanAndrieu/docker.ubuntu'
+#  name: 'docker'
+#  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-role-sass'
-#  name: 'elao-sass'
-#  scm: 'git'
-#  version: 'master'
+##TODO nor more maintained
+##- src: 'https://github.com/AlbanAndrieu/ansible-role-base'
+##  name: 'elao-base'
+##  scm: 'git'
+##  version: 'master'
+##
+##- src: 'https://github.com/AlbanAndrieu/ansible-role-ruby'
+##  name: 'elao-ruby'
+##  scm: 'git'
+##  version: 'master'
+##
+##- src: 'https://github.com/AlbanAndrieu/ansible-role-sass'
+##  name: 'elao-sass'
+##  scm: 'git'
+##  version: 'master'
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-apache'
+#  name: 'geerlingguy.apache'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-elasticsearch'
+#  name: 'geerlingguy.elasticsearch'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-elasticsearch-curator'
+#  name: 'geerlingguy.elasticsearch-curator'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-firewall'
+#  name: 'geerlingguy.firewall'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-git'
+#  name: 'geerlingguy.git'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-kibana'
+#  name: 'geerlingguy.kibana'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-logstash'
+#  name: 'geerlingguy.logstash'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-mysql'
+#  name: 'geerlingguy.mysql'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-nginx'
+#  name: 'geerlingguy.nginx'
+#  version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-apache'
-  name: 'geerlingguy.apache'
+- src: https://github.com/geerlingguy/ansible-role-ntp.git 
+  name: geerlingguy.ntp
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-elasticsearch'
-  name: 'geerlingguy.elasticsearch'
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-php'
+#  name: 'geerlingguy.php'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-php-mysql'
+#  name: 'geerlingguy.php-mysql'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-phpmyadmin'
+#  name: 'geerlingguy.phpmyadmin'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-redis'
+#  name: 'geerlingguy.redis'
+#  version: master
+#
+- src: https://github.com/geerlingguy/ansible-role-repo-epel
+  name: geerlingguy.repo-epel
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-elasticsearch-curator'
-  name: 'geerlingguy.elasticsearch-curator'
+- src: https://github.com/geerlingguy/ansible-role-repo-remi
+  name: geerlingguy.repo-remi
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-firewall'
-  name: 'geerlingguy.firewall'
-  version: master
+#- src: 'https://github.com/geerlingguy/ansible-role-samba'
+#  name: 'geerlingguy.samba'
+#  version: master
+#
+##- src: 'https://github.com/AlbanAndrieu/ansible-role-java'
+##  name: 'geerlingguy.java'
+##  scm: 'git'
+##  version: 'master'
+#
+##- src: 'https://github.com/AlbanAndrieu/oracle-java'
+##  name: 'java'
+##  scm: 'git'
+##  version: 'master'
+#
+#- src: 'https://github.com/ansiblebit/oracle-java'
+#  name: 'ansiblebit.oracle-java'
+#  version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-git'
-  name: 'geerlingguy.git'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-kibana'
-  name: 'geerlingguy.kibana'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-logstash'
-  name: 'geerlingguy.logstash'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-mysql'
-  name: 'geerlingguy.mysql'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-nginx'
-  name: 'geerlingguy.nginx'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-ntp'
-  name: 'geerlingguy.ntp'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-php'
-  name: 'geerlingguy.php'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-php-mysql'
-  name: 'geerlingguy.php-mysql'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-phpmyadmin'
-  name: 'geerlingguy.phpmyadmin'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-redis'
-  name: 'geerlingguy.redis'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-repo-epel'
-  name: 'geerlingguy.repo-epel'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-repo-remi'
-  name: 'geerlingguy.repo-remi'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-samba'
-  name: 'geerlingguy.samba'
-  version: master
-
-#- src: 'https://github.com/AlbanAndrieu/ansible-role-java'
-#  name: 'geerlingguy.java'
-#  scm: 'git'
-#  version: 'master'
-
-#- src: 'https://github.com/AlbanAndrieu/oracle-java'
-#  name: 'java'
-#  scm: 'git'
-#  version: 'master'
-
-- src: 'https://github.com/ansiblebit/oracle-java'
-  name: 'ansiblebit.oracle-java'
-  version: master
-
-- src: 'https://github.com/gantsign/ansible-role-maven.git'
-  name: 'maven'
+- src: https://github.com/gantsign/ansible-role-maven.git
+  name: maven
   version: master
   
-- src: 'https://github.com/AlbanAndrieu/ansible-java-certificate'
-  name: 'java-certificate'
+#- src: 'https://github.com/AlbanAndrieu/ansible-java-certificate'
+#  name: 'java-certificate'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/Stouts.jenkins'
+#  name: 'jenkins-master'
+#  version: master
+
+- src: https://github.com/AlbanAndrieu/ansible-locale.git
+  name: locale
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/Stouts.jenkins'
-  name: 'jenkins-master'
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-maven'
+#  name: 'maven'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-maven-color'
+#  name: 'maven-color'
+#  version: master
+#
+##- src: 'https://github.com/AlbanAndrieu/ansible-monit'
+##  name: 'monit'
+##  scm: 'git'
+##  version: 'master'
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-sonatype_nexus'
+#  name: 'nexus'
+#  version: master
+
+- src: https://github.com/AlbanAndrieu/ansible-nodejs.git
+  name: geerlingguy.nodejs
   version: master
 
-- src: 'https://github.com/Oefenweb/ansible-locales'
-  name: 'locale'
+- src: https://github.com/Stouts/Stouts.python.git
+  name: python
   version: master
 
-- src: 'https://github.com/AlbanAndrieu/ansible-role-maven'
-  name: 'maven'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-maven-color'
-  name: 'maven-color'
-  version: master
-
-#- src: 'https://github.com/AlbanAndrieu/ansible-monit'
-#  name: 'monit'
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-security'
+#  name: 'security'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-sonar'
+#  name: 'sonar'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-sonar-runner'
+#  name: 'geerlingguy.sonar-runner'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-role-ssl-certs'
+#  name: 'ssl-certificate'
+#  version: master
+#
+#- src: 'https://github.com/andrewrothstein/ansible-trust-ca'
+#  name: 'ssl-ca-certificate'
 #  scm: 'git'
-#  version: 'master'
-
-- src: 'https://github.com/AlbanAndrieu/ansible-sonatype_nexus'
-  name: 'nexus'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-nodejs'
-  name: 'geerlingguy.nodejs'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/Stouts.python'
-  name: 'python'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-security'
-  name: 'security'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-sonar'
-  name: 'sonar'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-sonar-runner'
-  name: 'geerlingguy.sonar-runner'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-role-ssl-certs'
-  name: 'ssl-certificate'
-  version: master
-
-- src: 'https://github.com/andrewrothstein/ansible-trust-ca'
-  name: 'ssl-ca-certificate'
-  scm: 'git'
-  version:  'master'
-
-- src: 'https://github.com/AlbanAndrieu/ansible-supervisor_task'
-  name: 'supervisor'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-vagrant-role'
-  name: 'vagrant'
-  version: master
-
-- src: 'https://github.com/AlbanAndrieu/ansible-galaxy.ubuntu.virtualbox'
-  name: 'alban.andrieu.virtualbox'
-  version: master
-
-- src: 'https://github.com/dj-wasabi/ansible-zabbix-agent'
-  name: 'zabbix'
-  version: master
-
-- src: 'https://github.com/LIP-Computing/ansible-role-nvidia'
-  name: 'opencl'
-  version: master
-
-- src: 'https://github.com/elliotweiser/ansible-osx-command-line-tools'
-  name: 'elliotweiser.osx-command-line-tools'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-homebrew'
-  name: 'geerlingguy.homebrew'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-dotfiles'
-  name: 'geerlingguy.dotfiles'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-mas'
-  name: 'geerlingguy.mas'
-  version: master
-
-#- src: 'https://github.com/geerlingguy/mac-dev-playbook'
-#  name: 'mac-dev-playbook'
-#  scm: 'git'
-#  version: 'master'
-
-- src: 'https://github.com/ocha/ansible-role-yarn'
-  name: 'yarn'
-  version: master
-
-- src: 'https://github.com/geerlingguy/ansible-role-nfs'
-  name: 'geerlingguy.nfs'
-  version: master
-
-- src: 'https://github.com/kamaln7/ansible-swapfile'
-  name: 'ansible-swapfile'
-  version: master
-
-- src: 'https://github.com/andrewrothstein/ansible-kubernetes-helm'
-  name: 'andrewrothstein.kubernetes-helm'
-  version: master
-
-- src: 'https://github.com/andrewrothstein/ansible-kubectl'
-  name: 'andrewrothstein.kubectl'
-  version: master
+#  version:  'master'
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-supervisor_task'
+#  name: 'supervisor'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-vagrant-role'
+#  name: 'vagrant'
+#  version: master
+#
+#- src: 'https://github.com/AlbanAndrieu/ansible-galaxy.ubuntu.virtualbox'
+#  name: 'alban.andrieu.virtualbox'
+#  version: master
+#
+#- src: 'https://github.com/dj-wasabi/ansible-zabbix-agent'
+#  name: 'zabbix'
+#  version: master
+#
+#- src: 'https://github.com/LIP-Computing/ansible-role-nvidia'
+#  name: 'opencl'
+#  version: master
+#
+#- src: 'https://github.com/elliotweiser/ansible-osx-command-line-tools'
+#  name: 'elliotweiser.osx-command-line-tools'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-homebrew'
+#  name: 'geerlingguy.homebrew'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-dotfiles'
+#  name: 'geerlingguy.dotfiles'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-mas'
+#  name: 'geerlingguy.mas'
+#  version: master
+#
+##- src: 'https://github.com/geerlingguy/mac-dev-playbook'
+##  name: 'mac-dev-playbook'
+##  scm: 'git'
+##  version: 'master'
+#
+#- src: 'https://github.com/ocha/ansible-role-yarn'
+#  name: 'yarn'
+#  version: master
+#
+#- src: 'https://github.com/geerlingguy/ansible-role-nfs'
+#  name: 'geerlingguy.nfs'
+#  version: master
+#
+#- src: 'https://github.com/kamaln7/ansible-swapfile'
+#  name: 'ansible-swapfile'
+#  version: master
+#
+#- src: 'https://github.com/andrewrothstein/ansible-kubernetes-helm'
+#  name: 'andrewrothstein.kubernetes-helm'
+#  version: master
+#
+#- src: 'https://github.com/andrewrothstein/ansible-kubectl'
+#  name: 'andrewrothstein.kubectl'
+#  version: master
