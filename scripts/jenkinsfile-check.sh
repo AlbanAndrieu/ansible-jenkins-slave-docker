@@ -5,7 +5,7 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # source only if terminal supports color, otherwise use unset color vars
 # shellcheck source=/dev/null
-tput colors && source "${WORKING_DIR}/step-0-color.sh"
+source "${WORKING_DIR}/step-0-color.sh"
 
 # curl (REST API)
 # Assuming "anonymous read access" has been enabled on your Jenkins instance.
@@ -14,7 +14,7 @@ if [ -n "${JENKINS_URL}" ]; then
   echo -e "${green} JENKINS_URL is defined ${happy_smiley} : ${JENKINS_URL} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JENKINS_URL, use the default one ${NC}"
-  JENKINS_URL="https://loclahost/"
+  JENKINS_URL="https://albandrieu.com:8686/jenkins/"
   export JENKINS_URL
   echo -e "${magenta} JENKINS_URL : ${JENKINS_URL} ${NC}"
 fi
@@ -39,7 +39,7 @@ fi
 # JENKINS_SSHD_PORT=[sshd port on master]
 #JENKINS_SSHD_PORT=222
 # JENKINS_HOSTNAME=[Jenkins master hostname]
-#JENKINS_HOSTNAME=almonde-jenkins.misys.global.ad
+#JENKINS_HOSTNAME=albandrieu.com
 #ssh -p $JENKINS_SSHD_PORT $JENKINS_HOSTNAME declarative-linter < Jenkinsfile
 
 exit 0

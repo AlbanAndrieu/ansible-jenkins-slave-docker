@@ -4,7 +4,7 @@
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 #echo -e "${green} Installing key for Docker ${NC}"
-#wget http://fr1cslfrbm0059.misys.global.ad/download/certs/id_rsa.pub -O ${HOME}/.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
+#wget http://albandrieu.com/download/certs/id_rsa.pub -O ${HOME}/.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
 
 # Forcing ansible cmd to use python3.6
 export PYTHON_MAJOR_VERSION=3.6
