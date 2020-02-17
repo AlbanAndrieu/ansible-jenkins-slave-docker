@@ -40,30 +40,19 @@
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
                  is not a supported OS for a Tower installation.  Supported
                  OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04."
+                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
-- hosts: localhost
-
-  tasks:
-    - name: Install Ansible-Galaxy dependencies
-      shell: ansible-galaxy install -r ../requirements.yml -p ../roles/
-      #shell: ansible-galaxy install -r ../requirements.yml -p ../roles/ --ignore-errors --force
+# USELESS playbook will fail before
+#- hosts: localhost
+#
+#  tasks:
+#    - name: Install Ansible-Galaxy dependencies
+#      shell: ansible-galaxy install -r ../requirements.yml -p ../roles/
+#      #shell: ansible-galaxy install -r ../requirements.yml -p ../roles/ --ignore-errors --force
 #      ignore_errors: true
       
 - import_playbook: python-bootstrap.yml
-
-- name: Bootstrap sudo onto server
-  hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
-#  become: yes
-
-  pre_tasks:
-  - name: Install sudo if not there
-    become: yes
-    raw: |
-      test -e /usr/bin/sudo || apt install -y sudo
-    register: output
-    changed_when: output.stdout|trim() != ""
 
 - import_playbook: common.yml
 
@@ -104,13 +93,13 @@
 
 - import_playbook: chrome.yml google_talkplugin_enabled=false
 
+- import_playbook: docker.yml # must be before jenkins-slave
+
 - import_playbook: jenkins-slave.yml
     
 #- import_playbook: cpp.yml
 
 #- import_playbook: certificate.yml
-
-#- import_playbook: docker.yml
 
 - import_playbook: xvbf.yml
 

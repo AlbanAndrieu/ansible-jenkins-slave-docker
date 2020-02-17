@@ -189,7 +189,7 @@ localhost
 localhost
 
 [docker]
-#localhost
+localhost
 
 [docker-container]
 #ansible_python_interpreter="/usr/bin/python3.6"

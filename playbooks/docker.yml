@@ -8,15 +8,33 @@
 #yum install docker-ce-18.06.0.ce-3.el7.x86_64
 #yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.12.1.ce-1.el7.centos.x86_64.rpm
 
+- name: Bootstrap docker onto server
+  hosts: Ubuntu-19*:Ubuntu-18*
+  become: true
+
+  pre_tasks:
+  - name: Install python 2 if not there
+    raw: |
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    register: output
+    changed_when: output.stdout | length > 0
+
+  - name: Install docker repo
+    raw: |
+      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
+      
+  - name: Install docker repo
+    raw: |
+      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
+    
 - name: Run docker
   hosts: docker
   become: true
-  ignore_errors: true
   tags:
     - vm
 
   roles:
-    - geerlingguy.pip
+#    - geerlingguy.pip
     - geerlingguy.docker
 
   vars:
@@ -58,7 +76,7 @@
           name=docker
           state=present
       become: true
-      ignore_errors: true
+#      ignore_errors: true
 
     - name: Add user(s) to docker group
       user:

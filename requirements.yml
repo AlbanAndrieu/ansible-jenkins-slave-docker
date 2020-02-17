@@ -289,6 +289,14 @@
   name: geerlingguy.repo-remi
   version: master
 
+#- src: https://github.com/geerlingguy/ansible-role-pip.git
+#  name: geerlingguy.pip
+#  version: master
+  
+- src: https://github.com/geerlingguy/ansible-role-docker.git
+  name: geerlingguy.docker
+  version: master
+  
 #- src: 'https://github.com/geerlingguy/ansible-role-samba'
 #  name: 'geerlingguy.samba'
 #  version: master
