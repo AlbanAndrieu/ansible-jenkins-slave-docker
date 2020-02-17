@@ -7,7 +7,7 @@
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-alban.andrieu.eclipse-660198.svg?style=flat)](https://galaxy.ansible.com/AlbanAndrieu/ansible-jenkins-slave-docker)
 [![Platforms](http://img.shields.io/badge/platforms-el%20/%20macosx%20/%20ubuntu-lightgrey.svg?style=flat)](#)
 
-- Requires Ansible 2.4.1.0 or newer
+- Requires Ansible 2.9.4 or newer
 - Expects Ubuntu
 
 This playbook deploy a very basic jenkins slave with all the required tool needed for a developper or buildmaster or devops to work on NABLA projects.
@@ -25,9 +25,9 @@ Then run the playbook, like this:
 
 Then create the docker hub image, like this:
 
-    docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
+    docker build -f docker/ubuntu18/Dockerfile -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
     or
-    docker-build.sh
+    ./scripts/docker-build.sh
 
 Run Jenkins See https://github.com/jenkinsci/parallel-test-executor-plugin/tree/master/demo
     

@@ -28,6 +28,7 @@ git submodule add https://github.com/AlbanAndrieu/ansible-role-git.git geerlingg
 #git submodule deinit -f alban.andrieu.jenkins-slave
 #rm -rf ../.git/modules/roles/alban.andrieu.jenkins-slave/
 #git submodule add https://github.com/AlbanAndrieu/ansible-jenkins-slave.git alban.andrieu.jenkins-slave
+ln -s /workspace/users/albandri30/alban.andrieu.jenkins-slave alban.andrieu.jenkins-slave
 
 git submodule add https://github.com/AlbanAndrieu/ansible-xvbf alban.andrieu.xvbf
 

@@ -21,7 +21,7 @@ if [ -c "${WORKING_DIR}/../vault.passwd" ]; then
 else
   if [ -n "${ANSIBLE_VAULT_PASS}" ]; then
     echo -e "${green} ANSIBLE_VAULT_PASS is defined ${happy_smiley} : *** ${NC}"
-    echo "${ANSIBLE_VAULT_PASS}" > ${WORKING_DIR}/../vault.passwd || true
+    #echo "${ANSIBLE_VAULT_PASS}" > ${WORKING_DIR}/../vault.passwd || true
   else
     echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_VAULT_PASS, use the default one ${NC}"
     #exit 1

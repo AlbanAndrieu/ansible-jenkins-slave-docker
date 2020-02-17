@@ -7,7 +7,7 @@ if [ -n "${TARGET_SLAVE}" ]; then
   echo -e "${green} TARGET_SLAVE is defined ${happy_smiley} : ${TARGET_SLAVE} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_SLAVE, use the default one ${NC}"
-  export TARGET_SLAVE=trottt.misys.global.ad
+  export TARGET_SLAVE=test.albandrieu.com
   echo -e "${magenta} TARGET_SLAVE : ${TARGET_SLAVE} ${NC}"
 fi
 
