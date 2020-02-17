@@ -211,19 +211,6 @@ git_user="jenkins"
 #localhost
 
 [kubernetes]
-#localhost
-
-
-[docker-inside]
-localhost
-
-[docker-inside:vars]
-ansible_ssh_user=jenkins
-
-[docker-cleaning]
-localhost
-
-[kubernetes]
 localhost
 
 [windows]
