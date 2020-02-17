@@ -25,8 +25,9 @@
     raw: |
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
     
-- name: Run docker
-  hosts: docker
+- name: Install docker
+  hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  #hosts: docker  
   become: true
   tags:
     - vm
@@ -38,11 +39,10 @@
   vars:
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
-     #TODO fix docker version
-     #docker_edition: ce
-     #docker_version: 18.06.0
-     #docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
-     #docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
+    docker_edition: ce
+    docker_version: 19.03.6
+    #docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
+    docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
      #TODO make sure it does not conflit with jenkins-slave python36.yml and requirements-current-3.6.txt
      #pip_install_packages:
      #  - name: docker
@@ -63,6 +63,24 @@
      #  - docker
      #  - jenkins
 
+- name: Install docker
+  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
+  #hosts: docker
+  become: true
+  tags:
+    - vm
+
+  roles:
+    - geerlingguy.docker
+
+  vars:
+    docker_install_compose: false # using pip instead
+    docker_compose_version: "1.25.0"
+    docker_edition: ce
+    docker_version: 19.03.6
+    docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
+    #docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
+  
 - hosts: docker
   become: true
   tags:
