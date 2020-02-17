@@ -47,9 +47,9 @@
 
   tasks:
     - name: Install Ansible-Galaxy dependencies
-      shell: ansible-galaxy install -r ../requirements.yml -p ./roles/
-      #shell: ansible-galaxy install -r ../requirements.yml -p ./roles/ --ignore-errors --force
-      ignore_errors: true
+      shell: ansible-galaxy install -r ../requirements.yml -p ../roles/
+      #shell: ansible-galaxy install -r ../requirements.yml -p ../roles/ --ignore-errors --force
+#      ignore_errors: true
       
 - import_playbook: python-bootstrap.yml
 
