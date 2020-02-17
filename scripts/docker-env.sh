@@ -40,7 +40,7 @@ if [ -n "${DOCKER_NAME}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_NAME, use the default one ${NC}"
-  export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave"}
+  export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
   echo -e "${magenta} DOCKER_NAME : ${DOCKER_NAME} with ${CST_CONFIG} ${NC}"
 fi
 
