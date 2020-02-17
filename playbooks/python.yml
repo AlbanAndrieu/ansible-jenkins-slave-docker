@@ -69,7 +69,6 @@
       #when: item.stat.exists == false
       with_items:
         - { path: 'ansible' }
-        - { path: 'scons' }
       become: true
       changed_when: false
       tags:
@@ -81,7 +80,7 @@
         dest: "{{ ansible_user_dir }}"
       with_items:
         - "requirements-current-2.7.txt"
-        - "requirements-current-3.5.txt"
+#        - "requirements-current-3.5.txt"
         - "requirements-current-3.6.txt"
         - "requirements-current-3.7.txt"
       tags:
@@ -97,15 +96,13 @@
     - python
 
   vars:
-      python_versions: [2.7, 3.5]
+      python_versions: [2.7]
       # python_ppa: no # TODO for Ubuntu-19
       python_install: [numpy, pylint, pandas]
       python_virtualenv_user: jenkins
       python_virtualenvs:
         - path: /opt/ansible/env
           python: python2.7
-        - path: /opt/ansible/env35
-          python: python3.5
 
 - name: Install python 3 and 3.6
   hosts: Ubuntu-16*:Ubuntu-18*
@@ -124,8 +121,6 @@
           python: python3.7
         - path: /opt/ansible/env36
           python: python3.6
-        - path: /opt/ansible/env35
-          python: python3.5
 
 # Only python 2.6 is installed as default for python2 we need python 2.7
 - name: Install python 2.7
@@ -144,8 +139,6 @@
       python_virtualenvs:
         - path: /opt/ansible/env
           python: python2.7
-        - path: /opt/scons/env
-          python: python2.7
 
 - name: Install python 2
   hosts: RedHat-7*:CentOS-7*
@@ -163,25 +156,6 @@
       python_virtualenvs:
         - path: /opt/ansible/env
           python: python2.7
-        - path: /opt/scons/env
-          python: python2.7
-
-- name: Install python 3.5
-  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:CentOS-5*
-  become: true
-
-  roles:
-    - python
-
-  vars:
-      python_versions: [3.5u]
-      python_yum_enablerepo: ius
-      python_pkg_bin: /usr/bin
-      python_bin: /usr/bin/python
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env35
-          python: python3.5
 
 - name: Install python 3.6
   hosts: RedHat-7*:CentOS-7*:CentOS-6*:CentOS-5*
@@ -217,19 +191,6 @@
         - python2
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-
-    - name: python3.5 | Create venv and install requirements
-      pip:
-        requirements: "{{ ansible_user_dir }}/requirements-current-3.5.txt"
-        virtualenv: /opt/ansible/env35
-        virtualenv_python: "python3.5"
-      tags:
-        - venv
-        - requirements
-        - python35
-      environment:
-        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      #ignore_errors: true  # RedHat 7.6 have now python 3.6 as default, 3.5 targeted to be deprecated
 
     - name: python3.6 | Create venv and install requirements
       pip:

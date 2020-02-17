@@ -33,6 +33,13 @@
     register: output
     changed_when: output.stdout | length > 0
 
+  - name: Install python pip if not there
+    raw: |
+      test -e /usr/local/bin/pip || \
+      (apt -y update && apt install -y python-pip)
+    register: output
+    changed_when: output.stdout | length > 0
+    
   - name: Install sudo if not there
     become: true
     raw: |

@@ -7,7 +7,7 @@
 #ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass --sudo
 # --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 #for testing purpose
-#ansible-playbook -i hosts -c local -v playbooks/jenkins-slave-docker.yml --check --diff --ask-become-pass -vvvv
+#ansible-playbook -i inventory/hosts -c local -v playbooks/jenkins-slave-docker.yml --check --diff --ask-become-pass -vvvv
 
 - name: Assert platform is supported
   hosts: all
@@ -27,7 +27,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -47,8 +47,8 @@
 
   tasks:
     - name: Install Ansible-Galaxy dependencies
-      shell: ansible-galaxy install -r requirements.yml -p ./roles/
-      #shell: ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors --force
+      shell: ansible-galaxy install -r ../requirements.yml -p ./roles/
+      #shell: ansible-galaxy install -r ../requirements.yml -p ./roles/ --ignore-errors --force
       ignore_errors: true
       
 - import_playbook: python-bootstrap.yml

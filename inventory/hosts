@@ -244,7 +244,7 @@ ansible_winrm_transport=ssl
 #localhost ansible_connection=local
 
 [workstation:vars]
-#user=albandri
+user=albandrieu
 #group=rms
 user=root
 group=root
