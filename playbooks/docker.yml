@@ -9,19 +9,17 @@
 #yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.12.1.ce-1.el7.centos.x86_64.rpm
 
 - name: Bootstrap docker onto server
-  hosts: Ubuntu-19*:Ubuntu-18*
+  hosts: Ubuntu-19*
   become: true
 
   pre_tasks:
   - name: Install python 2 if not there
     raw: |
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    register: output
-    changed_when: output.stdout | length > 0
+      rm -f /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list*
 
   - name: Install docker repo
     raw: |
-      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
       
   - name: Install docker repo
     raw: |
