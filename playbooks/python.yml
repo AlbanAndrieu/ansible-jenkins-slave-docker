@@ -87,7 +87,7 @@
         - venv
         - requirements
 
-- name: Install python 2 and 3.5
+- name: Install python 2.7
   hosts: Ubuntu-12*:Ubuntu-13*:Ubuntu-14*:Ubuntu-16*:Ubuntu-18*:Ubuntu-19*
   become: true
   ignore_errors: true

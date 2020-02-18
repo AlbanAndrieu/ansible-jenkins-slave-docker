@@ -1,5 +1,5 @@
 ---
-#ansible-playbook -i hosts-albandri -c local -v maven.yml -vvvv --ask-sudo-pass | tee setup.log
+#ansible-playbook -i hosts-albandri -c local -v maven.yml -vvvv --ask-become-pass | tee setup.log
 
 - name: Install maven
   hosts: maven
@@ -10,13 +10,5 @@
      - role: maven
 
   vars:
-       #maven_path_to_lib_role: "{{ playbook_dir + '/../roles' }}"
        maven_version: 3.5.0
 
-#- name: Install maven color
-#  hosts: jenkins-slaves
-#  roles:
-#     - role: maven-color
-#
-#  vars:
-#       maven_color_maven_home: /opt/maven/apache-maven-3.3.9

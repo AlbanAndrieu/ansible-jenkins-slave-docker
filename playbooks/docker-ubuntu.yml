@@ -31,6 +31,7 @@
 #sudo gpasswd -a ${USER} docker
 #sudo gpasswd -a jenkins docker
 #sudo usermod -a -G docker jenkins
+#sudo reboot
 
 #TODO https://docs.docker.com/engine/installation/linux/ubuntulinux/
 
@@ -69,7 +70,7 @@
 #sudo docker logout https://docker.albandrieu.com:5000
 #sudo docker login registry.albandrieu.com --username=mgr.jenkins
 
-#- hosts: Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
+#- hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
 #  become: true
 #  ignore_errors: true
 #

@@ -21,7 +21,7 @@
 #      nis_enabled: true
       nisserver: albandrieu.com
       mailserver: smtp.gmail.com
-      defaultdomain: home.albandrieu.com
+      defaultdomain: albandrieu.com
       mountpoints: {
        /nabla/dev                  : "nabla-nfs:/nabla/dev",
        /nabla/release              : "nabla-nfs:/nabla/release",

@@ -58,7 +58,7 @@
 #      become_user: root
 #
 #    - name: Get the JDK jar
-#      get_url: dest=/var/cache/oracle-jdk11-installer-local/jdk-11.0.5_linux-x64_bin.tar.gz url=http://FR1CSLFRBM0059.albandrieu.com/download/jdk/jdk-11.0.5_linux-x64_bin.tar.gz mode=0755
+#      get_url: dest=/var/cache/oracle-jdk11-installer-local/jdk-11.0.5_linux-x64_bin.tar.gz url=http://albandrieu.com/download/jdk/jdk-11.0.5_linux-x64_bin.tar.gz mode=0755
 #      become: true
 #      become_user: root
 #

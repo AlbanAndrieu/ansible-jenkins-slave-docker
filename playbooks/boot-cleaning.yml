@@ -102,6 +102,17 @@
       apt:
         autoclean: yes
 
+#    - name: Cron | Purge kernel images @reboot special time
+#      cron:
+#        name: "Purge kernel images"
+#        special_time: reboot
+#        job: apt-get -y autoremove ; purge-old-kernels -y --keep 3 -q
+#        cron_file: "purge_kernel_images"
+#        user: root
+#      when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+#      become: true
+
+
 #    - name: Reboot a slow machine that might have lots of updates to apply
 #      reboot:
 #        reboot_timeout: 3600
@@ -132,6 +143,20 @@
         - clean
         - vm
 
+    - name: Tmp cleanup by hand (1)
+      find:
+        paths: /tmp
+        file_type: file
+        age: 2d
+      register: tmp_files_to_delete
+
+    - name: Tmp kernel by hand (2)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ tmp_files_to_delete.files }}"
+
+
 #systemctl stop mysql
 #ls /var/log/mysql/mysql.err
 #systemctl start mysql
@@ -144,6 +169,7 @@
 #rm -Rf /jenkins/.linuxbrew/
 #rm -Rf /jenkins/.jenkins/cache/
 #rm -Rf /jenkins/.m2
+
 #systemctl stop sendmail
 #rm -Rf /var/spool/mqueue-client/
 #systemctl start sendmail

@@ -1,6 +1,6 @@
 ---
 #ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
-#ansible-playbook jenkins-slave.yml -i hosts -vvvv --ask-sudo-pass --sudo
+#ansible-playbook playbooks/jenkins-slave.yml -i  inventory/hosts -vvvv --ask-sudo-pass --sudo
 
 - hosts: all
   gather_facts: true
@@ -24,41 +24,41 @@
                  Ubuntu 12.04/12.04/14.04/16.04/17.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
-- name: Apply common configuration to all jenkins slaves
+- name: Configure all jenkins slaves
   hosts: jenkins-slaves
-  become: yes
-  remote_user: root
+  become: true
+#  remote_user: root
 
   roles:
     - alban.andrieu.jenkins-slave
 
   vars:
-    docker_files_enable: yes
+    docker_files_enable: false
     docker_files_generated_directory: "./"
     docker_registry_user: nabla
     shell_git:
       # Additional properties: 'shell_git_machine, shell_git_login, shell_git_email, shell_git_password, shell_git_name, shell_git_path, shell_git_ssl'.
-       - {
-         shell_git_machine: '82.231.208.223',
-         shell_git_login: 'AlbanAndrieu',
-         shell_git_email: 'alban.andrieu@free.fr',
-         shell_git_password: 'microsoft',
+      - {
+         shell_git_machine: "82.231.208.223",
+         shell_git_login: "AlbanAndrieu",
+         shell_git_email: "alban.andrieu@free.fr",
+         shell_git_password: "microsoft",
          # Optional.
-         shell_git_name: 'Andrieu, Alban',
+         shell_git_name: "Andrieu, Alban",
          shell_git_path: "/usr/bin",
          shell_git_ssl: false
        }        
-    subversion_rabbitvcs_enabled: no
-    subversion_diff_enabled: no
-    # tomcat_started_check_enable: yes does not work on docker hub
-    tomcat_started_check_enable: no
-    #home_url: "http://albandrieu.com"
-    nexus_url: "http://albandrieu.com:8686"
-    bower_url: "http://albandrieu.com:5678"
+    home_url: "http://albandrieu.com"
+    nexus_url: "{{ home_url }}:8081"
+    bower_url: "{{ home_url }}:5678"
     npm_nexus_npm_url: ""
     #npm_phantomjs_cdnurl: "http://albandrieu.com:7070/download/phantomjs"
     jenkins_home: "/home/jenkins"
     jenkins_group: docker
+    jenkins_http_port: 8686
+    jenkins_slave_home: /workspace
+    #jenkins_prefix: "/jenkins"
+    #jenkins_url: {{ home_url }}:{{ jenkins_http_port }}{{ jenkins_prefix }}
     jenkins_ssh_authorized_keys_fingerprints:   # Set known authorized keys for ssh
     # Alban Andrieu
       - "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAio3SOQ9yeK6QfKqSFNKyTasuzjStxWevG1Vz1wgJIxPF+KB0XoMAPD081J+Bzj2LCDRSWisNv2L4xv2jbFxW/Pl7NEakoX47eNx3U+Dxaf+szeWBTryYcDUGkduLV7G8Qncm0luIFd+HDIe/Qir1E2f56Qu2uuBNE6Tz5TFt1vc= Alban"
