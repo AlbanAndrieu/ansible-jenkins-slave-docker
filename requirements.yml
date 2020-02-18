@@ -70,11 +70,11 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-jdiskreport'
 #  name: 'alban.andrieu.jdiskreport'
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-slave'
-#  name: 'alban.andrieu.jenkins-slave'
-#  version: master
-#
+
+- src: https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
+  name: alban.andrieu.jenkins-slave
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-swarm'
 #  name: 'alban.andrieu.jenkins-swarm'
 #  version: master
@@ -187,8 +187,8 @@
 #  name: 'newrelic'
 #  version: master
 
-- src: 'https://github.com/AlbanAndrieu/devbox.chrome'
-  name: 'chrome'
+- src: https://github.com/AlbanAndrieu/devbox.chrome.git
+  name: chrome
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/Stouts.collectd'

@@ -20,28 +20,31 @@ env:
     - secure: MD73NCVzctbVmi2QnQtwtH/ISXN2K0alsLbixoaXl7gr3XvTB4sYB0u+KKtPV46jbeAlQqTRObPfQouPrsLsiNDYcpuN0I5bKsn3TTs4ZHIkD0I2Q9Wh3qNM2fYf9mw3ZUhvXVTEod0W7jzkVGb6kitRCJj8rioKKzvE/YdVsG4=
   matrix:
 #  - ANSIBLE_VERSION=latest
-    - ANSIBLE_VERSION=2.7.2
+    - ANSIBLE_VERSION=2.7.14
 sudo: required
-dist: trusty
+#dist: trusty
+dist: bionic
 branches:
   only:
-  - master
+   - master
 virtualenv:
   system_site_packages: false
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install curl
   - sudo apt-get install -qq python-apt python-pycurl
+  - sudo apt-get install -qq curl
 install:
   # Install Ansible.
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
 
-  - git pull && git submodule init && git submodule update && git submodule status
+  # Update Ansible submodule.
+  - git pull && git submodule init
+  #- git submodule update && git submodule status
   - git submodule foreach git checkout master
-  
+
   - ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
-    
+
 script:
   # Check ansible version
   - ansible --version
@@ -61,7 +64,6 @@ script:
 
   - echo "${ANSIBLE_VAULT_PASS}" > vault.passwd
 
-  # Check syntax
   # Check the role/playbook's syntax.
   - ansible-playbook --syntax-check -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --skip-tags restart
 
@@ -80,9 +82,6 @@ script:
 #  - sudo /etc/init.d/jenkins status || exit 1
 #  - sudo /etc/init.d/nexus status || exit 1
 #  - sudo /etc/init.d/mon status || exit 1
-
-  # Test whether kibana is running correctly.
-#  - curl http://localhost/
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
