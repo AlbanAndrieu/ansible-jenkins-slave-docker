@@ -98,7 +98,10 @@ RUN mkdir -p /etc/ansible
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
-COPY ansible.cfg *.yml vault.passwd roles $JENKINS_USER_HOME/
+ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS}
+
+RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd
+COPY ansible.cfg *.yml roles $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
 COPY roles $JENKINS_USER_HOME/roles
