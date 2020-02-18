@@ -61,7 +61,7 @@
 - import_playbook: python.yml
 
 #Below ntp role is included in administration role
-- name: Apply ntp configuration to all nodes
+- name: Apply ntp configuration
   hosts: all
   gather_facts: false
   remote_user: root
@@ -96,6 +96,8 @@
 - import_playbook: docker.yml # must be before jenkins-slave
 
 - import_playbook: jenkins-slave.yml
+    
+- import_playbook: nodejs.yml
     
 #- import_playbook: cpp.yml
 
