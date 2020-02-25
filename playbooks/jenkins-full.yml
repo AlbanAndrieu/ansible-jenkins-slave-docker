@@ -78,7 +78,7 @@
 #- import_playbook: java-legacy.yml
 
 # Filesystem such as workspace must be created before running jenkins-slave role
-- import_playbook: hdd.yml
+#- import_playbook: hdd.yml
 
 #- import_playbook: jenkins-user.yml
 
