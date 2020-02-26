@@ -37,38 +37,27 @@
   become: true
 
   tasks:
-    - name: Remove jenkins-slave-arc-centos6 latest images (OLD)
+    - name: Remove ubuntu image
       docker_image:
         state: absent
-        name: hub.docker.com/nabla/jenkins-slave-centos6-arc
+        name: ubuntu:14.04
         tag: latest
       ignore_errors: true
       tags:
         - clean
         - docker
         - vm
+    - name: Remove hello-world image
+      docker_image:
+        state: absent
+        name: hello-world:latest
+        force: yes
 
-    - name: Remove jenkins-slave-centos7-arc latest images (OLD)
-      docker_image:
-        state: absent
-        name: hub.docker.com/nabla/jenkins-slave-centos6-arc
-        tag: latest
-      ignore_errors: true
-      tags:
-        - clean
-        - docker
-        - vm
-
-    - name: Remove jenkins-slave-centos7-arc latest images (OLD)
-      docker_image:
-        state: absent
-        name: hub.docker.com/nabla/jenkins-slave-centos7-arc
-        tag: latest
-      ignore_errors: true
-      tags:
-        - clean
-        - docker
-        - vm
+#    - name: Remove test image
+#      docker_image:
+#        state: absent
+#        name: nabla/ansible-jenkins-slave-docker
+#        tag: test
 
 # Below might be useless (duplicated) when running full cleaning
 #    - name: Remove unwanted dangling images
@@ -119,33 +108,22 @@
         - docker
         - vm
 
-#    - name: Pull jenkins-slave-arc-centos6 latest images (NEW)
+#    - name: Pull ansible-jenkins-slave-docker images
 #      docker_image:
-#        name: hub.docker.com/nabla/jenkins-slave-arc-centos6
+#        name: hub.docker.com/nabla/ansible-jenkins-slave-docker
 #        force: yes
-#        tag: latest
+#        tag: 1.0.0
 #
-#    - name: Pull jenkins-slave-arc-centos7 latest images (NEW)
-#      docker_image:
-#        name: hub.docker.com/nabla/jenkins-slave-arc-centos7
-#        force: yes
-#        tag: latest
+    - name: Pull ansible-jenkins-slave-docker latest images
+      docker_image:
+        name: hub.docker.com/nabla/ansible-jenkins-slave-docker
+        force: yes
+        tag: latest
 
-#    - name: Pull ansible-jenkins-slave images
-#      docker_image:
-#        name: hub.docker.com/nabla/ansible-jenkins-slave
-#        force: yes
-#        tag: 1.0.10
-#
-#    - name: Pull ansible-jenkins-slave latest images
-#      docker_image:
-#        name: hub.docker.com/nabla/ansible-jenkins-slave
-#        force: yes
-#        tag: latest
-#
-#    - name: Check image is fully available
-#      command: "docker inspect -f . hub.docker.com/nabla/ansible-jenkins-slave:1.0.10"
-#      changed_when: false
+
+    - name: Check image is fully available
+      command: "docker inspect -f . nabla/ansible-jenkins-slave-docker:latest"
+      changed_when: false
 
 #docker ps -a -s
 #docker images

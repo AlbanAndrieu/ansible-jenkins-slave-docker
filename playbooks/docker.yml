@@ -24,7 +24,7 @@
   - name: Install docker repo
     raw: |
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
-   
+
 - name: Install docker
   hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   #hosts: docker  
@@ -40,6 +40,7 @@
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
     docker_edition: ce
+    docker_version: 5:19.03.4~3-0~ubuntu-bionic
      #TODO make sure it does not conflit with jenkins-slave python36.yml and requirements-current-3.6.txt
      #pip_install_packages:
      #  - name: docker

@@ -34,7 +34,7 @@
 
   vars:
     docker_files_enable: false
-    docker_files_generated_directory: "./"
+    #docker_files_generated_directory: "./"
     docker_registry_user: nabla
     shell_git:
       # Additional properties: 'shell_git_machine, shell_git_login, shell_git_email, shell_git_password, shell_git_name, shell_git_path, shell_git_ssl'.
@@ -47,7 +47,7 @@
          shell_git_name: "Andrieu, Alban",
          shell_git_path: "/usr/bin",
          shell_git_ssl: false
-       }        
+       }
     home_url: "http://albandrieu.com"
     nexus_url: "{{ home_url }}:8081"
     bower_url: "{{ home_url }}:5678"
