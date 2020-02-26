@@ -437,3 +437,7 @@
 #- src: 'https://github.com/andrewrothstein/ansible-kubectl'
 #  name: 'andrewrothstein.kubectl'
 #  version: master
+
+- src: https://github.com/andrewrothstein/ansible-terraform'.git
+  name: andrewrothstein.terraform
+  version: master  

@@ -24,9 +24,10 @@ env:
 sudo: required
 #dist: trusty
 dist: bionic
+
 branches:
   only:
-   - master
+  - master
 virtualenv:
   system_site_packages: false
 before_install:
@@ -74,7 +75,7 @@ script:
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
 #  - >
-#    ansible-playbook -i hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo
+#    ansible-playbook -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local --sudo
 #    | grep -q 'changed=0.*failed=0'
 #    && (echo 'Idempotence test: pass' && exit 0)
 #    || (echo 'Idempotence test: fail' && exit 1)

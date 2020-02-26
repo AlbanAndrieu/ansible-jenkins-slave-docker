@@ -2,7 +2,7 @@
 
 [all]
 #localhost ansible_host=127.0.0.1 ansible_ssh_port=22 ansible_connection=ssh dtap=test comment="Hosting by Alban Andrieu" ext_id="SRV_{{ host_id }}" groups="paris misc"
-localhost
+localhost ansible_user=root
 
 [all:vars]
 #ansible_connection=ssh
@@ -74,7 +74,7 @@ localhost
 
 [webservers]
 #web3
-localhost
+#localhost
 
 [locale]
 #localhost
@@ -103,18 +103,12 @@ localhost
 [jenkins-master:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
-[jenkins-UAT-master]
-#master ansible_ssh_host=192.168.11.33 ansible_ssh_port=22 ansible_connection=ssh ansible_user=vagrant
-
-[jenkins-UAT-master:vars]
-ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-
 [jenkins-slaves]
 localhost
 
 #[jenkins-slaves:vars]
 #ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-#jenkins_home='/jenkins'
+#jenkins_home='/home/jenkins'
 
 [jenkins-swarm]
 #localhost
@@ -146,50 +140,8 @@ sonar
 [nodejs]
 localhost
 
-[sonar]
-#localhost
-
-[sonar:vars]
-ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-
-[private-bower]
-#localhost
-
-[nexus]
-#localhost
-
-[shell]
-#see workstation
-
-[zap]
-#see workstation
-
-[dropbox]
-#see workstation
-
-[workstation]
-#localhost
-
-[checkmarx]
-#localhost
-
-[windows]
-#localhost
-
-[jmeter]
-#see workstation
-
-[eclipse]
-#see workstation
-
-[logstash]
-localhost
-
-[collectd]
-localhost
-
 [docker]
-localhost
+#localhost ansible_user=root
 
 [docker-container]
 #ansible_python_interpreter="/usr/bin/python3.6"
@@ -213,7 +165,44 @@ git_user="jenkins"
 [kubernetes]
 localhost
 
+[sonar]
+#localhost
+
+[sonar:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[private-bower]
+#localhost
+
+[nexus]
+#localhost
+
+[shell]
+#see workstation
+
+[zap]
+#see workstation
+
+[dropbox]
+#see workstation
+
+[checkmarx]
+#localhost
+
+[jmeter]
+#see workstation
+
+[eclipse]
+#see workstation
+
+[logstash]
+localhost
+
+[collectd]
+localhost
+
 [windows]
+#localhost
 
 [windows:vars]
 #ansible_port=5985 # not ssl
@@ -245,8 +234,10 @@ install_kernel_extras=false
 [solaris:vars]
 user=jenkins
 group=jenkins
+home=/export/home/jenkins/
 #ansible_sudo_pass=jenkins1234
 #ansible_python_interpreter="/opt/csw/bin/python"
+#For x86sol
 #ansible_python_interpreter="/usr/local/bin/python2.7"
 #ansible_ssh_user="jenkins"
 #ansible_ssh_pass="jenkins1234"

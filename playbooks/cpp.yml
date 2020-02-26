@@ -1,0 +1,48 @@
+---
+
+- name: Install gcc
+  hosts: cpp
+
+  roles:
+    - role: alban.andrieu.gcc
+      gcc_version: "-4.8"
+      gcc_priority: 10
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-4.9"
+      gcc_priority: 20
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-5"
+      gcc_priority: 50
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-6"
+      gcc_priority: 60
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-7"
+      gcc_priority: 70
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-8"
+      gcc_priority: 80
+
+    - role: alban.andrieu.gcc
+      gcc_version: "-9"
+      gcc_priority: 90
+
+- name: Install cpp
+  hosts: cpp
+
+  roles:
+    - alban.andrieu.cpp
+
+  vars:
+      #ubuntu 16 cppunit_version: "-1.13-0v5"
+      cppunit_version: "1.14.0-4" # ubuntu 19
+      #ubuntu 16 boost_version: "1.61"
+      boost_version: "1.67.0-13ubuntu1"
+      #ubuntu 16 clang_version: "-4.0"
+      clang_version: "1:9.0-49~exp1"
+      cpp_package_list: []

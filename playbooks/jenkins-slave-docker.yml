@@ -39,7 +39,7 @@
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
                  is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+                 OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
                  Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
@@ -97,33 +97,11 @@
 
 - import_playbook: jenkins-slave.yml
     
-- import_playbook: nodejs.yml
+#- import_playbook: nodejs.yml
     
-#- import_playbook: cpp.yml
+- import_playbook: cpp.yml
 
 #- import_playbook: certificate.yml
 
 - import_playbook: xvbf.yml
 
-#
-##Below cmake role is included in cpp role
-##- name: Install cmake
-##  hosts: all
-##  remote_user: root
-###  connection: local
-##
-##  roles:
-##    - alban.andrieu.cmake
-#
-#- name: Install cpp
-#  hosts: all
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - alban.andrieu.cpp
-#
-#  vars:
-#      gcc_version: "4:4.8.2-1ubuntu6"
-#      cppunit_version: "1.13-0"
-#      boost_version: "1.54"
