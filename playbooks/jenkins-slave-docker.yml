@@ -97,7 +97,7 @@
 
 - import_playbook: jenkins-slave.yml
     
-- import_playbook: nodejs.yml
+#- import_playbook: nodejs.yml
     
 #- import_playbook: cpp.yml
 
