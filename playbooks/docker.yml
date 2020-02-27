@@ -75,6 +75,7 @@
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
     docker_edition: ce
+    #docker_version: 5:19.03.6~3-0~ubuntu-eoan # https://github.com/docker/for-linux/issues/833
     docker_version: 5:19.03.6~3-0~ubuntu-eoan
     docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
 
