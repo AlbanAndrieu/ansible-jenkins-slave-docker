@@ -175,6 +175,8 @@ RUN chmod 700 ${HOME}/.ssh && chmod 600 ${HOME}/.ssh/id_rsa* && chmod 644 ${HOME
 #RUN echo "No vulnerabilities!"
 #RUN /microscanner ${token} && rm /microscanner
 
+RUN rm -f /home/jenkins/alban.andrieu.conky/files/default-themes-extra-1.tar.gz || true
+
 # Working dir
 WORKDIR $JENKINS_USER_HOME
 

@@ -91,7 +91,7 @@
 
 - import_playbook: maven.yml
 
-- import_playbook: chrome.yml google_talkplugin_enabled=false
+#- import_playbook: chrome.yml google_talkplugin_enabled=false
 
 - import_playbook: docker.yml # must be before jenkins-slave
 
