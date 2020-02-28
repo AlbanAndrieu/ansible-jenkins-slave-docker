@@ -98,17 +98,17 @@ RUN mkdir -p /etc/ansible
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
-COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
-#ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"todo"}
-#RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
+ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"todo"}
+RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
 RUN cat $JENKINS_USER_HOME/vault.passwd
+COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
 COPY ansible.cfg *.yml roles $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
 COPY roles $JENKINS_USER_HOME/roles
 #COPY .ssh $JENKINS_USER_HOME/.ssh
 COPY package.json $JENKINS_USER_HOME/
-RUN id jenkins && ls -lrta $JENKINS_USER_HOME/
+#RUN id jenkins && ls -lrta $JENKINS_USER_HOME/
 RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 
 # Execute
