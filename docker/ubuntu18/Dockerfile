@@ -101,7 +101,7 @@ ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"todo"}
 RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
 RUN cat $JENKINS_USER_HOME/vault.passwd
-COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
+#COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
 COPY ansible.cfg *.yml roles $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
