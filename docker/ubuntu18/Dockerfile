@@ -114,8 +114,8 @@ COPY package.json $JENKINS_USER_HOME/
 RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 
 # Execute
-#RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/roles/" --vault-id $JENKINS_USER_HOME/vault.passwd --ignore-errors && \
-RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
+RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/roles/" --vault-id $JENKINS_USER_HOME/vault.passwd --ignore-errors && \
+ ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
 # -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" \
