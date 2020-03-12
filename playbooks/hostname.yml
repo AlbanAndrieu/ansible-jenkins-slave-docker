@@ -10,7 +10,16 @@
   vars:
        hostname_enabled: true,
        hostname_hostname_loopback: "{{ ansible_hostname }} home.albandrieu.com"
-#       hosts:
+# force inventory_hostname
+#       inventory_hostname: albandrieu.albandrieu.com
+       hosts:
+       # For docker
+#         - { name: "{{ hostname_hostname }}", ip: 127.0.1.1 }
+#         - { name: mydatabase, ip: 127.0.1.1 }
+#         - { name: myapache, ip: 127.0.1.1 }
+       # For hardcoded servers
+         - { name: freenas, ip: 192.168.1.24 }
+#         - { name: freebox, ip: 192.168.0.254 }
 #         # For nexus
 #         - { name: nexus.albandrieu.com, ip: 172.16.0.14 }
 #         # For dtr

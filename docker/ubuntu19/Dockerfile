@@ -1,18 +1,15 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
-FROM selenium/standalone-chrome:3.141.59-yttrium
+FROM ubuntu:19.10
+#FROM selenium/standalone-chrome:latest
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 
 # dockerfile_lint - ignore
-MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
-LABEL Name="ansible-jenkins-slave-docker" Version="1.0.20"
-LABEL description="Image used by Nabla products to build Java/Javascript and CPP\
- this image is running on Ubuntu 18.04."
+LABEL Name="ansible-jenkins-slave" Version="2.0.0"
+LABEL description="Image used by fusion-risk products to build Java/Javascript and CPP\
+ this image is running on Ubuntu 19.04."
 LABEL com.example.vendor="ACME Incorporated"
-
-# In case you need proxy
-#RUN echo 'Acquire::http::Proxy "http://127.0.0.1:8080";' >> /etc/apt/apt.conf
 
 # No interactive frontend during docker build
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -34,6 +31,7 @@ RUN apt-get -q update &&\
 #    apt-get -q upgrade -y -o Dpkg::Options::="--force-confnew" --no-install-recommends &&\
     apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
     git bzip2 zip unzip python-yaml python-jinja2 python-pip rsyslog gpg-agent \
+#    openssh-server \
     ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     apt-utils apt-transport-https ca-certificates software-properties-common \
     locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
@@ -48,10 +46,8 @@ RUN echo "${TZ}" > /etc/timezone
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 #RUN dpkg-reconfigure --frontend noninteractive tzdata \
 
-# error with pip==19.3.1
-# error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 RUN python3 -m pip install --upgrade pip==20.0.2 \
-    && pip3 install ansible==2.7.14 zabbix-api==0.5.4
+    && pip3 install ansible==2.9.1 zabbix-api==0.5.4
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 RUN add-apt-repository \
@@ -70,7 +66,7 @@ ARG GROUP=${GROUP:-docker}
 ARG UID=${UID:-2000}
 ARG GID=${GID:-2000}
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
-    printf "\033[1;32mWITH user: $USER\ngroup: $GROUP \033[0m\n"
+    printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
 RUN groupmod -g ${GID} docker
 #RUN cat /etc/group | grep docker || true
@@ -98,35 +94,32 @@ RUN mkdir -p /etc/ansible
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
-ARG ANSIBLE_VAULT_PASS
-ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"todo"}
-RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
-RUN cat $JENKINS_USER_HOME/vault.passwd
-#COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
-#COPY ansible.cfg
-COPY *.yml roles $JENKINS_USER_HOME/
+COPY ansible.cfg *.yml vault.passwd playbooks/ansible.pub.key $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
 COPY roles $JENKINS_USER_HOME/roles
-#COPY .ssh $JENKINS_USER_HOME/.ssh
+COPY .ssh $JENKINS_USER_HOME/.ssh
 COPY package.json $JENKINS_USER_HOME/
-#RUN id jenkins && ls -lrta $JENKINS_USER_HOME/
 RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 
 # Execute
-RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/roles/" --vault-id $JENKINS_USER_HOME/vault.passwd --ignore-errors && \
- ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
+RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/roles/" --ignore-errors && \
+ ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-full.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
-# -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" \
+ -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" \
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,objc \
+ --skip-tags=restart,vm,python35,python36,objc \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
+
+# Install a basic SSH server
+#RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd
+#RUN mkdir -p /var/run/sshd
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
@@ -155,10 +148,12 @@ RUN chmod +x /usr/local/bin/wrapdocker
 #VOLUME /var/lib/docker
 
 # place the jenkins slave startup script into the container
-#ADD jenkins-slave-startup.sh /
+ADD jenkins-slave-startup.sh /
 ADD entrypoint.sh /
 #RUN chmod +x /jenkins-slave-startup.sh /entrypoint.sh && rm -fr /sbin/initctl && ln -s /jenkins-slave-startup.sh /sbin/initctl
 RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
+
+#RUN mkdir /home/seluser/.cache /home/seluser/.ansible && chmod -R 777 /home/seluser/.cache /home/seluser/.ansible
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
@@ -177,12 +172,14 @@ RUN chmod 700 ${HOME}/.ssh && chmod 600 ${HOME}/.ssh/id_rsa* && chmod 644 ${HOME
 #RUN echo "No vulnerabilities!"
 #RUN /microscanner ${token} && rm /microscanner
 
-RUN rm -f /home/jenkins/alban.andrieu.conky/files/default-themes-extra-1.tar.gz || true
+# drop back to the root user - for docker in docker
+#USER root
 
 # Working dir
 WORKDIR $JENKINS_USER_HOME
 
-EXPOSE 80
+# Standard SSH port
+#EXPOSE 22
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 

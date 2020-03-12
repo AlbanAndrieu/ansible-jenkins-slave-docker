@@ -40,6 +40,7 @@
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
     docker_edition: ce
+    docker_version: 5:19.03.4~3-0~ubuntu-bionic
      #TODO make sure it does not conflit with jenkins-slave python36.yml and requirements-current-3.6.txt
      #pip_install_packages:
      #  - name: docker
@@ -74,6 +75,7 @@
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
     docker_edition: ce
+    #docker_version: 5:19.03.6~3-0~ubuntu-eoan # https://github.com/docker/for-linux/issues/833
     docker_version: 5:19.03.6~3-0~ubuntu-eoan
     docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
 

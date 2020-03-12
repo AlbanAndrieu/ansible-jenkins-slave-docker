@@ -4,7 +4,7 @@
 #as root
 #ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv
 #as albandri
-#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass --sudo
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass
 # --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
 #for testing purpose
 #ansible-playbook -i inventory/hosts -c local -v playbooks/jenkins-slave-docker.yml --check --diff --ask-become-pass -vvvv
@@ -91,7 +91,7 @@
 
 - import_playbook: maven.yml
 
-- import_playbook: chrome.yml google_talkplugin_enabled=false
+#- import_playbook: chrome.yml google_talkplugin_enabled=false
 
 - import_playbook: docker.yml # must be before jenkins-slave
 
