@@ -261,7 +261,7 @@
 #  name: 'geerlingguy.nginx'
 #  version: master
 
-- src: https://github.com/geerlingguy/ansible-role-ntp.git 
+- src: https://github.com/geerlingguy/ansible-role-ntp.git
   name: geerlingguy.ntp
   version: master
 
@@ -292,11 +292,11 @@
 #- src: https://github.com/geerlingguy/ansible-role-pip.git
 #  name: geerlingguy.pip
 #  version: master
-  
+
 - src: https://github.com/geerlingguy/ansible-role-docker.git
   name: geerlingguy.docker
   version: master
-  
+
 #- src: 'https://github.com/geerlingguy/ansible-role-samba'
 #  name: 'geerlingguy.samba'
 #  version: master
@@ -318,7 +318,7 @@
 - src: https://github.com/gantsign/ansible-role-maven.git
   name: maven
   version: master
-  
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-java-certificate'
 #  name: 'java-certificate'
 #  version: master
@@ -438,6 +438,10 @@
 #  name: 'andrewrothstein.kubectl'
 #  version: master
 
-- src: https://github.com/andrewrothstein/ansible-terraform'.git
+- src: https://github.com/AlbanAndrieu/devbox.chrome.git
+  name: chrome
+  version: master
+  
+- src: https://github.com/andrewrothstein/ansible-terraform.git
   name: andrewrothstein.terraform
-  version: master  
+  version: master

@@ -49,8 +49,8 @@ exclude_paths:
   - ./roles/repo-epel/
   - ./roles/repo-remi/
   - ./roles/security/
-  - ./roles/ssl.ca-certificate/
-  - ./roles/ssl.certificate/
+  - ./roles/ssl-ca-certificate/
+  - ./roles/ssl-certificate/
   - ./roles/vagrant/
   - ./roles/yarn/
   - ./roles/zabbix/

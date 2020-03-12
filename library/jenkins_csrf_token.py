@@ -38,7 +38,7 @@ def main():
     .. code-block:: yaml
 
         jenkins_csrf_token:
-          hostname: "albandrieu.com:8383/jenkins"
+          hostname: "albandrieu.com:8686/jenkins"
           auth:
             username: "jenkins"
             password: "password"
@@ -50,7 +50,7 @@ def main():
         argument_spec={
             'hostname': {
                 'type': 'str',
-                'default': 'albandrieu.com:8383/jenkins',
+                'default': 'albandrieu.com:8686/jenkins',
 
             },
             'auth': {

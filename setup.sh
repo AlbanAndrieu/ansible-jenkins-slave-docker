@@ -79,8 +79,8 @@ else
     #ansible-playbook -i staging ${TARGET_PLAYBOOK} -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} --become-method=sudo | grep -q 'unreachable=0.*failed=0' && (echo 'Main test: pass' && exit 0) || (echo 'Main test: fail' && exit 1)
 fi
 
-echo -e "${green} Ansible done. $? ${NC}"  
-    
+echo -e "${green} Ansible done. $? ${NC}"
+
 # Save logfile
 if [ -d "${LOG_DIR}" ]; then
     sudo cp setup.log "${LOG_FILE}"

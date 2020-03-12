@@ -7,7 +7,12 @@ set -eo pipefail
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
+# shellcheck source=/dev/null
+source "${WORKING_DIR}/../step-0-color.sh"
+
 export DOCKER_NAME=$1
+
+echo "DOCKER_NAME : $DOCKER_NAME"
 
 if [[ $DOCKER_NAME == "" ]]; then
     echo "Missing DOCKER_NAME"
@@ -19,7 +24,7 @@ if [[ $DOCKER_TAG == "" ]]; then
     echo "Missing DOCKER_TAG"
 fi
 
-echo "DOCKER_NAME : $DOCKER_NAME - $DOCKER_TAG"
+echo "DOCKER_TAG : $DOCKER_TAG"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
@@ -37,7 +42,9 @@ else
   #curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 fi
 
-echo -e "container-structure-test test --save --image ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} --config ${WORKING_DIR}/../docker/ubuntu18/config.yaml ${NC}"
-/usr/local/bin/container-structure-test test --save --image "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" --config "${WORKING_DIR}/../docker/ubuntu18/config.yaml"
+export CST_CONFIG="docker/ubuntu18/config.yaml"
+
+echo -e "container-structure-test test --save --image ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} --config ${WORKING_DIR}/../${CST_CONFIG} ${NC}"
+/usr/local/bin/container-structure-test test --save --image "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" --config "${WORKING_DIR}/../${CST_CONFIG}"
 
 exit 0

@@ -7,7 +7,7 @@ if [ -n "${TARGET_SLAVE}" ]; then
   echo -e "${green} TARGET_SLAVE is defined ${happy_smiley} : ${TARGET_SLAVE} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_SLAVE, use the default one ${NC}"
-  export TARGET_SLAVE=test.albandrieu.com
+  export TARGET_SLAVE=albandrieu.com
   echo -e "${magenta} TARGET_SLAVE : ${TARGET_SLAVE} ${NC}"
 fi
 
@@ -68,9 +68,10 @@ else
   if [[ -z $VIRTUAL_ENV ]]
   then
     #/usr/bin/ansible for RedHat
-    #/usr/local/bin/ansible for Ubuntu
+    #/usr/local/bin/ansible for Ubuntu 18
     if [ "${OS}" == "Ubuntu" ]; then
-      ANSIBLE_CMD="${PYTHON_CMD} /usr/local/bin/ansible"
+      #ANSIBLE_CMD="${PYTHON_CMD} /usr/local/bin/ansible" # Ubuntu 18
+      ANSIBLE_CMD="${PYTHON_CMD} ansible" # Ubuntu 19
     else
       ANSIBLE_CMD="${PYTHON_CMD} /usr/bin/ansible"
     fi
@@ -93,7 +94,9 @@ else
     #/usr/bin/ansible-cmdb for RedHat
     #/usr/local/bin/ansible-cmdb for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then
-      ANSIBLE_CMBD_CMD="/usr/local/bin/ansible-cmdb"
+      #ANSIBLE_CMBD_CMD="/usr/local/bin/ansible-cmdb"
+      #/home/albandrieu/.local/bin/ansible-cmdb
+      ANSIBLE_CMBD_CMD="ansible-cmdb"
     else
       ANSIBLE_CMBD_CMD="/usr/bin/ansible-cmdb"
     fi
@@ -114,9 +117,11 @@ else
   if [[ -z $VIRTUAL_ENV ]]
   then
     #/usr/bin/ansible-galaxy for RedHat
-    #/usr/local/bin/ansible-galaxy for Ubuntu
+    #/usr/local/bin/ansible-galaxy for Ubuntu 18
     if [ "${OS}" == "Ubuntu" ]; then
-      ANSIBLE_GALAXY_CMD="${PYTHON_CMD} /usr/local/bin/ansible-galaxy"
+      #ANSIBLE_GALAXY_CMD="${PYTHON_CMD} /usr/local/bin/ansible-galaxy" # Ubuntu 18
+      #ANSIBLE_GALAXY_CMD="${PYTHON_CMD} /home/albandrieu/.local/bin/ansible-galaxy" # Ubuntu 19
+      ANSIBLE_GALAXY_CMD="${PYTHON_CMD} ansible-galaxy" # /usr/bin/ansible-galaxy Ubuntu 19
     else
       ANSIBLE_GALAXY_CMD="${PYTHON_CMD} /usr/bin/ansible-galaxy"
     fi
@@ -138,7 +143,8 @@ else
     #/usr/bin/ansible-playbook for RedHat
     #/usr/local/bin/ansible-playbook for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then
-      ANSIBLE_PLAYBOOK_CMD="${PYTHON_CMD} /usr/local/bin/ansible-playbook"
+      #ANSIBLE_PLAYBOOK_CMD="${PYTHON_CMD} /usr/local/bin/ansible-playbook" # Ubuntu 18
+      ANSIBLE_PLAYBOOK_CMD="${PYTHON_CMD} ansible-playbook"  # /usr/local/bin/ansible-playbook Ubuntu 19
     else
       ANSIBLE_PLAYBOOK_CMD="${PYTHON_CMD} /usr/bin/ansible-playbook"
     fi
@@ -160,7 +166,8 @@ else
     #/usr/bin/ansible-lint for RedHat
     #/usr/local/bin/ansible-lint for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then
-      ANSIBLE_LINT_CMD="${PYTHON_CMD} /usr/local/bin/ansible-lint"
+      #ANSIBLE_LINT_CMD="${PYTHON_CMD} /usr/local/bin/ansible-lint"
+      ANSIBLE_LINT_CMD="${PYTHON_CMD} ansible-lint"
     else
       ANSIBLE_LINT_CMD="${PYTHON_CMD} /usr/bin/ansible-lint"
     fi

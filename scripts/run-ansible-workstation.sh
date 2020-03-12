@@ -7,7 +7,8 @@ fi
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-export PYTHON_MAJOR_VERSION=3.6
+#export PYTHON_MAJOR_VERSION=3.7
+
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-python.sh"
 RC=$?
@@ -64,7 +65,7 @@ shellcheck ./*.sh -f checkstyle > checkstyle-result.xml || true
 echo -e "${green} shell check for shell done. $? ${NC}"
 
 echo -e "${cyan} =========== ${NC}"
-cd "${WORKSPACE}/scripts/" || true
+cd "${WORKSPACE}/scripts/" || exit
 shellcheck ./*.sh -f checkstyle > checkstyle-result.xml || true
 echo -e "${green} shell check for release done. $? ${NC}"
 

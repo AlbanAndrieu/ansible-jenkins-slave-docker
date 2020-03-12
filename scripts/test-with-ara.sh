@@ -4,8 +4,9 @@
 SCRIPT_NAME=$( basename $0 )
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-PYTHON_MAJOR_VERSION=3.6
-export PYTHON_MAJOR_VERSION
+#PYTHON_MAJOR_VERSION=3.7
+#export PYTHON_MAJOR_VERSION
+
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-python.sh"
 RC=$?
@@ -20,7 +21,7 @@ source "${WORKING_DIR}/step-2-helpers-color.sh"
 
 set_default ANSIBLE_ROOT_DIR         "$( realpath ${WORKING_DIR} )/.."
 set_default ARA_DIR                  "/tmp/.ara"
-set_default PYTHON_EXECUTABLE        "python3.6"
+set_default PYTHON_EXECUTABLE        "python${PYTHON_MAJOR_VERSION}"
 set_default OUTPUT_DIR               "ara"
 set_default MOLECULE_TARGET          "test"
 set_default MOLECULE_QUIET           "false"

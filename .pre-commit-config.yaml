@@ -62,8 +62,6 @@ repos:
     rev: v1.8.0
     hooks:
     -   id: reorder-python-imports
-#       language_version: python3
-#       language_version: python2.7
 -   repo: https://github.com/asottile/add-trailing-comma
     rev: v1.5.0
     hooks:
@@ -111,9 +109,16 @@ repos:
     -   id: htmlhint
         # optional custom config:
         args: [--config, .htmlhintrc]
-#    -   id: htmllint
     -   id: markdown-toc
         # optional custom config:
         args: [--indent, "  "]
     -   id: dockerfile_lint
+        # optional custom config:
         args: [--json, --verbose, --dockerfile]
+-   repo: https://github.com/AlbanAndrieu/nabla-hooks.git
+    rev: master
+    hooks:
+    -   id: git-branches-check
+        always_run: true
+        args: [--max=3]
+        verbose: true

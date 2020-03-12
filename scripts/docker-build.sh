@@ -11,7 +11,7 @@ export DOCKER_TAG="1.0.8"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
- 
+
 #export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
 export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
 
@@ -26,8 +26,10 @@ source "${WORKING_DIR}/run-ansible.sh"
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
+"${WORKING_DIR}/../clean.sh"
+
 echo -e "${green} Insalling roles version ${NC}"
-ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
+${ANSIBLE_GALAXY_CMD} install -r requirements.yml -p ./roles/ --ignore-errors
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
@@ -44,6 +46,7 @@ time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DO
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
+  # shellcheck disable=SC2154
   echo -e "${red} ${head_skull} Sorry, build failed. ${NC}"
   exit 1
 else

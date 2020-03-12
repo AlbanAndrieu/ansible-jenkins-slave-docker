@@ -183,7 +183,7 @@ http.sslverify=false"]
  - name: "check openjdk 1.8.0"
    command: "${JAVA_HOME}/bin/java"
    args: ["-version"]
-   expectedError: ['openjdk version \"1\.8\.0_242\".*']
+   expectedError: ['openjdk version \"1\.8\.0_.*\".*']
 
 # - name: "check openjdk CA root imported"
 #   envVars:

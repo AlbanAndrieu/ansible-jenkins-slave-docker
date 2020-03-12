@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 # Custom Ansible Module to configure Jenkins Node using REST API
 #
 # # See https://support.cloudbees.com/hc/en-us/articles/115003896171-Creating-node-with-the-REST-API for documentation
@@ -126,6 +125,13 @@ def configure_jenkins_node(params, verify=None):
             'locations': params['tools'],
         }
     data = 'json={}'.format(json.dumps(configuration))
+
+    # print(json.dumps(configuration))
+
+    # print("URL : {}.".format(url_update))
+
+    # print("Configuration : {}.".format(configuration))
+
     exists = requests.get(
         url_update,
         auth=auth,

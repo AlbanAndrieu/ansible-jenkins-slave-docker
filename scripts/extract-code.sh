@@ -1,4 +1,7 @@
 #!/bin/bash
+#set -xv
+
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 #create a git local repo
 #touch README.md

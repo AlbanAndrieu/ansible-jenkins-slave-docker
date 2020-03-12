@@ -3,8 +3,8 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-# Forcing ansible cmd to use python3.6
-export PYTHON_MAJOR_VERSION=3.6
+# Forcing ansible cmd to use python3.7
+#export PYTHON_MAJOR_VERSION=3.7
 
 #sudo apt-get install python${PYTHON_MAJOR_VERSION}-dev || true
 

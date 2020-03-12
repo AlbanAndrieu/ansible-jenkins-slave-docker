@@ -3,8 +3,8 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-# Forcing ansible cmd to use python3.6
-export PYTHON_MAJOR_VERSION=3.6
+# Forcing ansible cmd to use python3.7
+#export PYTHON_MAJOR_VERSION=3.7
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-python.sh"
