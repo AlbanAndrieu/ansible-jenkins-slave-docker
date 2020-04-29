@@ -1,4 +1,4 @@
-#sudo ansible-playbook -i hosts-albandri -c local -v selenium.yml -vvvv | tee setup.log
+---
 
 - name: Install selenium
   hosts: jenkins-slaves

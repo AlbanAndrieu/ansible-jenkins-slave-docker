@@ -7,7 +7,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-8*:edHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -19,12 +19,12 @@
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
                  is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04."
+                 OSes include Red Hat Enterprise Linux 6/7/8, CentOS 6/7/8, or
+                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Enable repositories (RHEL, CentOS)
-  hosts: RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
+  hosts: RedHat-8*:RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
   become: true
 
   tasks:
@@ -47,7 +47,7 @@
       become: true
 
 #TODO at first run there is no jenkins user, so it will not work properly
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   tasks:
@@ -83,12 +83,13 @@
 #        - "requirements-current-3.5.txt"
         - "requirements-current-3.6.txt"
         - "requirements-current-3.7.txt"
+        - "requirements-current-3.8.txt"
       tags:
         - venv
         - requirements
 
 - name: Install python 2.7
-  hosts: Ubuntu-12*:Ubuntu-13*:Ubuntu-14*:Ubuntu-16*:Ubuntu-18*:Ubuntu-19*
+  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
   ignore_errors: true
 
@@ -105,7 +106,7 @@
           python: python2.7
 
 - name: Install python 3 and 3.6
-  hosts: Ubuntu-16*:Ubuntu-18*
+  hosts: Ubuntu-18*:Ubuntu-16*
   become: true
   ignore_errors: true
 
@@ -158,7 +159,7 @@
           python: python2.7
 
 - name: Install python 3.6
-  hosts: RedHat-7*:CentOS-7*:CentOS-6*:CentOS-5*
+  hosts: RedHat-8*:RedHat-7*:CentOS-7*:CentOS-6*:CentOS-5*
   become: true
   ignore_errors: true
 
@@ -176,7 +177,7 @@
           python: python3.6
 
 - name: Install python requirements
-  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-12*:Ubuntu-13*:Ubuntu-14*:Ubuntu-16*:Ubuntu-18*
+  hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   tasks:
@@ -219,7 +220,7 @@
       ignore_errors: true
 
 # Since Ubuntu 19 we do not maintain python 3.5 and 3.6
-- hosts: Ubuntu-19*
+- hosts: Ubuntu-20*:Ubuntu-19*
   become: true
 
   tasks:
@@ -248,7 +249,20 @@
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
       ignore_errors: true
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+    - name: python3.8 | Create venv and install requirements
+      pip:
+        requirements: "{{ ansible_user_dir }}/requirements-current-3.8.txt"
+        virtualenv: /opt/ansible/env38
+        virtualenv_python: "python3.8"
+      tags:
+        - venv
+        - requirements
+        - python38
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+      ignore_errors: true
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*::Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   tasks:

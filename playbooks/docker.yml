@@ -13,15 +13,15 @@
   become: true
 
   pre_tasks:
-  - name: Install python 2 if not there
+  - name: docker | Remove old docker repo
     raw: |
       rm -f /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list*
 
-  - name: Install docker repo
+  - name: docker | Install docker repo
     raw: |
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-  - name: Install docker repo
+  - name: docker | Install docker repo
     raw: |
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
 
@@ -33,7 +33,6 @@
     - vm
 
   roles:
-#    - geerlingguy.pip
     - geerlingguy.docker
 
   vars:
@@ -76,7 +75,7 @@
     docker_compose_version: "1.25.0"
     docker_edition: ce
     #docker_version: 5:19.03.6~3-0~ubuntu-eoan # https://github.com/docker/for-linux/issues/833
-    docker_version: 5:19.03.6~3-0~ubuntu-eoan
+    docker_version: 5:19.03.7~3-0~ubuntu-eoan
     docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
 
 - name: Install docker
@@ -102,14 +101,18 @@
     - vm
 
   tasks:
-    - name: Create a docker group
+    - name: docker | Copy the docker.service script
+      template: src=docker.service.j2 dest=/lib/systemd/system/docker.service owner=root group=root mode=0644
+      become: true
+      changed_when: false
+    - name: docker | Create a docker group
       group:
           name=docker
           state=present
       become: true
 #      ignore_errors: true
 
-    - name: Add user(s) to docker group
+    - name: docker | Add user(s) to docker group
       user:
           name="{{ lookup('env','USER') }}"
           group=docker
@@ -117,7 +120,7 @@
       become: true
       ignore_errors: true
 
-    - name: Add user(s) to docker group
+    - name: docker | Add user(s) to docker group
       user:
           name="{{ remote_user|default('jenkins') }}"
           group=docker

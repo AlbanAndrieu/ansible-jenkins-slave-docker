@@ -28,9 +28,9 @@
   roles:
     - role: zabbix
       name: zabbix-agent-paris
-      zabbix_agent_server: 192.168.0.29
-      zabbix_agent_serveractive: 192.168.0.29
-      zabbix_url: https://192.168.0.29/zabbix/
+      zabbix_agent_server: localhost
+      zabbix_agent_serveractive: localhost
+      zabbix_url: https://localhost/zabbix/
       zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
       zabbix_create_host: present
       zabbix_api_create_hosts: true
@@ -51,9 +51,9 @@
   roles:
     - role: zabbix
       name: zabbix-agent-gdynia
-      zabbix_agent_server: 192.168.0.29
-      zabbix_agent_serveractive: 192.168.0.29
-      zabbix_url: https://192.168.0.29/zabbix/
+      zabbix_agent_server: localhost
+      zabbix_agent_serveractive: localhost
+      zabbix_url: https://localhost/zabbix/
       zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
       zabbix_create_host: present
       zabbix_api_create_hosts: true

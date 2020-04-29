@@ -3,8 +3,7 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-# source only if terminal supports color, otherwise use unset color vars
-# shellcheck source=script/step-0-color.sh
+# shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
 
 # shellcheck disable=SC2154
@@ -18,7 +17,8 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  #export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  export DOCKER_BUILD_ARGS="--pull"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -65,7 +65,7 @@ else
 fi
 
 #readonly DOCKER_REGISTRY=${DOCKER_REGISTRY:-"https://hub.docker.com/"}
-readonly DOCKER_REGISTRY="" # leave it empty on purpose
+readonly DOCKER_REGISTRY=${DOCKER_REGISTRY:-""}
 readonly DOCKER_ORGANISATION=${DOCKER_ORGANISATION:-"nabla"}
 readonly DOCKER_USERNAME=${DOCKER_USERNAME:-""}
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}

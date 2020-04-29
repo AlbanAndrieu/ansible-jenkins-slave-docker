@@ -1,4 +1,4 @@
-#sudo ansible-playbook -i hosts-albandri -c local -v xvbf.yml -vvvv | tee setup.log
+---
 
 - name: Install xvbf
   hosts: xvbf

@@ -36,6 +36,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
   export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  #export DOCKER_BUILD_ARGS="--pull"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -56,7 +57,7 @@ else
   docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log
   echo -e "${magenta} Running dive ${NC}"
   echo -e "    dive ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-  CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" | tee -a docker-dive.log
+  CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" || true | tee -a docker-dive.log
   RC=$?
   if [ ${RC} -ne 0 ]; then
     echo ""

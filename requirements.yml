@@ -45,11 +45,11 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-evasive'
 #  name: 'alban.andrieu.evasive'
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-gcc'
-#  name: 'alban.andrieu.gcc'
-#  version: master
-#
+
+- src: https://github.com/AlbanAndrieu/ansible-gcc.git
+  name: alban.andrieu.gcc
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-grive'
 #  name: 'alban.andrieu.grive'
 #  version: master
@@ -327,9 +327,9 @@
 #  name: 'jenkins-master'
 #  version: master
 
-- src: https://github.com/AlbanAndrieu/ansible-locale.git
-  name: locale
-  version: master
+#- src: https://github.com/AlbanAndrieu/ansible-locale.git
+#  name: locale
+#  version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-role-maven'
 #  name: 'maven'
@@ -441,7 +441,7 @@
 - src: https://github.com/AlbanAndrieu/devbox.chrome.git
   name: chrome
   version: master
-  
+
 - src: https://github.com/andrewrothstein/ansible-terraform.git
   name: andrewrothstein.terraform
   version: master

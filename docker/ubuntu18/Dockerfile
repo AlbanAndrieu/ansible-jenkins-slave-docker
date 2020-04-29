@@ -6,7 +6,7 @@ ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 
 # dockerfile_lint - ignore
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
-LABEL Name="ansible-jenkins-slave-docker" Version="1.0.20"
+LABEL Name="ansible-jenkins-slave-docker" Version="1.0.2"
 LABEL description="Image used by Nabla products to build Java/Javascript and CPP\
  this image is running on Ubuntu 18.04."
 LABEL com.example.vendor="ACME Incorporated"
@@ -98,23 +98,26 @@ RUN mkdir -p /etc/ansible
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
-ARG ANSIBLE_VAULT_PASS
-ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"todo"}
+ARG ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"microsoft"}
+#ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"microsoft"}
+RUN echo "ANSIBLE_VAULT_PASS : ${ANSIBLE_VAULT_PASS}"
 RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
-RUN cat $JENKINS_USER_HOME/vault.passwd
 #COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
 #COPY ansible.cfg
-COPY *.yml roles $JENKINS_USER_HOME/
+COPY *.yml $JENKINS_USER_HOME/
+#COPY roles $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
-COPY roles $JENKINS_USER_HOME/roles
+COPY roles $JENKINS_USER_HOME/.ansible/roles
+RUN rm -f $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.jenkins-slave $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.workstation $JENKINS_USER_HOME/.ansible/roles/chrome
+RUN ls -lrta $JENKINS_USER_HOME/.ansible/roles
 #COPY .ssh $JENKINS_USER_HOME/.ssh
 COPY package.json $JENKINS_USER_HOME/
 #RUN id jenkins && ls -lrta $JENKINS_USER_HOME/
 RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 
 # Execute
-RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/roles/" --vault-id $JENKINS_USER_HOME/vault.passwd --ignore-errors && \
+RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors && \
  ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
@@ -122,16 +125,16 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,objc \
+ --skip-tags=restart,vm,python35,python36,objc \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
- && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
+ && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
-ENV HELM_VERSION v2.16.1
-ENV KUBECTL_VERSION v1.17.2
+ARG HELM_VERSION=${HELM_VERSION:-"v2.16.1"}
+ARG KUBECTL_VERSION=${KUBECTL_VERSION:-"v1.17.2"}
 ENV FILENAME helm-${HELM_VERSION}-linux-amd64.tar.gz
 ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${FILENAME}
 
@@ -160,6 +163,22 @@ ADD entrypoint.sh /
 #RUN chmod +x /jenkins-slave-startup.sh /entrypoint.sh && rm -fr /sbin/initctl && ln -s /jenkins-slave-startup.sh /sbin/initctl
 RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
 
+# See https://github.com/jenkinsci/docker-agent
+ARG VERSION=4.3
+ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
+
+RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/agent.jar \
+  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+
+COPY jenkins-agent.sh /usr/local/bin/jenkins-agent
+RUN chmod +x /usr/local/bin/jenkins-agent && \
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+RUN mkdir${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
+
 # drop back to the regular jenkins user - good practice
 USER jenkins
 RUN mkdir ${JENKINS_USER_HOME}/workspace && mkdir -p ${JENKINS_USER_HOME}/.m2/repository && chmod 777 ${JENKINS_USER_HOME}/ansible.log || true && chmod -R 777 ${JENKINS_USER_HOME}/.cache
@@ -187,4 +206,5 @@ EXPOSE 80
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/lib/systemd/systemd"]
+CMD ["bash"]
+#CMD ["/usr/lib/systemd/systemd"]

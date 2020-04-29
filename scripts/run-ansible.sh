@@ -4,7 +4,7 @@
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # source only if terminal supports color, otherwise use unset color vars
-# shellcheck source=scripts/step-0-color.sh
+# shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
 
 # shellcheck source=/dev/null
@@ -53,6 +53,6 @@ ${ANSIBLE_CMD} --version || true
 ${ANSIBLE_GALAXY_CMD} --version || true
 
 # shellcheck source=/dev/null
-source "${WORKING_DIR}/run-ansible-setup.sh"
+#source "${WORKING_DIR}/run-ansible-setup.sh"
 
 #exit 0

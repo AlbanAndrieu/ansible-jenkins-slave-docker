@@ -4,7 +4,7 @@
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # source only if terminal supports color, otherwise use unset color vars
-# shellcheck source=scripts/step-0-color.sh
+# shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
 
 # shellcheck source=/dev/null
@@ -29,7 +29,7 @@ if [ -n "${PYTHON_MAJOR_VERSION}" ]; then
   unset PYTHON_CMD
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_MAJOR_VERSION, use the default one ${NC}"
-  export PYTHON_MAJOR_VERSION=3.7
+  export PYTHON_MAJOR_VERSION=3.8
   echo -e "${magenta} PYTHON_MAJOR_VERSION : ${PYTHON_MAJOR_VERSION} ${NC}"
 fi
 
@@ -69,11 +69,21 @@ echo -e "${cyan} Use virtual env ${VIRTUALENV_PATH}/bin/activate ${NC}"
 echo -e "${green} virtualenv --no-site-packages ${VIRTUALENV_PATH} -p python${PYTHON_MAJOR_VERSION} ${NC}"
 echo -e "${green} source ${VIRTUALENV_PATH}/bin/activate ${NC}"
 if [ -f "${VIRTUALENV_PATH}/bin/activate" ]; then
-  # shellcheck disable=SC1090
-  source "${VIRTUALENV_PATH}/bin/activate" || exit 2
 
-  #export PYTHONPATH="/usr/local/lib/python${PYTHON_MAJOR_VERSION}/dist-packages/"
-  export PATH="${VIRTUALENV_PATH}/bin:${PATH}"
+  #PYTHON_ENV=$(python${PYTHON_MAJOR_VERSION} -c "import sys; sys.stdout.write('1') if hasattr(sys, 'real_prefix') else sys.stdout.write('0')")
+  #echo -e "${cyan} PYTHON_ENV : ${PYTHON_ENV} ${NC}"
+
+  VIRTUALENV_ENABLE=$(pip3 -V | grep "/opt/ansible/env")
+  echo -e "${cyan} VIRTUALENV_ENABLE : ${VIRTUALENV_ENABLE} ${NC}"
+
+  if [ -n "${VIRTUALENV_ENABLE}" ]; then
+    echo -e "${green} VIRTUALENV_ENABLE is defined ${happy_smiley} : ${VIRTUALENV_ENABLE}, we are already in a known virtualenv ${NC}"
+  else
+    # shellcheck disable=SC1090
+    source "${VIRTUALENV_PATH}/bin/activate" || exit 2
+  fi
+
+  #export PATH="${VIRTUALENV_PATH}/bin:${PATH}"
   echo -e "${cyan} PATH : ${PATH} ${NC}"
   export PYTHONPATH="${VIRTUALENV_PATH}/lib/python${PYTHON_MAJOR_VERSION}/site-packages/"
   echo -e "${cyan} PYTHONPATH : ${PYTHONPATH} ${NC}"
@@ -102,9 +112,9 @@ echo -e "${green} chown -R jenkins:docker /opt/ansible/env$(echo $PYTHON_MAJOR_V
 
 if [ -f "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt" ]; then
   echo -e "${cyan} =========== ${NC}"
-  echo -e "${green} Install virtual env requirements : pip install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
+  echo -e "${green} Install virtual env requirements : pip${PYTHON_MAJOR_VERSION} install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
   #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
-  "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
   RC=$?
   if [ ${RC} -ne 0 ]; then
     echo ""
@@ -135,8 +145,8 @@ if [ ${RC} -ne 0 ]; then
     echo -e "${red} ${head_skull} Please remove docker-py ${NC}"
   fi
   echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker-py; sudo ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker; sudo ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker-compose; ${NC}"
-  echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} install --upgrade --force-reinstall --no-cache-dir docker-compose==1.12.0 ${NC}"
-  exit 1
+  echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} install --upgrade --force-reinstall --no-cache-dir docker-compose==1.25.3 ${NC}"
+  #exit 1
 else
   echo -e "${green} The docker-compose check completed successfully. ${NC}"
 fi
