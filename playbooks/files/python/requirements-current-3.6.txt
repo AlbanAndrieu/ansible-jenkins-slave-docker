@@ -140,7 +140,7 @@ pytest-cov==2.8.1
 python-dateutil==2.8.1
 python-debian==0.1.36
 python-debianbts==3.0.1
-python-gnupg==0.4.5
+python-gnupg==0.4.4
 python-keyczar==0.716
 python-owasp-zap-v2.4==0.0.16
 python-xlib==0.26

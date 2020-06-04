@@ -97,7 +97,7 @@ pyparsing==2.2.0
 python-dateutil==2.7.0
 python-debian==0.1.32
 #python-debianbts==2.6.1
-python-gnupg==0.4.1
+python-gnupg==0.4.4
 #python-xapp==1.0.0
 #python-xlib==0.14
 python-magic==0.4.15
