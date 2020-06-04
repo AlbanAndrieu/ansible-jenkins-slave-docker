@@ -166,7 +166,7 @@ oslo.utils==3.42.1
 packaging==20.1
 padme==1.1.1
 pandas==0.25.3
-paramiko==2.7.1
+paramiko==2.4.2
 patch==1.16
 patch-ng==1.17.2
 pathspec==0.7.0

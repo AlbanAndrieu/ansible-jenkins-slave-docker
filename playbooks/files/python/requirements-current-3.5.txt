@@ -97,7 +97,7 @@ openpyxl==2.5.2
 packaging==17.1
 padme==1.1.1
 pandas==0.22.0
-paramiko==2.4.1
+paramiko==2.4.2
 pbr==5.1.1
 pep8==1.7.1
 pep8-naming==0.5.0
