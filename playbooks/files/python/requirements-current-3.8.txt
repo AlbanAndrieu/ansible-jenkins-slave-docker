@@ -228,7 +228,7 @@ pywinrm==0.4.1
 pyxdg==0.26
 PyYAML==5.3.1
 reportlab==3.5.42
-requests==2.23.0
+requests==2.20.0
 requests-credssp==1.1.1
 requests-ntlm==1.1.0
 requests-oauthlib==1.3.0
