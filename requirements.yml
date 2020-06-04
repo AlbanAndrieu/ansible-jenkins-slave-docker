@@ -10,21 +10,21 @@
 #  name: 'alban.andrieu.awstats'
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-cmake'
-#  name: 'alban.andrieu.cmake'
-#  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-common'
-#  name: 'alban.andrieu.common'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-cmake.git
+  name: alban.andrieu.cmake
+  version: master
+
+- src: https://github.com/AlbanAndrieu/ansible-common.git
+  name: alban.andrieu.common
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-conky'
 #  name: 'alban.andrieu.conky'
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-cpp'
-#  name: 'alban.andrieu.cpp'
-#  version: master
+- src: https://github.com/AlbanAndrieu/ansible-cpp.git
+  name: alban.andrieu.cpp
+  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-css'
 #  name: 'alban.andrieu.css'
@@ -106,11 +106,11 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-private-bower'
 #  name: 'alban.andrieu.private-bower'
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-scons'
-#  name: 'alban.andrieu.scons'
-#  version: master
-#
+
+- src: https://github.com/AlbanAndrieu/ansible-scons.git
+  name: alban.andrieu.scons
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-selenium'
 #  name: 'alban.andrieu.selenium'
 #  version: master
@@ -162,11 +162,11 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-workstation'
 #  name: 'alban.andrieu.workstation'
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-xvbf'
-#  name: 'alban.andrieu.xvbf'
-#  version: master
-#
+
+- src: https://github.com/AlbanAndrieu/ansible-xvbf.git
+  name: alban.andrieu.xvbf
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-yourkit'
 #  name: 'alban.andrieu.yourkit'
 #  version: master
@@ -426,9 +426,9 @@
 #  name: 'geerlingguy.nfs'
 #  version: master
 #
-#- src: 'https://github.com/kamaln7/ansible-swapfile'
-#  name: 'ansible-swapfile'
+#- src: https://github.com/Oefenweb/ansible-swapfile.git
 #  version: master
+#  name: ansible-swapfile
 #
 #- src: 'https://github.com/andrewrothstein/ansible-kubernetes-helm'
 #  name: 'andrewrothstein.kubernetes-helm'

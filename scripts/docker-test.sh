@@ -8,7 +8,7 @@ set -eo pipefail
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
-source "${WORKING_DIR}/../step-0-color.sh"
+source "${WORKING_DIR}/step-0-color.sh"
 
 export DOCKER_NAME=$1
 

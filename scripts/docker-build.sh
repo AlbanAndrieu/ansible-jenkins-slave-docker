@@ -9,6 +9,15 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 export DOCKER_TAG="1.0.8"
 
+if [ -n "${DOCKER_BUILD_ARGS}" ]; then
+  echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
+  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
+  echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
+fi
+
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
 
@@ -28,7 +37,7 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 "${WORKING_DIR}/../clean.sh"
 
-echo -e "${green} Insalling roles version ${NC}"
+echo -e "${green} Installing roles version ${NC}"
 ${ANSIBLE_GALAXY_CMD} install -r requirements.yml -p ./roles/ --ignore-errors
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
@@ -93,8 +102,8 @@ export DOCKER_GID=${DOCKER_GID:-999}
 printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
 printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
-echo -e "${green} User is. ${happy_smiley} ${NC}"
-id "${USER}"
+echo -e "${green} User is : ${NC}"
+id "${USER} ${happy_smiley}"
 echo -e "${magenta} Add docker group to above user. ${happy_smiley} ${NC}"
 echo -e "${magenta} sudo usermod -a -G docker ${USER} ${NC}"
 

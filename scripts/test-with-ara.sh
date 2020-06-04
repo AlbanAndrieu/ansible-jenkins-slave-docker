@@ -140,9 +140,9 @@ test_ansible_role()
 
     cd "$ANSIBLE_ROOT_DIR"
     echo "Running ara generate junit ${OUTPUT_DIR}-${ROLE_NAME}.xml"
-    ara generate junit "${OUTPUT_DIR}-${ROLE_NAME}.xml"
+    ara generate junit "${OUTPUT_DIR}-${ROLE_NAME}.xml" || true
     echo "Running ara generate html ${OUTPUT_DIR}-${ROLE_NAME}"
-    ara generate html "${OUTPUT_DIR}-${ROLE_NAME}"
+    ara generate html "${OUTPUT_DIR}-${ROLE_NAME}" || true
 
     # If there is any error in tests, it is thrown only after
     # HTML report is generate, so that even with errors we get output

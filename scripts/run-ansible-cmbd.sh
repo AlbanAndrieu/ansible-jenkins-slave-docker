@@ -16,6 +16,12 @@ if [ ${RC} -ne 0 ]; then
 fi
 
 "${WORKING_DIR}/run-ansible-lint.sh"
+RC=$?
+if [ ${RC} -ne 0 ]; then
+  echo ""
+  echo -e "${red} ${head_skull} Sorry, ansible lint failed ${NC}"
+  exit 1
+fi
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-ansible.sh"

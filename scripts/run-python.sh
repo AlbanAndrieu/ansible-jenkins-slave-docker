@@ -114,7 +114,7 @@ if [ -f "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_
   echo -e "${cyan} =========== ${NC}"
   echo -e "${green} Install virtual env requirements : pip${PYTHON_MAJOR_VERSION} install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
   #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
-  "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
   RC=$?
   if [ ${RC} -ne 0 ]; then
     echo ""
@@ -180,6 +180,7 @@ python3 --version || true
 pip3 --version || true
 
 if [ -n "${PYTHON_CMD}" ]; then
+  echo -e "${green} PYTHON_CMD is defined ${happy_smiley} : ${PYTHON_CMD} ${NC}"
   echo -e "${magenta} ${PYTHON_CMD} --version ${NC}"
   ${PYTHON_CMD} --version || true
   if [ -f "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" ]; then
@@ -198,4 +199,21 @@ if [ -n "${PYTHON_CMD}" ]; then
   ${PYTHON_CMD} -m ara.setup.path || true
   ${PYTHON_CMD} -m ara.setup.action_plugins || true
   ${PYTHON_CMD} -m ara.setup.callback_plugins || true
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_CMD, use the default one ${NC}"
+  #/usr/local/bin/python3.5 for RedHat
+  #/usr/bin/python3.5 for Ubuntu
+  PYTHON_CMD="python${PYTHON_MAJOR_VERSION}"
+  if [[ -z $VIRTUAL_ENV ]]; then
+    if [ "${OS}" == "Ubuntu" ]; then
+      PYTHON_CMD="/usr/bin/python${PYTHON_MAJOR_VERSION}"
+    fi
+    if [ "${OS}" == "Red Hat Enterprise Linux Server" ]; then
+      PYTHON_CMD="/usr/local/bin/python${PYTHON_MAJOR_VERSION}"
+    fi
+  #else
+  #  PYTHON_CMD="${VIRTUALENV_PATH}/bin/python${PYTHON_MAJOR_VERSION}"
+  fi
+  export PYTHON_CMD
+  echo -e "${magenta} PYTHON_CMD : ${PYTHON_CMD} ${NC}"
 fi
