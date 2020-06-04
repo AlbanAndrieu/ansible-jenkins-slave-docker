@@ -1,6 +1,6 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
-FROM selenium/standalone-chrome:3.141.59-yttrium
+#FROM selenium/standalone-chrome:3.141.59-yttrium
 #FROM selenium/standalone-chrome:3.141.59-zirconium
 #FROM selenium/standalone-chrome:3.141.59-20200409
 FROM ubuntu:18.04
@@ -154,15 +154,18 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
+RUN apt-get update && apt-get install -qqy curl
+
 RUN which hadolint || true
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
-ENV HELM_VERSION v2.16.1
-ENV KUBECTL_VERSION v1.17.2
-ENV KUBECTL_URL https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+ENV HELM_VERSION v3.2.1
 ENV HELM_FILENAME helm-${HELM_VERSION}-linux-amd64.tar.gz
-ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${HELM_FILENAME}
+#ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${HELM_FILENAME}
+ENV HELM_URL https://get.helm.sh/${HELM_FILENAME}
+
+#curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 # Kubernetes tools
 ADD ${HELM_URL} /tmp/${HELM_FILENAME}
@@ -171,16 +174,35 @@ RUN tar -zxvf /tmp/${HELM_FILENAME} -C /tmp \
   && mv /tmp/linux-amd64/helm /bin/helm \
   && rm -rf /tmp
 
+ENV KUBECTL_VERSION v1.18.3
+ENV KUBECTL_URL https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+
 ADD ${KUBECTL_URL} /tmp/kubectl
 RUN chmod +x /tmp/kubectl \
   && mv /tmp/kubectl /bin/kubectl \
   && rm -rf /tmp
 
-#RUN apt-get install kubelet kubeadm
+#RUN apt-get install -qqy kubelet kubeadm
 
 ADD https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 skaffold
 RUN chmod +x skaffold && mv skaffold /usr/local/bin
 RUN skaffold version
+
+# See https://github.com/jenkinsci/docker-agent
+ARG VERSION=4.3
+ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
+
+RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/agent.jar \
+  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+
+COPY jenkins-agent.sh /usr/local/bin/jenkins-agent
+RUN chmod +x /usr/local/bin/jenkins-agent && \
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
 ENV DRAFT_VERSION v0.16.0
 ENV DRAFT_FILENAME draft-${DRAFT_VERSION}-linux-amd64.tar.gz
@@ -209,29 +231,12 @@ ADD entrypoint.sh /
 #RUN chmod +x /jenkins-slave-startup.sh /entrypoint.sh && rm -fr /sbin/initctl && ln -s /jenkins-slave-startup.sh /sbin/initctl
 RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
 
-# See https://github.com/jenkinsci/docker-agent
-ARG VERSION=4.3
-ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
-
-#RUN apt-get install curl
-#RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
-#  && chmod 755 /usr/share/jenkins \
-#  && chmod 644 /usr/share/jenkins/agent.jar \
-#  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
-#
-#COPY jenkins-agent.sh /usr/local/bin/jenkins-agent
-#RUN chmod +x /usr/local/bin/jenkins-agent && \
-#    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
-#
-#ENV AGENT_WORKDIR=${AGENT_WORKDIR}
-#RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
-
 # drop back to the regular jenkins user - good practice
 USER jenkins
 RUN mkdir ${JENKINS_USER_HOME}/workspace && mkdir -p ${JENKINS_USER_HOME}/.m2/repository && chmod 777 ${JENKINS_USER_HOME}/ansible.log || true && chmod -R 777 ${JENKINS_USER_HOME}/.cache
 
-RUN helm init --client-only
-RUN helm plugin install https://github.com/chartmuseum/helm-push.git
+#RUN helm init --client-only
+#RUN helm plugin install https://github.com/chartmuseum/helm-push.git
 
 #RUN chmod g-w,o-w ${HOME} # Home directory on the server should not be writable by others
 #WARNING below give access to all servers

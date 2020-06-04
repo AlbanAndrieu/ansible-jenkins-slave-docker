@@ -10,4 +10,4 @@
      - role: maven
 
   vars:
-       maven_version: 3.5.0
+       maven_version: 3.6.3

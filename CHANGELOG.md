@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.13] - 2020-06-01
+
+I strongly advice you to move to helm 3
+
+### Added
+- Support python 3.8 on Ubuntu 20
+
+### Updated
+- helm v3.2.1
+- kubernetes v1.18.3
+- Maven 3.6.3
+- Add jenkins agent [docker-agent](https://github.com/jenkinsci/docker-agent)
+- gcc 7 is the minimum for Ubuntu 19
+- gcc 9.3.0 is the default for Ubuntu 20
+- gcc 9 is the default for Ubuntu 19
+- gcc 7 is the default for Ubuntu 18
+- gcc 4.8 is still available on Ubuntu 18
+- gcc 4.8 is no more available on Ubuntu 19
+- gcc_version: "=4:9.2.1-3.1ubuntu1" # g++ 9 on ubuntu 19
+- gcc_version: "=4:7.4.0-1ubuntu2.3" # g++ 7 on ubuntu 18
+
+### Added
+
 ## [1.0.0] - 2020-01-01
 
 I strongly advice you to move to python 3.7.5
