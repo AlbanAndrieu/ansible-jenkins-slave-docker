@@ -7,7 +7,7 @@ set -eo pipefail
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-export DOCKER_TAG="1.0.8"
+export DOCKER_TAG="1.0.13"
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
@@ -116,6 +116,9 @@ echo -e ""
 
 echo -e "${magenta} Run CST test ${NC}"
 echo -e "${magenta} ${WORKING_DIR}/docker-test.sh ${DOCKER_NAME} ${NC}"
+
+#git tag -l | xargs git tag -d # remove all local tags
+#git fetch -t                  # fetch remote tags
 
 echo -e ""
 echo -e "${green} Please valide the repo. ${happy_smiley} ${NC}"

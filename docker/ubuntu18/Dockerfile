@@ -131,7 +131,8 @@ COPY *.yml $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
 #COPY roles $JENKINS_USER_HOME/.ansible/roles
-RUN rm -f $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.jenkins-slave $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.workstation $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.cpp $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.gcc $JENKINS_USER_HOME/.ansible/roles/chrome
+RUN rm -Rf $JENKINS_USER_HOME/.ansible/roles/
+#RUN rm -f $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.jenkins-slave $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.workstation $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.cpp $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.gcc $JENKINS_USER_HOME/.ansible/roles/chrome
 RUN ls -lrta $JENKINS_USER_HOME/.ansible/roles | true
 RUN ls -lrta $JENKINS_USER_HOME/roles | true
 #COPY .ssh $JENKINS_USER_HOME/.ssh
