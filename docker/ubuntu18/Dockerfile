@@ -133,8 +133,8 @@ COPY playbooks $JENKINS_USER_HOME/playbooks
 #COPY roles $JENKINS_USER_HOME/.ansible/roles
 RUN rm -Rf $JENKINS_USER_HOME/.ansible/roles/
 #RUN rm -f $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.jenkins-slave $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.workstation $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.cpp $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.gcc $JENKINS_USER_HOME/.ansible/roles/chrome
-RUN ls -lrta $JENKINS_USER_HOME/.ansible/roles | true
-RUN ls -lrta $JENKINS_USER_HOME/roles | true
+#RUN ls -lrta $JENKINS_USER_HOME/.ansible/roles | true
+#RUN ls -lrta $JENKINS_USER_HOME/roles | true
 #COPY .ssh $JENKINS_USER_HOME/.ssh
 COPY package.json $JENKINS_USER_HOME/
 #RUN id jenkins && ls -lrta $JENKINS_USER_HOME/
@@ -173,7 +173,7 @@ ADD ${HELM_URL} /tmp/${HELM_FILENAME}
 RUN tar -zxvf /tmp/${HELM_FILENAME} -C /tmp \
   && chmod +x /tmp/linux-amd64/helm \
   && mv /tmp/linux-amd64/helm /bin/helm \
-  && rm -rf /tmp
+  && rm -rf /tmp/*
 
 ENV KUBECTL_VERSION v1.18.3
 ENV KUBECTL_URL https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
@@ -181,29 +181,11 @@ ENV KUBECTL_URL https://storage.googleapis.com/kubernetes-release/release/${KUBE
 ADD ${KUBECTL_URL} /tmp/kubectl
 RUN chmod +x /tmp/kubectl \
   && mv /tmp/kubectl /bin/kubectl \
-  && rm -rf /tmp
-
-#RUN apt-get install -qqy kubelet kubeadm
+  && rm -rf /tmp/*
 
 ADD https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 skaffold
 RUN chmod +x skaffold && mv skaffold /usr/local/bin
 RUN skaffold version
-
-# See https://github.com/jenkinsci/docker-agent
-ARG VERSION=4.3
-ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
-
-RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
-  && chmod 755 /usr/share/jenkins \
-  && chmod 644 /usr/share/jenkins/agent.jar \
-  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
-
-COPY jenkins-agent.sh /usr/local/bin/jenkins-agent
-RUN chmod +x /usr/local/bin/jenkins-agent && \
-    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
-
-ENV AGENT_WORKDIR=${AGENT_WORKDIR}
-RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
 ENV DRAFT_VERSION v0.16.0
 ENV DRAFT_FILENAME draft-${DRAFT_VERSION}-linux-amd64.tar.gz
@@ -231,6 +213,24 @@ RUN chmod +x /usr/local/bin/wrapdocker
 ADD entrypoint.sh /
 #RUN chmod +x /jenkins-slave-startup.sh /entrypoint.sh && rm -fr /sbin/initctl && ln -s /jenkins-slave-startup.sh /sbin/initctl
 RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
+
+# See https://github.com/jenkinsci/docker-agent
+ARG VERSION=4.3
+ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
+
+RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/agent.jar \
+  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+
+COPY jenkins-agent.sh /usr/local/bin/jenkins-agent
+RUN chmod +x /usr/local/bin/jenkins-agent && \
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
+
+RUN ls -lrta /tmp && chmod -R 777 /tmp
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
