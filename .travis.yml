@@ -70,7 +70,7 @@ script:
 #  - sudo echo "jenkins:jenkins1234" | sudo chpasswd
 
   - echo "${ANSIBLE_VAULT_PASS}"
-  - echo "${ANSIBLE_VAULT_PASS}" > $HOME/vault.passwd
+  - echo "microsoft" > $HOME/vault.passwd
   - ls -lrta > $HOME/vault.passwd
 
   # Check the role/playbook's syntax.
