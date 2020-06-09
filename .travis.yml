@@ -69,8 +69,9 @@ script:
   # Set password for the jenkins user (you may want to alter this).
 #  - sudo echo "jenkins:jenkins1234" | sudo chpasswd
 
+  - echo "${ANSIBLE_VAULT_PASS}"
   - echo "${ANSIBLE_VAULT_PASS}" > $HOME/vault.passwd
-  - cat > $HOME/vault.passwd
+  - ls -lrta > $HOME/vault.passwd
 
   # Check the role/playbook's syntax.
   - ansible-playbook --syntax-check -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" --vault-password-file=$HOME/vault.passwd --skip-tags restart
