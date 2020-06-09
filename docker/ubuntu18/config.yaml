@@ -10,21 +10,22 @@ globalEnvVars:
     value: "/usr/lib/jvm/java-8-openjdk-amd64"
 
 fileExistenceTests:
- - name: 'Root'
-   path: '/'
-   shouldExist: true
-   permissions: 'drwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+# Disable because of https://github.com/GoogleContainerTools/container-structure-test/issues/237
+# - name: 'Root'
+#   path: '/'
+#   shouldExist: true
+#   permissions: 'drwxr-xr-x'
+#   uid: 0
+#   gid: 0
+#   isExecutableBy: 'group'
 
- - name: 'jenkins-slave-startup'
-   path: '/jenkins-slave-startup.sh'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+# - name: 'jenkins-slave-startup'
+#   path: '/jenkins-slave-startup.sh'
+#   shouldExist: true
+#   permissions: '-rwxr-xr-x'
+#   uid: 0
+#   gid: 0
+#   isExecutableBy: 'group'
 
  - name: 'entrypoint'
    path: '/entrypoint.sh'
@@ -123,13 +124,65 @@ fileExistenceTests:
    shouldExist: true
    permissions: '-rwxrwxrwx'
 
+ - name: 'helm'
+   path: '/bin/helm'
+   shouldExist: true
+   permissions: '-rwxr-xr-x'
+
+# - name: 'hadolint'
+#   path: '/home/jenkins/.linuxbrew/bin/hadolint'
+#   shouldExist: true
+#   permissions: '-rwxrwxrwx'
+#
+ - name: 'dockerfile_lint'
+   path: '/usr/local/bin/dockerfile_lint'
+   shouldExist: true
+   permissions: 'Lrwxrwxrwx'
+
+ - name: 'draft'
+   path: '/bin/draft'
+   shouldExist: true
+   permissions: '-rwxr-xr-x'
+
+ - name: 'tmp'
+   path: '/tmp'
+   shouldExist: true
+   permissions: 'drwxrwxrwx'
+
+ - name: 'workspace tmp'
+   path: '/workspace/tmp'
+   shouldExist: true
+   permissions: 'drwxrwxrwx'
+
+# - name: 'java default'
+#   path: '/usr/java/default'
+#   shouldExist: true
+#   permissions: '-rwxr-xr-x'
+
+ - name: 'java java-openjdk'
+   path: '/usr/lib/jvm/java-openjdk'
+   shouldExist: true
+   permissions: 'Lrwxrwxrwx'
+
+ - name: 'java jre-openjdk'
+   path: '/usr/lib/jvm/jre-openjdk'
+   shouldExist: true
+   permissions: 'Lrwxrwxrwx'
+
+# - name: 'java java-oraclejdk'
+#   path: '/usr/lib/jvm/java-oraclejdk'
+#   shouldExist: true
+#   permissions: '-rwxr-xr-x'
+#
+# - name: 'java jre-oraclejdk'
+#   path: '/usr/lib/jvm/java-oraclejre'
+#   shouldExist: true
+#   permissions: '-rwxr-xr-x'
 fileContentTests:
  - name: 'jenkins .bashrc'
    path: '/home/jenkins/.bashrc'
    expectedContents: ['.*JAVA_HOME=.*/usr/lib/jvm/java-8-openjdk-amd64.*']
    excludedContents: ['.*/usr/lib/jvm/java-1.8.0-openjdk-amd64.*', '.*/usr/lib/jvm/java-12-oracle.*']
-
-#/usr/java/default
 
 commandTests:
  - name: "check jenkins user"
@@ -159,20 +212,7 @@ commandTests:
  - name: "check git-lfs version"
    command: "git-lfs"
    args: ["--version"]
-   expectedOutput: ["git-lfs/2.10.*"]
-
- - name: "git config"
-   command: "git"
-   args: ["config", "--global", "--list"]
-   expectedOutput: ["user.email=mgr.jenkins@finastra.com
-user.name=jenkins, mgr
-core.autocrlf=input
-core.longpaths=true
-maven-scm.maildomain=finastra.com
-maven-scm.forceusername=true
-http.sslverify=false"]
-#   excludedOutput: [".*Inst.*Security.* | .*Security.*Inst.*"]
-#   excludedError: [".*Inst.*Security.* | .*Security.*Inst.*"]
+   expectedOutput: ["git-lfs/2..*"]
 
  - name: "apt-get upgrade"
    command: "apt-get"
@@ -183,7 +223,7 @@ http.sslverify=false"]
  - name: "check openjdk 1.8.0"
    command: "${JAVA_HOME}/bin/java"
    args: ["-version"]
-   expectedError: ['openjdk version \"1\.8\.0_.*\".*']
+   expectedError: ['openjdk version \"1\.8\..*\".*']
 
 # - name: "check openjdk CA root imported"
 #   envVars:
@@ -256,6 +296,13 @@ http.sslverify=false"]
    command: "docker"
    args: ["--version"]
    expectedOutput: ['Docker version 19.03.*']
+#hadolint --version
+#dockerfile_lint version
+
+ - name: "check draft"
+   command: "draft"
+   args: ["version"]
+   expectedOutput: ['&version.Version{SemVer:\"v0.16..*\", GitCommit:\".*\", GitTreeState:\"dirty\"}']
 
 metadataTest:
   env:
@@ -271,5 +318,5 @@ metadataTest:
   volumes: []
 #  volumes: ["/test"]
   entrypoint: [/entrypoint.sh]
-  cmd: ["/usr/lib/systemd/systemd"]
+  cmd: ["bash"]
   workdir: "/home/jenkins"
