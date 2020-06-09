@@ -103,7 +103,7 @@ printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: 
 printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
 echo -e "${green} User is : ${NC}"
-id "${USER} ${happy_smiley}"
+id "${USER}"
 echo -e "${magenta} Add docker group to above user. ${happy_smiley} ${NC}"
 echo -e "${magenta} sudo usermod -a -G docker ${USER} ${NC}"
 
