@@ -231,10 +231,11 @@ ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
 RUN ls -lrta /tmp && chmod -R 777 /tmp
+RUN chmod -R 777 ${JENKINS_USER_HOME}/.cache ${JENKINS_USER_HOME}/.config
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
-RUN mkdir ${JENKINS_USER_HOME}/workspace && mkdir -p ${JENKINS_USER_HOME}/.m2/repository && chmod 777 ${JENKINS_USER_HOME}/ansible.log || true && chmod -R 777 ${JENKINS_USER_HOME}/.cache
+RUN mkdir ${JENKINS_USER_HOME}/workspace && mkdir -p ${JENKINS_USER_HOME}/.m2/repository && chmod 777 ${JENKINS_USER_HOME}/ansible.log || true
 
 #RUN helm init --client-only
 #RUN helm plugin install https://github.com/chartmuseum/helm-push.git

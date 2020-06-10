@@ -3,3 +3,4 @@ hooks/
 doc/
 *.md
 !README.md
+.git/
