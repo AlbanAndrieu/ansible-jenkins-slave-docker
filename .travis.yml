@@ -71,21 +71,18 @@ script:
   # Set password for the jenkins user (you may want to alter this).
 #  - sudo echo "jenkins:jenkins1234" | sudo chpasswd
 
-  #- echo "HOME : ${HOME}"
-  # /home/travis/vault.passwd
-  - pwd
   - echo "${ANSIBLE_VAULT_PASS}" > vault.passwd
-  - ansible-vault view --vault-password-file vault.passwd playbooks/group_vars/all/vault.yml
+  #- ansible-vault view --vault-password-file vault.passwd playbooks/group_vars/all/vault.yml
 
   # Check the role/playbook's syntax.
-  - ansible-playbook --syntax-check -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" -e "git_user=root" --vault-password-file=vault.passwd --skip-tags restart
+  - ansible-playbook --syntax-check -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5, 3.8]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" -e "git_user=root" --vault-password-file=vault.passwd --skip-tags restart
 
   # Molecule test
   # - molecule test
 
   # First run
   # Run the role/playbook with ansible-playbook.
-  - travis_wait 30 ansible-playbook -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" -e "git_user=root" --vault-password-file=vault.passwd --skip-tags restart
+  - travis_wait 30 ansible-playbook -i inventory/hosts playbooks/jenkins-slave-docker.yml --connection=local -e "python_versions=[2.7, 3.5, 3.8]" -e "jenkins_group=docker" -e "docker_gid=${DOCKER_GID}" -e "jenkins_id=${JENKINS_UID}" -e "python_enabled=false" -e "git_user=root" --vault-password-file=vault.passwd --skip-tags restart
 
   # Second run Idempotence test
   # Run the role/playbook again, checking to make sure it's idempotent.
