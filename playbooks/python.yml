@@ -269,6 +269,7 @@
         - python36
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+      ignore_errors: true
 
 # Since Ubuntu 19 we do not maintain python 3.5 and 3.6
 - hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*
