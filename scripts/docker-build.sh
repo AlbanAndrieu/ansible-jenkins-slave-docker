@@ -7,7 +7,7 @@ set -eo pipefail
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-export DOCKER_TAG="1.0.13"
+export DOCKER_TAG="1.0.14"
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
@@ -96,8 +96,8 @@ echo -e ""
 export JENKINS_USER_HOME=${JENKINS_USER_HOME:-/data1/home/jenkins/}
 export USER=${USER:-albandri}
 export GROUP=${GROUP:-docker}
-export DOCKER_UID=${DOCKER_UID:-1004}
-export DOCKER_GID=${DOCKER_GID:-999}
+export DOCKER_UID=${DOCKER_UID:-1000}
+export DOCKER_GID=${DOCKER_GID:-2000}
 # shellcheck disable=SC2059
 printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
 printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"

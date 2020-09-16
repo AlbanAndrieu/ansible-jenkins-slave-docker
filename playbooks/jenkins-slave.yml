@@ -55,6 +55,7 @@
     #npm_phantomjs_cdnurl: "http://albandrieu.com:7070/download/phantomjs"
     jenkins_home: "/home/jenkins"
     jenkins_group: docker
+    jenkins_gid: "2000"
     jenkins_http_port: 8686
     jenkins_slave_home: /media
     #jenkins_prefix: "/jenkins"

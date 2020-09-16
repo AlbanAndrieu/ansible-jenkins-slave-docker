@@ -16,8 +16,8 @@ alabaster==0.7.12
 alembic==1.4.2
 ansible==2.9.7
 ansible-cmdb==1.30
-ansible-lint==4.2.0
-ansible-lint-junit==0.14
+#ansible-lint==4.2.0
+#ansible-lint-junit==0.14
 ansible-tower-cli==3.3.9
 ansicolors==1.1.8
 anyconfig==0.9.10
@@ -137,7 +137,7 @@ lazr.restfulclient==0.14.3
 lazr.uri==1.0.3
 lazy-object-proxy==1.4.3
 linecache2==1.0.0
-lxml==4.5.0
+#lxml==4.5.0
 Mako==1.1.2
 MarkupSafe==1.1.1
 matplotlib==3.2.1

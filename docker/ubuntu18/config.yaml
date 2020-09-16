@@ -90,7 +90,8 @@ fileExistenceTests:
    permissions: '-rwxrwxrwx'
 
  - name: 'sonar-scanner'
-   path: '/usr/local/sonar-runner/bin/sonar-scanner'
+   #path: '/usr/local/sonar-runner/bin/sonar-scanner'
+   path: '/usr/local/sonar-runner'
    shouldExist: true
    permissions: '-rwxrwxrwx'
 
@@ -178,6 +179,17 @@ fileExistenceTests:
 #   path: '/usr/lib/jvm/java-oraclejre'
 #   shouldExist: true
 #   permissions: '-rwxr-xr-x'
+
+ - name: 'python virtualenv 2.7'
+   path: '/opt/ansible/env'
+   shouldExist: true
+   permissions: 'drwxrwxr-x'
+
+ - name: 'python virtualenv 3.8'
+   path: '/opt/ansible/env38'
+   shouldExist: true
+   permissions: 'drwxrwxr-x'
+
 fileContentTests:
  - name: 'jenkins .bashrc'
    path: '/home/jenkins/.bashrc'
@@ -242,10 +254,10 @@ commandTests:
    args: ["--version"]
    expectedOutput: ["v11.15.*"]
 
- - name: "check npm 6.7.0"
+ - name: "check npm 6.14.4"
    command: "npm"
    args: ["--version"]
-   expectedOutput: ["6.7.*"]
+   expectedOutput: ["6.14.*"]
 
  - name: "check newman 4.5.5"
    command: "newman"
@@ -260,28 +272,33 @@ commandTests:
  - name: "check pip version"
    command: "pip"
    args: ["--version"]
-   expectedOutput: ['pip 20.0.2 from /usr/local/lib/python2.7/dist-packages/pip (python 2.7).*']
+   expectedOutput: ['pip 20.0.2 from /usr/local/lib/python3.7/dist-packages/pip (python 3.7).*']
 
  - name: "check python 3"
    command: "python3"
    args: ["--version"]
    expectedOutput: ['Python 3.6.*']
 
- - name: "check python 3.5.7"
-   command: "python3.5"
-   args: ["--version"]
-   expectedOutput: ['Python 3.5.*']
+# - name: "check python 3.5.7"
+#   command: "python3.5"
+#   args: ["--version"]
+#   expectedOutput: ['Python 3.5.*']
 
  - name: "check python 3.6.8"
    command: "python3.6"
    args: ["--version"]
    expectedOutput: ['Python 3.6.*']
 
-# - name: "check python 3.7.5"
-#   command: "python3.7"
-#   args: ["--version"]
-#   expectedOutput: ['Python 3.7.*']
-#
+ - name: "check python 3.7.5"
+   command: "python3.7"
+   args: ["--version"]
+   expectedOutput: ['Python 3.7.*']
+
+ - name: "check python 3.8.2"
+   command: "python3.8"
+   args: ["--version"]
+   expectedOutput: ['Python 3.8.*']
+
 # - name: "check pip3 19.3.1"
 #   command: "pip3"
 #   args: ["--version"]
