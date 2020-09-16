@@ -11,8 +11,8 @@
 #sudo apt-get install python3.5-dev #fatal error: Python.h: No such file or directory
 ansible==2.7.14
 ansible-cmdb==1.30
-ansible-lint==4.1.0
-ansible-lint-junit==0.11
+ansible-lint==4.3.4
+ansible-lint-junit==0.15
 ansicolors==1.1.8
 appdirs==1.4.3
 ara==0.16.3
@@ -51,6 +51,7 @@ devscripts==1.0.0
 # docker-compose==1.22.0
 docker==2.7.0
 docker-compose==1.12.0
+docker-compose-wait==1.2.1
 docker-pycreds==0.2.1
 dockerpty==0.4.1
 docopt==0.6.2
