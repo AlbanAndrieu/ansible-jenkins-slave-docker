@@ -1,2 +1,2 @@
-argparse
-django-filters # replaced by django-filter
+#argparse
+#django-filters # replaced by django-filter
