@@ -418,8 +418,8 @@
 ##  scm: 'git'
 ##  version: 'master'
 #
-#- src: 'https://github.com/ocha/ansible-role-yarn'
-#  name: 'yarn'
+#- src: https://github.com/AlbanAndrieu/ansible-role-yarn.git
+#  name: yarn
 #  version: master
 #
 #- src: 'https://github.com/geerlingguy/ansible-role-nfs'

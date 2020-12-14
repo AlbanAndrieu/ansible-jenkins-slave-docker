@@ -1,9 +1,9 @@
 ---
 #ansible-playbook -i inventory/production -v playbooks/cleaning.yml --limit albandrieu@albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
 
-- import_playbook: process-cleaning.yml
+#- import_playbook: process-cleaning.yml
 
-- import_playbook: workspace-cleaning.yml
+#- import_playbook: workspace-cleaning.yml
 
 - import_playbook: boot-cleaning.yml
 

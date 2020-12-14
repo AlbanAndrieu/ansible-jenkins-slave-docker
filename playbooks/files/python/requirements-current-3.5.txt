@@ -12,7 +12,7 @@
 ansible==2.7.14
 ansible-cmdb==1.30
 ansible-lint==4.3.4
-ansible-lint-junit==0.15
+#ansible-lint-junit==0.15 # error no module named lxml
 ansicolors==1.1.8
 appdirs==1.4.3
 ara==0.16.3
@@ -46,6 +46,7 @@ cssselect==1.0.3
 cssselect2==0.2.1
 defusedxml==0.5.0
 devscripts==1.0.0
+distro==1.5.0
 # Reference / disabled for now to avoid issues with docker
 # docker==3.4.1
 # docker-compose==1.22.0
@@ -55,7 +56,7 @@ docker-compose-wait==1.2.1
 docker-pycreds==0.2.1
 dockerpty==0.4.1
 docopt==0.6.2
-docutils==0.14
+#docutils==0.14
 ecdsa==0.13
 entrypoints==0.2.3
 feedparser==5.2.1
@@ -82,7 +83,7 @@ keyrings.alt==3.0
 launchpadlib==1.10.6
 lazr.restfulclient==0.13.5
 lazr.uri==1.0.3
-lxml==4.2.1
+lxml>=4.2.1
 Mako==1.0.7
 MarkupSafe==1.0
 mccabe==0.6.1

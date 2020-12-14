@@ -1,4 +1,8 @@
 exclude_paths:
+  - ./requirements.yml
+  - ./.travis.yml
+  - ./playbooks/group_vars/all/vault.yml
+  - ./docker/
   - ./roles/alban.andrieu.virtualbox/
   - ./roles/alban.andrieu.webmin/
   - ./roles/Stouts.python/
