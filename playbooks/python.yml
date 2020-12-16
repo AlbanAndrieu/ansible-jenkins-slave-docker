@@ -333,7 +333,7 @@
         - python37
       #environment:
       #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      ignore_errors: true
+      #ignore_errors: true
 
     #- name: python3.8 | Create venv and remove requirements
     #  pip:
@@ -348,18 +348,18 @@
     #  #environment:
     #  #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
 
-    #- name: python3.8 | Create venv and install requirements
-    #  pip:
-    #    requirements: "{{ ansible_user_dir }}/requirements-current-3.8.txt"
-    #    virtualenv: /opt/ansible/env38
-    #    virtualenv_python: "python3.8"
-    #  tags:
-    #    - venv
-    #    - requirements
-    #    - python38
-    #  #environment:
-    #  #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-    #  #ignore_errors: true
+    - name: python3.8 | Create venv and install requirements
+      pip:
+        requirements: "{{ ansible_user_dir }}/requirements-current-3.8.txt"
+        virtualenv: /opt/ansible/env38
+        virtualenv_python: "python3.8"
+      tags:
+        - venv
+        - requirements
+        - python38
+      #environment:
+      #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+      #ignore_errors: true
 
 - hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
