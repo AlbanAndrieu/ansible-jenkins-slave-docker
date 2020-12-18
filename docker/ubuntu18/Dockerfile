@@ -41,12 +41,12 @@ USER root
 # hadolint ignore=DL3008
 RUN apt-get -q update &&\
     apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
-    git bzip2 zip unzip python-yaml python-jinja2 python-pip rsyslog gpg-agent \
+    git bzip2 zip unzip python-yaml python-jinja2 python-pip python-setuptools rsyslog gpg-agent \
     ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     apt-utils apt-transport-https ca-certificates software-properties-common \
     locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
     systemd systemd-cron \
-    python3-setuptools python3 python3-pip python3-dev python3-apt \
+    python3-setuptools python3 python3-pip python3-dev python3-apt python3-setuptools \
     openjdk-8-jdk maven gcc g++ make cmake \
     net-tools iputils-ping x11-apps \
     gnome-keyring gnome-keyring gnupg2 pass \
@@ -67,8 +67,8 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 # error with pip==19.3.1
 # error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 # Before ansible install default python is 3.6
-RUN python3 -m pip install --upgrade pip==20.0.2 \
-    && pip3 install ansible==2.7.14 zabbix-api==0.5.4 docker-compose==1.25.5 virtualenv>=20.0.18 \
+RUN python3 -m pip install --upgrade pip==20.2.2 \
+    && pip3 install ansible==2.7.14 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
 ### DOCKER
@@ -175,13 +175,20 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
  && rm -Rf $JENKINS_USER_HOME/playbooks/.node_cache/ \
  && rm -Rf $JENKINS_USER_HOME/.cpan $JENKINS_USER_HOME/.ansible \
  && rm -Rf $JENKINS_USER_HOME/.npm $JENKINS_USER_HOME/.node_cache $JENKINS_USER_HOME/.cache/pip \
+ && mkdir $JENKINS_USER_HOME/.cache/pip \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
+
+RUN ls -lrta $JENKINS_USER_HOME/.cache/ && ls -lrta $JENKINS_USER_HOME/.cache/pip
 
 # for local python, not the one in virtualenv
 #/usr/bin/python3.8 -m pip install --upgrade pip
-RUN python3 -m pip install --upgrade pip==20.2.4 \
-    && pip install ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
-    && pip3 --version && python3 --version
+RUN pip3 --version && python3 --version \
+    && pip --version && python --version
+
+RUN python3 -m pip install --upgrade pip==20.2.2 \
+    && pip install setuptools==41.0.0
+#    ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
+#    && pip3 --version && python3 --version
 #    && pip install ansible-lint-junit==0.15
 
 # hadolint ignore=DL3008
@@ -286,7 +293,7 @@ RUN mkdir ${HOME}/workspace && mkdir -p ${HOME}/.m2/repository && chmod 777 ${HO
 RUN helm plugin install https://github.com/chartmuseum/helm-push.git
 
 # Need to write on /home/jenkins/.config/helm/repositories.lock
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
+RUN mkdir "${JENKINS_USER_HOME}/.config/helm/" && chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
 #RUN ls -lrta ${JENKINS_USER_HOME}/.helm
 RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/
 
