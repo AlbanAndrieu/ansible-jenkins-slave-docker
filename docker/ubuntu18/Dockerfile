@@ -67,7 +67,7 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 # error with pip==19.3.1
 # error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 # Before ansible install default python is 3.6
-RUN python3 -m pip install --upgrade pip==20.2.2 \
+RUN python3 -m pip install --upgrade pip==20.2.4 \
     && pip3 install ansible==2.7.14 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
@@ -185,9 +185,9 @@ RUN ls -lrta $JENKINS_USER_HOME/.cache/ && ls -lrta $JENKINS_USER_HOME/.cache/pi
 RUN pip3 --version && python3 --version \
     && pip --version && python --version
 
-RUN python3 -m pip install --upgrade pip==20.2.2 \
-    && pip install setuptools==41.0.0
-#    ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
+RUN python3 -m pip install --upgrade pip==20.2.4 \
+    && pip install setuptools==41.0.0 ansible==2.10.3
+#    docker-compose==1.25.5 pre-commit==2.9.0 \
 #    && pip3 --version && python3 --version
 #    && pip install ansible-lint-junit==0.15
 
