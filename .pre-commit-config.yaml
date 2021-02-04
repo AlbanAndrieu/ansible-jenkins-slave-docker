@@ -118,7 +118,8 @@ repos:
         args: [--config, .htmlhintrc]
     -   id: markdown-toc
         # optional custom config:
-        #args: [--indent, "  "]
+        #args: [--indent, "    ", -i]
+        args: [--maxdepth, "3", -i]
     -   id: dockerfile_lint
         args: [--json, --verbose, --dockerfile]
 -   repo: https://github.com/AlbanAndrieu/nabla-hooks.git

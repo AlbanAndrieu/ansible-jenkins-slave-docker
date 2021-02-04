@@ -10,10 +10,19 @@
 
 <!-- toc -->
 
+- [Requirements](#requirements)
+- [Usage](#usage)
+    + [Linting](#linting)
+    + [Ideas for improvement](#ideas-for-improvement)
+  * [Update README.md](#update-readmemd)
+    + [Contributing](#contributing)
+    + [Authors and license](#authors-and-license)
+  * [License](#license)
+    + [Feedback, bug-reports, requests, ...](#feedback-bug-reports-requests-)
+
 <!-- tocstop -->
 
-Requirements
-------------
+# Requirements
 
 - Requires Ansible 2.9.4 or newer
 - Expects Ubuntu
@@ -24,6 +33,8 @@ This playbook is be used by [Docker Hub][3] to create a [Docker][1] image.
 Goal of this project is to integrate of several roles done by the community.
 Goal is to contribuate to the community as much as possible instead of creating a new role.
 Goal is to ensure following roles (GIT submodules) to work in harmony.
+
+# Usage
 
 Then run the playbook, like this:
 
@@ -82,16 +93,22 @@ repository and send us your changes via pull requests.
 [2]: https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin
 [3]: https://hub.docker.com
 
-Update README.md Table of Contents
-----------------------------------
+## Update README.md
 
 
   * [github-markdown-toc](https://github.com/jonschlinkert/markdown-toc)
   * With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
 
-`
+```
 npm install --save markdown-toc
-`
+markdown-toc README.md
+markdown-toc CHANGELOG.md  -i
+```
+
+```
+git add README.md
+pre-commit run markdown-toc
+```
 
 ### Contributing
 
