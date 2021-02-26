@@ -1,14 +1,42 @@
 ---
 #ansible-playbook -i inventory/production -v playbooks/cleaning.yml --limit albandrieu@albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
 
-#- import_playbook: process-cleaning.yml
+- name: Apt cleaning
+  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  become: true
 
-#- import_playbook: workspace-cleaning.yml
+  tasks:
+    - name: Apt cleanup # noqa 301 306
+      file:
+        path: /etc/apt/sources.list.d/google-chrome.list
+        state: absent
+      ignore_errors: true
+#keep /etc/apt/sources.list.d/dl_google_com_linux_chrome_deb.lib
+
+- import_playbook: process-cleaning.yml
+  tags:
+    - clean
+    - process
+    - vm
+
+- import_playbook: workspace-cleaning.yml
+  tags:
+    - clean
+    - workspace
+    - vm
 
 - import_playbook: boot-cleaning.yml
+  tags:
+    - clean
+    - boot
+    - vm
 
 - import_playbook: docker-cleaning.yml
 
+  tags:
+    - clean
+    - docker
+    - vm
 # TODO certificate cleaning
 
 #rm -f ~/pki/registry.pem

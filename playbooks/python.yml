@@ -236,18 +236,18 @@
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
 
-    #- name: python3.6 | Create venv and remove requirements
-    #  pip:
-    #    name: "argparse"
-    #    state: "absent"
-    #    virtualenv: /opt/ansible/env36
-    #    virtualenv_python: "python3.6"
-    #  tags:
-    #    - venv
-    #    - requirements
-    #    - python36
-    #  environment:
-    #    PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+    - name: python3.5 | Create venv and install requirements
+      pip:
+        requirements: "{{ ansible_user_dir }}/requirements-current-3.5.txt"
+        virtualenv: /opt/ansible/env35
+        virtualenv_python: "python3.5"
+      tags:
+        - venv
+        - requirements
+        - python35
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+      ignore_errors: true  # RedHat 7.6 have now python 3.6 as default, 3.5 targeted to be deprecated
 
 
     - name: python3.6 | Create venv and install requirements
@@ -261,21 +261,20 @@
         - python36
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      ignore_errors: true  # CentOS issue installing python3.6u
+      #ignore_errors: true  # CentOS issue installing python3.6u
 
-    #- name: python3.7 | Create venv and remove requirements
-    #  pip:
-    #    name: "argparse"
-    #    state: "absent"
-    #    virtualenv: /opt/ansible/env37
-    #    virtualenv_python: "python3.7"
-    #  tags:
-    #    - venv
-    #    - requirements
-    #    - python36
-    #  environment:
-    #    PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-    #  #ignore_errors: true
+    - name: python3.6 | Create venv and remove requirements
+      pip:
+        name: "argparse"
+        state: "absent"
+        virtualenv: /opt/ansible/env36
+        virtualenv_python: "python3.6"
+      tags:
+        - venv
+        - requirements
+        - python36
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
 
     - name: python3.7 | Create venv and install requirements
       pip:
@@ -288,7 +287,39 @@
         - python37
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      ignore_errors: true
+      #ignore_errors: true
+
+    - name: python3.7 | Create venv and remove requirements
+      pip:
+        name: "argparse"
+        state: "absent"
+        virtualenv: /opt/ansible/env37
+        virtualenv_python: "python3.7"
+      tags:
+        - venv
+        - requirements
+        - python36
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+
+# On Ubuntu 18 python 3.6 is the default
+- hosts: Ubuntu-18*
+  become: true
+
+  tasks:
+    - name: python3.6 | Install requirements
+      pip:
+        requirements: "{{ ansible_user_dir }}/requirements-current-3.6.txt"
+        #virtualenv: /opt/ansible/env36
+        #virtualenv_python: "python3.6"
+        extra_args: --user
+      tags:
+        - venv
+        - requirements
+        - python36
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
+      #ignore_errors: true
 
 # Since Ubuntu 19 we do not maintain python 3.5 and 3.6
 - hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*
@@ -307,20 +338,6 @@
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
 
-    #- name: python3.7 | Create venv and remove requirements
-    #  pip:
-    #    name: "argparse"
-    #    state: "absent"
-    #    virtualenv: /opt/ansible/env37
-    #    virtualenv_python: "python3.7"
-    #  tags:
-    #    - venv
-    #    - requirements
-    #    - python37
-    #  #environment:
-    #  #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      ignore_errors: true
-
     - name: python3.7 | Create venv and install requirements
       pip:
         requirements: "{{ ansible_user_dir }}/requirements-current-3.7.txt"
@@ -334,19 +351,6 @@
       #environment:
       #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
       #ignore_errors: true
-
-    #- name: python3.8 | Create venv and remove requirements
-    #  pip:
-    #    name: "argparse"
-    #    state: "absent"
-    #    virtualenv: /opt/ansible/env38
-    #    virtualenv_python: "python3.8"
-    #  tags:
-    #    - venv
-    #    - requirements
-    #    - python38
-    #  #environment:
-    #  #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
 
     - name: python3.8 | Create venv and install requirements
       pip:

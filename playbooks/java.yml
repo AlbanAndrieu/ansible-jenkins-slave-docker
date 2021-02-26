@@ -48,7 +48,7 @@
 # debian | ubuntu | Java 11
 
 #- name: Install java (1)
-#  hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: true
 #
 #  tasks:
@@ -63,7 +63,7 @@
 #      become_user: root
 #
 #- name: Install java (2)
-#  hosts: Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: true
 #
 #  roles:

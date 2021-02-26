@@ -9,19 +9,19 @@
 #yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-17.12.1.ce-1.el7.centos.x86_64.rpm
 
 - name: Bootstrap docker onto server
-  hosts: Ubuntu-19*
+  hosts: Ubuntu-20*:Ubuntu-19*
   become: true
 
   pre_tasks:
-  - name: docker | Remove old docker repo
+  - name: docker | Remove old docker repo # noqa 301 302
     raw: |
       rm -f /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list*
 
-  - name: docker | Install docker repo
+  - name: docker | Install docker repo # noqa 301
     raw: |
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-  - name: docker | Install docker repo
+  - name: docker | Install docker repo # noqa 301
     raw: |
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
 
@@ -61,7 +61,7 @@
      #  - jenkins
 
 - name: Install docker
-  hosts: Ubuntu-19*
+  hosts: Ubuntu-20*:Ubuntu-19*
   #hosts: docker
   become: true
   tags:

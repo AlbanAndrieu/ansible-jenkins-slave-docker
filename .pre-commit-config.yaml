@@ -29,6 +29,10 @@ repos:
     -   id: check-json
     -   id: check-xml
     -   id: check-yaml
+        exclude: >
+          (?x)^(
+              k8s/.*|
+          )$
     -   id: check-symlinks
     -   id: check-merge-conflict
     -   id: debug-statements
@@ -78,7 +82,13 @@ repos:
     hooks:
     -   id: ansible-lint
         files: \.(yaml|yml)$
-        exclude: '.travis.yml'
+        exclude: >
+                  (?x)^(
+                      .travis.yml|
+                      docker/|
+                      requirements.yml|
+                      playbooks/group_vars/all/vault.yml|
+                  )$
 -   repo: https://github.com/doublify/pre-commit-hindent.git
     rev: b3680b6ebf9f7cf29b19307f246adef66756feef
     hooks:
@@ -114,10 +124,8 @@ repos:
     rev: v1.1.1
     hooks:
     -   id: htmlhint
-        # optional custom config:
         args: [--config, .htmlhintrc]
     -   id: markdown-toc
-        # optional custom config:
         #args: [--indent, "    ", -i]
         args: [--maxdepth, "3", -i]
     -   id: dockerfile_lint

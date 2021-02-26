@@ -10,7 +10,6 @@ ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 #ENV http_proxy=${http_proxy:-"http://192.168.1.57:3128"}
 #ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.nabla.mobi,.azure.io"}
-#RUN echo 'Acquire::http::Proxy "http://192.168.1.57:8080";' >> /etc/apt/apt.conf
 
 # dockerfile_lint - ignore
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
@@ -37,16 +36,19 @@ ENV TERM="xterm-256color"
 
 USER root
 
+#RUN echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf.d/proxy.conf
+
 # Install ansible
 # hadolint ignore=DL3008
 RUN apt-get -q update &&\
     apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
-    git bzip2 zip unzip python-yaml python-jinja2 python-pip python-setuptools rsyslog gpg-agent \
+    git bzip2 zip unzip python-yaml python-jinja2 python-pip rsyslog gpg-agent \
     ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     apt-utils apt-transport-https ca-certificates software-properties-common \
     locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
     systemd systemd-cron \
-    python3-setuptools python3 python3-pip python3-dev python3-apt python3-setuptools \
+    python3-setuptools python3 python3-pip python3-dev python3-apt \
+#    python-lxml python3-lxml \
     openjdk-8-jdk maven gcc g++ make cmake \
     net-tools iputils-ping x11-apps \
     gnome-keyring gnome-keyring gnupg2 pass \
@@ -56,6 +58,8 @@ RUN apt-get -q update &&\
 # multiple containers with Molecule (https://github.com/ansible/molecule/issues/1104)
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
+
+RUN lsb_release -cs
 
 ENV TZ "Europe/Paris"
 RUN echo "${TZ}" > /etc/timezone
@@ -67,8 +71,9 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 # error with pip==19.3.1
 # error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 # Before ansible install default python is 3.6
-RUN python3 -m pip install --upgrade pip==20.2.4 \
-    && pip3 install ansible==2.7.14 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
+# TODO pip==20.2.4 # pip resolver ResolutionTooDeep(max_rounds)
+RUN python3 -m pip install --upgrade pip==20.2.2 \
+    && pip3 install ansible==2.10.3 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
 ### DOCKER
@@ -91,8 +96,8 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     npm config set depth 0;
 RUN npm install -g npm@6.14.4 && apt-get purge -y npm && ln -s /usr/local/bin/npm /usr/bin/npm
 RUN npm -v && command -v npm # 6.7.0
-RUN npm install -g bower@1.8.8 grunt@1.0.4 grunt-cli@1.3.2 webdriver-manager@12.1.7 yarn@1.19.1 yo@3.1.1
-#RUN npm install -g shrinkwrap@0.4.0 newman@4.5.5 xunit-viewer@5.1.11 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3q
+RUN npm install -g bower@1.8.8 grunt@1.0.4 webdriver-manager@12.1.7 yarn@1.19.1 yo@3.1.1
+RUN npm install -g shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3
 RUN npm install -g npm@6.14.4
 
 ARG USER=${USER:-jenkins}
@@ -168,7 +173,7 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,python36,brew,objc \
+ --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
@@ -176,19 +181,16 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
  && rm -Rf $JENKINS_USER_HOME/.cpan $JENKINS_USER_HOME/.ansible \
  && rm -Rf $JENKINS_USER_HOME/.npm $JENKINS_USER_HOME/.node_cache $JENKINS_USER_HOME/.cache/pip \
  && mkdir $JENKINS_USER_HOME/.cache/pip \
+# && rm -Rf $JENKINS_USER_HOME/.local/share \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
 RUN ls -lrta $JENKINS_USER_HOME/.cache/ && ls -lrta $JENKINS_USER_HOME/.cache/pip
 
 # for local python, not the one in virtualenv
 #/usr/bin/python3.8 -m pip install --upgrade pip
-RUN pip3 --version && python3 --version \
-    && pip --version && python --version
-
 RUN python3 -m pip install --upgrade pip==20.2.4 \
-    && pip install setuptools==41.0.0 ansible==2.10.3
-#    docker-compose==1.25.5 pre-commit==2.9.0 \
-#    && pip3 --version && python3 --version
+    && pip install ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
+    && pip3 --version && python3 --version
 #    && pip install ansible-lint-junit==0.15
 
 # hadolint ignore=DL3008
@@ -257,7 +259,7 @@ RUN curl -L -o /tmp/${DRAFT_FILENAME} ${DRAFT_URL} \
 ADD https://get.aquasec.com/microscanner /
 RUN chmod +x /microscanner
 
-ADD wrapdocker /usr/local/bin/wrapdocker
+COPY wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
 #VOLUME /var/lib/docker
 
@@ -283,6 +285,13 @@ RUN chmod +x /usr/local/bin/jenkins-agent && \
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
+ADD https://github.com/roboll/helmfile/releases/download/v0.138.2/helmfile_linux_amd64 /usr/local/bin/helmfile
+#sudo cp helmfile_linux_amd64 /usr/local/bin/helmfile
+RUN chmod +x /usr/local/bin/helmfile
+
+ADD https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_linux_amd64.deb /tmp/helm-docs_1.5.0_linux_amd64.deb
+RUN dpkg -i /tmp/helm-docs_1.5.0_linux_amd64.deb && rm -rf /tmp/*
+
 # hadolint ignore=SC2046
 RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 
@@ -290,7 +299,12 @@ RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 USER jenkins
 RUN mkdir ${HOME}/workspace && mkdir -p ${HOME}/.m2/repository && chmod 777 ${HOME}/ansible.log || true
 
-RUN helm plugin install https://github.com/chartmuseum/helm-push.git
+RUN helm plugin install https://github.com/chartmuseum/helm-push.git && \
+    helm plugin install https://github.com/databus23/helm-diff && \
+    helm plugin install https://github.com/ContainerSolutions/helm-monitor && \
+    helm plugin install https://github.com/ContainerSolutions/helm-convert && \
+    helm plugin install https://github.com/lrills/helm-unittest && \
+    helm plugin install https://github.com/karuppiah7890/helm-schema-gen
 
 # Need to write on /home/jenkins/.config/helm/repositories.lock
 RUN mkdir "${JENKINS_USER_HOME}/.config/helm/" && chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
@@ -313,6 +327,7 @@ RUN chmod 700 ${HOME}/.ssh && chmod 600 ${HOME}/.ssh/id_rsa* && chmod 644 ${HOME
 
 # Will create $JENKINS_USER_HOME/.local/share/applications/mimeapps.list
 RUN google-chrome --version
+#RUN chromium-browser --version
 
 RUN rm -f /home/jenkins/alban.andrieu.conky/files/default-themes-extra-1.tar.gz || true
 

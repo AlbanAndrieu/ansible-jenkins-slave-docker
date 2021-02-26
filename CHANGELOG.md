@@ -1,8 +1,27 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+# Table of contents
+
+<!-- toc -->
+
+<!-- tocstop -->
+
+### Size
+ - .linuxbrew = 761 + 86 + 58 MB
+ - .cache/Homebrew = 84 MB + 41 MB + 38 MB
+ - node = 60 MB
+ - .npm = 38 + 18 + 15 + 15 MB
+ - skaffold = 48 MB
+ - kubect = 44 MB
+ - java 8 = 131 + 27 MB
+ - draft = 14 MB
+ - helm 13 MB
+ - chromedriver 12 MB
 
 ## [Unreleased]
 

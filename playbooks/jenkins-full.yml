@@ -121,6 +121,10 @@
 
 - import_playbook: xvbf.yml
 
-- import_playbook: filebeat.yml
+#- import_playbook: filebeat.yml
 
 - import_playbook: opencl.yml
+
+- import_playbook: kubernetes.yml
+
+- import_playbook: cleaning.yml
