@@ -30,7 +30,7 @@ fileExistenceTests:
  - name: 'entrypoint'
    path: '/entrypoint.sh'
    shouldExist: true
-   permissions: '-rwxrwxr-x'
+   permissions: '-rwxr-xr-x'
    uid: 0
    gid: 0
    isExecutableBy: 'group'
@@ -418,7 +418,7 @@ commandTests:
  - name: "check pip 3 version"
    command: "pip3"
    args: ["--version"]
-   expectedOutput: ['pip 20.2.* from /usr/local/lib/python3.7/dist-packages/pip.*.*']
+   expectedOutput: ['pip 20.3.* from /usr/local/lib/python3.7/dist-packages/pip.*.*']
 
  - name: "check python 3 version"
    command: "python3"
@@ -507,10 +507,10 @@ commandTests:
 #   args: ["--version"]
 #   expectedOutput: ['x86_64-w64-mingw32-g\+\+ (GCC) .*-win32.*']
 
- - name: "check chromium-browser 87.0 version"
+ - name: "check chromium-browser 89.0 version"
    command: "/usr/bin/chromium-browser"
    args: ["--version"]
-   expectedOutput: ['Chromium 87.0..* Built on Ubuntu.*']
+   expectedOutput: ['Chromium 89.0..* Built on Ubuntu.*']
 
 # - name: "check chromium 86.0 version"
 #   command: "/usr/bin/chromium"
@@ -522,10 +522,10 @@ commandTests:
    args: ["--version"]
    expectedOutput: ['Google Chrome 86..*']
 
- - name: "check chromedriver 87.0 version"
+ - name: "check chromedriver 89.0 version"
    command: "/usr/bin/chromedriver"
    args: ["--version"]
-   expectedOutput: ['ChromeDriver 87.0..*']
+   expectedOutput: ['ChromeDriver 89.0..*']
 
 metadataTest:
   env:

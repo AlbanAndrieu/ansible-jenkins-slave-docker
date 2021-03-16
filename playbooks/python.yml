@@ -106,6 +106,7 @@
       # python_ppa: no # TODO for Ubuntu-19
       python_install: [numpy, pylint, pandas]
       python_virtualenv_user: jenkins
+      python_pip_installed_enabled: false # Do not want latest pip 21.0.1
       python_virtualenvs:
         - path: /opt/ansible/env
           python: python2.7
@@ -120,7 +121,7 @@
 
   vars:
       python_versions: [3, 3.6, 3.7, 3.8]
-      python_install: [numpy, pylint, pandas]
+      #python_install: [numpy, pylint, pandas]
       python_virtualenv_user: jenkins
       python_virtualenvs:
         - path: /opt/ansible/env38
@@ -140,7 +141,7 @@
 
   vars:
       python_versions: [3, 3.7, 3.8]
-      python_install: [numpy, pylint, pandas]
+      #python_install: [numpy, pylint, pandas]
       python_virtualenv_user: jenkins
       python_virtualenvs:
         - path: /opt/ansible/env38

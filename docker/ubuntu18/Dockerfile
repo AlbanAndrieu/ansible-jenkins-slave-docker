@@ -59,8 +59,6 @@ RUN apt-get -q update &&\
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
-RUN lsb_release -cs
-
 ENV TZ "Europe/Paris"
 RUN echo "${TZ}" > /etc/timezone
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
@@ -72,7 +70,7 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 # error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 # Before ansible install default python is 3.6
 # TODO pip==20.2.4 # pip resolver ResolutionTooDeep(max_rounds)
-RUN python3 -m pip install --upgrade pip==20.2.2 \
+RUN python3 -m pip install --upgrade pip==20.3.4 \
     && pip3 install ansible==2.10.3 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
@@ -188,7 +186,7 @@ RUN ls -lrta $JENKINS_USER_HOME/.cache/ && ls -lrta $JENKINS_USER_HOME/.cache/pi
 
 # for local python, not the one in virtualenv
 #/usr/bin/python3.8 -m pip install --upgrade pip
-RUN python3 -m pip install --upgrade pip==20.2.4 \
+RUN python3 -m pip install --upgrade pip==20.3.4 \
     && pip install ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
     && pip3 --version && python3 --version
 #    && pip install ansible-lint-junit==0.15
@@ -292,6 +290,9 @@ RUN chmod +x /usr/local/bin/helmfile
 ADD https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_linux_amd64.deb /tmp/helm-docs_1.5.0_linux_amd64.deb
 RUN dpkg -i /tmp/helm-docs_1.5.0_linux_amd64.deb && rm -rf /tmp/*
 
+ADD https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz /tmp/kubeval-linux-amd64.tar.gz
+RUN tar xf /tmp/kubeval-linux-amd64.tar.gz && cp kubeval /usr/local/bin && rm -rf /tmp/*
+
 # hadolint ignore=SC2046
 RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 
@@ -303,11 +304,11 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push.git && \
     helm plugin install https://github.com/databus23/helm-diff && \
     helm plugin install https://github.com/ContainerSolutions/helm-monitor && \
     helm plugin install https://github.com/ContainerSolutions/helm-convert && \
-    helm plugin install https://github.com/lrills/helm-unittest && \
+#    helm plugin install https://github.com/lrills/helm-unittest && \
     helm plugin install https://github.com/karuppiah7890/helm-schema-gen
 
 # Need to write on /home/jenkins/.config/helm/repositories.lock
-RUN mkdir "${JENKINS_USER_HOME}/.config/helm/" && chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
+RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
 #RUN ls -lrta ${JENKINS_USER_HOME}/.helm
 RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/
 
