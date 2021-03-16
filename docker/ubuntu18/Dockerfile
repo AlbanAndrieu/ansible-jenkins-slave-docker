@@ -308,7 +308,7 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push.git && \
     helm plugin install https://github.com/karuppiah7890/helm-schema-gen
 
 # Need to write on /home/jenkins/.config/helm/repositories.lock
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
+#RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
 #RUN ls -lrta ${JENKINS_USER_HOME}/.helm
 RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/
 
