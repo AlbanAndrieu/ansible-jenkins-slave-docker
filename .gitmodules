@@ -10,9 +10,6 @@
 [submodule "roles/alban.andrieu.hostname"]
 	path = roles/alban.andrieu.hostname
 	url = https://github.com/AlbanAndrieu/ansible-hostname.git
-[submodule "roles/alban.andrieu.common"]
-	path = roles/alban.andrieu.common
-	url = https://github.com/AlbanAndrieu/ansible-common.git
 [submodule "roles/alban.andrieu.selenium"]
 	path = roles/alban.andrieu.selenium
 	url = https://github.com/AlbanAndrieu/ansible-selenium.git
