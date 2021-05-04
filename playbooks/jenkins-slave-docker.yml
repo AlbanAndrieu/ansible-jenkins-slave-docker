@@ -94,6 +94,9 @@
 #- import_playbook: chrome.yml google_talkplugin_enabled=false
 
 - import_playbook: docker.yml # must be before jenkins-slave
+  tags:
+    - docker
+    - vm
 
 - import_playbook: jenkins-slave.yml
 
@@ -104,3 +107,6 @@
 #- import_playbook: certificate.yml
 
 - import_playbook: xvbf.yml
+  tags:
+    - xvbf
+    - vm

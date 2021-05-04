@@ -3,8 +3,8 @@ exclude_paths:
   - ./.travis.yml
   - ./playbooks/group_vars/all/vault.yml
   - ./docker/
-  - ./roles/alban.andrieu.virtualbox/
-  - ./roles/alban.andrieu.webmin/
+  - ./roles/albanandrieu.virtualbox/
+  - ./roles/albanandrieu.webmin/
   - ./roles/Stouts.python/
   - ./roles/Stouts.collectd/
   - ./roles/andrewrothstein.terraform/

@@ -5,7 +5,7 @@
   become: true
 
   roles:
-    - alban.andrieu.xvbf
+    - albanandrieu.xvbf
 
 #  vars:
 #    xvbf_mirror: "http://albandrieu.com/download/xvbf/"

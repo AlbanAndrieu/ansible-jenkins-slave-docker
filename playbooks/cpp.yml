@@ -4,36 +4,36 @@
   hosts: cpp
 
   roles:
-#    - role: alban.andrieu.gcc
+#    - role: albanandrieu.gcc
 #      gcc_version: "=4:9.2.1-3.1ubuntu1" # g++ 9 on ubuntu 19
 #      gcc_version: "=4:7.4.0-1ubuntu2.3" # g++ 7 on ubuntu 18
 #      gcc_priority: 10
 
-#    - role: alban.andrieu.gcc
+#    - role: albanandrieu.gcc
 #      gcc_version: "-4.8"
 #      gcc_priority: 10
 
-#    - role: alban.andrieu.gcc
+#    - role: albanandrieu.gcc
 #      gcc_version: "-4.9"
 #      gcc_priority: 20
 
-#    - role: alban.andrieu.gcc
+#    - role: albanandrieu.gcc
 #      gcc_version: "-5"
 #      gcc_priority: 50
 
-#    - role: alban.andrieu.gcc
+#    - role: albanandrieu.gcc
 #      gcc_version: "-6"
 #      gcc_priority: 60
 
-    - role: alban.andrieu.gcc
+    - role: albanandrieu.gcc
       gcc_version: "-7"
       gcc_priority: 70
 
-    - role: alban.andrieu.gcc
+    - role: albanandrieu.gcc
       gcc_version: "-8"
       gcc_priority: 80
 
-    - role: alban.andrieu.gcc
+    - role: albanandrieu.gcc
       gcc_version: "-9"
       gcc_priority: 90
 
@@ -41,7 +41,7 @@
   hosts: cpp
 
   roles:
-    - alban.andrieu.cpp
+    - albanandrieu.cpp
 
   vars:
       #ubuntu 16 cppunit_version: "-1.13-0v5"

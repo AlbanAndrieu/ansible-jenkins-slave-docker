@@ -6,8 +6,8 @@
   remote_user: root
 
   roles:
-    - alban.andrieu.common
+    - albanandrieu.ansible_common
 
   vars:
-       apt_notification_email: "alban.andrieu@free.fr"
-       apt_upgrade_system_enabled: no
+     apt_notification_email: "alban.andrieu@free.fr"
+     apt_upgrade_system_enabled: no

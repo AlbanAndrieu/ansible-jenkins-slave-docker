@@ -5,7 +5,7 @@
   become: true
 
   roles:
-    - alban.andrieu.hostname
+    - albanandrieu.ansible_hostname
 
   vars:
        hostname_enabled: true,

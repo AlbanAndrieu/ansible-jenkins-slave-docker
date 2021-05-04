@@ -11,47 +11,47 @@
 #  version: master
 #
 - src: https://github.com/AlbanAndrieu/ansible-cmake.git
-  name: alban.andrieu.cmake
+  name: albanandrieu.cmake
   version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-common.git
-  name: alban.andrieu.common
+  name: albanandrieu.ansible_common
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-conky'
-#  name: 'alban.andrieu.conky'
+#  name: 'albanandrieu.conky'
 #  version: master
 #
 - src: https://github.com/AlbanAndrieu/ansible-cpp.git
-  name: alban.andrieu.cpp
+  name: albanandrieu.cpp
   version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-css'
-#  name: 'alban.andrieu.css'
+#  name: 'albanandrieu.css'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-dns'
-#  name: 'alban.andrieu.dns'
+#  name: 'albanandrieu.dns'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-dropbox'
-#  name: 'alban.andrieu.dropbox'
+#  name: 'albanandrieu.dropbox'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-eclipse'
-#  name: 'alban.andrieu.eclipse'
+#  name: 'albanandrieu.eclipse'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-evasive'
-#  name: 'alban.andrieu.evasive'
+#  name: 'albanandrieu.evasive'
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-gcc.git
-  name: alban.andrieu.gcc
+  name: albanandrieu.gcc
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-grive'
-#  name: 'alban.andrieu.grive'
+#  name: 'albanandrieu.grive'
 #  version: master
 #
 ##TODO
@@ -60,123 +60,123 @@
 ##  name: Stouts.hostname
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-hostname'
-#  name: 'alban.andrieu.hostname'
+#  name: 'albanandrieu.ansible_hostname'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-jboss'
-#  name: 'alban.andrieu.jboss'
+#  name: 'albanandrieu.jboss'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-jdiskreport'
-#  name: 'alban.andrieu.jdiskreport'
+#  name: 'albanandrieu.jdiskreport'
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
-  name: alban.andrieu.jenkins-slave
+  name: albanandrieu.jenkins_slave
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-jenkins-swarm'
-#  name: 'alban.andrieu.jenkins-swarm'
+#  name: 'albanandrieu.jenkins-swarm'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-jmeter'
-#  name: 'alban.andrieu.jmeter'
+#  name: 'albanandrieu.jmeter'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-logstash-settings'
-#  name: 'alban.andrieu.logstash-settings'
+#  name: 'albanandrieu.logstash-settings'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-mon'
-#  name: 'alban.andrieu.mon'
+#  name: 'albanandrieu.mon'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-owasp-wte'
-#  name: 'alban.andrieu.owasp-wte'
+#  name: 'albanandrieu.owasp-wte'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-pagespeed'
-#  name: 'alban.andrieu.pagespeed'
+#  name: 'albanandrieu.pagespeed'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-phpvirtualbox'
-#  name: 'alban.andrieu.phpvirtualbox'
+#  name: 'albanandrieu.phpvirtualbox'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-private-bower'
-#  name: 'alban.andrieu.private-bower'
+#  name: 'albanandrieu.private-bower'
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-scons.git
-  name: alban.andrieu.scons
+  name: albanandrieu.scons
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-selenium'
-#  name: 'alban.andrieu.selenium'
+#  name: 'albanandrieu.selenium'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-shell'
-#  name: 'alban.andrieu.shell'
+#  name: 'albanandrieu.shell'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-solaris'
-#  name: 'alban.andrieu.solaris'
+#  name: 'albanandrieu.solaris'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-squirrel'
-#  name: 'alban.andrieu.squirrel'
+#  name: 'albanandrieu.squirrel'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-sublimetext'
-#  name: 'alban.andrieu.sublimetext'
+#  name: 'albanandrieu.sublimetext'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-subversion'
-#  name: 'alban.andrieu.subversion'
+#  name: 'albanandrieu.subversion'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-synergy'
-#  name: 'alban.andrieu.synergy'
+#  name: 'albanandrieu.synergy'
 #  version: master
 #
 - src: https://github.com/AlbanAndrieu/ansible-tomcat.git
-  name: alban.andrieu.tomcat
+  name: albanandrieu.tomcat
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-visualvm'
-#  name: 'alban.andrieu.visualvm'
+#  name: 'albanandrieu.visualvm'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-web'
-#  name: 'alban.andrieu.web'
+#  name: 'albanandrieu.web'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-webmin'
-#  name: 'alban.andrieu.webmin'
+#  name: 'albanandrieu.webmin'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-windows'
-#  name: 'alban.andrieu.windows'
+#  name: 'albanandrieu.windows'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-workstation'
-#  name: 'alban.andrieu.workstation'
+#  name: 'albanandrieu.workstation'
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-xvbf.git
-  name: alban.andrieu.xvbf
+  name: albanandrieu.xvbf
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-yourkit'
-#  name: 'alban.andrieu.yourkit'
+#  name: 'albanandrieu.yourkit'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-zap'
-#  name: 'alban.andrieu.zap'
+#  name: 'albanandrieu.zap'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-zfs'
-#  name: 'alban.andrieu.zfs'
+#  name: 'albanandrieu.zfs'
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-login'
@@ -386,7 +386,7 @@
 #  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-galaxy.ubuntu.virtualbox'
-#  name: 'alban.andrieu.virtualbox'
+#  name: 'albanandrieu.virtualbox'
 #  version: master
 #
 #- src: 'https://github.com/dj-wasabi/ansible-zabbix-agent'

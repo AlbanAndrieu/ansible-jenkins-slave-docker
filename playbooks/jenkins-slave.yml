@@ -30,7 +30,7 @@
 #  remote_user: root
 
   roles:
-    - alban.andrieu.jenkins-slave
+    - albanandrieu.jenkins_slave
 
   vars:
     docker_files_enable: false
