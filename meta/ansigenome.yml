@@ -1,39 +1,39 @@
 ---
-dependencies: []
-
-galaxy_info:
-  author: Alban Andrieu
-  description: A role for creating docker image for jenkins slaves
-  company: Nabla
-  license: GPLv3
-  min_ansible_version: 2.6.0
-  platforms:
-    - name: Ubuntu
-      versions:
-        - all
-        - lucid
-        - maverick
-        - natty
-        - oneiric
-        - precise
-        - quantal
-        - raring
-        - saucy
-        - trusty
-  galaxy_tags: []
 
 ansigenome_info:
   galaxy_id: ''
+  galaxy_url: 'https://galaxy.ansible.com/alban.andrieu/ansible-jenkins-slave-docker/'
   galaxy_user: 'alban.andrieu'
   galaxy_name: 'ansible-jenkins-slave-docker'
+  galaxy_docker_name: 'ansible-jenkins-slave-docker'
 
-  travis: false
+  travis: true
+
+  authors:
+    - name: 'Alban Andrieu'
+      url: 'fr.linkedin.com/in/nabla/'
+      email: 'alban.andrieu@free.fr'
+      twitter: 'AlbanAndrieu'
+      github: 'AlbanAndrieu'
+
+  description: A role for creating docker image ansible-jenkins-slave-docker for jenkins slaves
+  company: Nabla
+  license: Apache
+  min_ansible_version: 2.7.8
+
+  platforms:
+    - name: Ubuntu
+      versions:
+      - all
+  categories:
+    - development
+    - docker
 
   synopsis: |
-    Describe your role in a few paragraphs....
+    Ensures that the basic requirements are properly installed (using `apt`) and configured for genreated docker image
 
   usage: |
     Describe how to use in more detail...
 
-  # custom: |
-  #   Any custom output you want after the usage section..
+  #custom: |
+  #  Any custom output you want after the usage section..

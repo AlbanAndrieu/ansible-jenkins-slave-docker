@@ -63,10 +63,10 @@ else
   echo -e "${green} The build completed successfully. ${NC}"
   echo -e "${magenta} Running docker history to docker history ${NC}"
   echo -e "    docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log"
-  docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log
+  docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log 2>&1
   echo -e "${magenta} Running dive ${NC}"
   echo -e "    dive ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-  CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" || true | tee -a docker-dive.log
+  CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" || true > docker-dive.log
   RC=$?
   if [ ${RC} -ne 0 ]; then
     echo ""

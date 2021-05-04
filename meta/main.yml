@@ -1,23 +1,25 @@
 ---
-dependencies: []
+dependencies:
+  - { role: albanandrieu.ansible_common }
+#  - { role: albanandrieu.ansible_cpp }
+  - { role: albanandrieu.cmake }
+  - { role: albanandrieu.scons }
+  - { role: albanandrieu.gcc }
+  - { role: albanandrieu.ansible-workstation }
+  - { role: albanandrieu.xvbf }
+  - { role: albanandrieu.jenkins_slave }
+  - { role: albanandrieu.java }
+  - { role: albanandrieu.selenium }
 
 galaxy_info:
   author: Alban Andrieu
   description: A role for creating docker image for jenkins slaves
   company: Nabla
   license: GPLv3
-  min_ansible_version: 2.6.0
+  min_ansible_version: 2.10.3
   platforms:
     - name: Ubuntu
       versions:
-        - all
-        - lucid
-        - maverick
-        - natty
-        - oneiric
-        - precise
-        - quantal
-        - raring
-        - saucy
-        - trusty
-  galaxy_tags: []
+      - all
+  galaxy_tags:
+    - development
