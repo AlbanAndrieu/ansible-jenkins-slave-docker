@@ -25,7 +25,7 @@ ansigenome_info:
     - name: Ubuntu
       versions:
       - all
-  categories:
+  galaxy_tags:
     - development
     - docker
 

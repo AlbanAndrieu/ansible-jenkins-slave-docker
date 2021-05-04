@@ -7,9 +7,6 @@
 [submodule "roles/alban.andrieu.xvbf"]
 	path = roles/alban.andrieu.xvbf
 	url = https://github.com/AlbanAndrieu/ansible-xvbf
-[submodule "roles/alban.andrieu.cmake"]
-	path = roles/alban.andrieu.cmake
-	url = https://github.com/AlbanAndrieu/ansible-cmake
 [submodule "roles/alban.andrieu.hostname"]
 	path = roles/alban.andrieu.hostname
 	url = https://github.com/AlbanAndrieu/ansible-hostname.git
