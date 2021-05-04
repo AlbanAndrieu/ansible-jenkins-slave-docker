@@ -139,10 +139,10 @@
 #  name: 'alban.andrieu.synergy'
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-tomcat'
-#  name: 'alban.andrieu.tomcat'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-tomcat.git
+  name: alban.andrieu.tomcat
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-visualvm'
 #  name: 'alban.andrieu.visualvm'
 #  version: master

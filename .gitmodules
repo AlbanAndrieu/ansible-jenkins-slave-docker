@@ -16,9 +16,6 @@
 [submodule "roles/maven"]
 	path = roles/maven
 	url = https://github.com/AlbanAndrieu/ansible-maven.git
-[submodule "roles/alban.andrieu.tomcat"]
-	path = roles/alban.andrieu.tomcat
-	url = https://github.com/AlbanAndrieu/ansible-tomcat.git
 [submodule "roles/alban.andrieu.jboss"]
 	path = roles/alban.andrieu.jboss
 	url = https://github.com/AlbanAndrieu/ansible-jboss.git
