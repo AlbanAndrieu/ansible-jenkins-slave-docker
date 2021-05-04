@@ -1,6 +1,6 @@
 ---
 
-ansigenome_info:
+ansigenome_info: # noqa 701
   galaxy_id: ''
   galaxy_url: 'https://galaxy.ansible.com/alban.andrieu/ansible-jenkins-slave-docker/'
   galaxy_user: 'alban.andrieu'
