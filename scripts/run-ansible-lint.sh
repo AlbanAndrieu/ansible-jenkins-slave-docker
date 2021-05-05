@@ -3,7 +3,9 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
+export TARGET_PLAYBOOK=${TARGET_PLAYBOOK:-jenkins*.yml}
 # shellcheck source=/dev/null
+
 source "${WORKING_DIR}/ansible-env.sh"
 
 echo -e "${cyan} =========== ${NC}"

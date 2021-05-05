@@ -60,6 +60,7 @@ exclude_paths:
   - ./roles/zabbix/
   - ./roles/jermon.ansible-role-cpan/
   - ./roles/anxs.perl/
+  - ./k8s/
 #parseable: true
 #quiet: true
 #rulesdir:

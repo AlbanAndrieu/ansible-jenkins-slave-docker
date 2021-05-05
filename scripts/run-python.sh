@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xve
 
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+    echo "This script has to be sourced and not executed..."
+    #exit 1
+fi
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # source only if terminal supports color, otherwise use unset color vars
@@ -9,6 +14,10 @@ source "${WORKING_DIR}/step-0-color.sh"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/step-1-os.sh"
+
+function float_gt() {
+    perl -e "{if($1>$2){print 1} else {print 0}}"
+}
 
 if [ -n "${USE_SUDO}" ]; then
   echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
@@ -112,9 +121,21 @@ echo -e "${green} chown -R jenkins:docker /opt/ansible/env$(echo $PYTHON_MAJOR_V
 
 if [ -f "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt" ]; then
   echo -e "${cyan} =========== ${NC}"
-  echo -e "${green} Install virtual env requirements : pip${PYTHON_MAJOR_VERSION} install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt ${NC}"
-  #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
-  "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  echo -e "${green} Install virtual env requirements : pip${PYTHON_MAJOR_VERSION} install -r ${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt --use-feature=2020-resolver ${NC}"
+
+  if [ "${OS}" == "Ubuntu" ]; then
+    if [ "$(float_gt ${VER} 20)" == 1 ]; then
+      echo " VER : $VER gt"
+      #exit 1
+    else
+      echo " VER : $VER lt"
+      #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+      "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+      #--use-deprecated=legacy-resolver
+    fi
+  else
+    "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+  fi
   RC=$?
   if [ ${RC} -ne 0 ]; then
     echo ""
@@ -138,14 +159,13 @@ if [ ${RC} -ne 0 ]; then
   echo ""
   echo -e "${red} ${head_skull} Sorry, docker-compose failed ${NC}"
   "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" freeze | grep docker
-
   "${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" show docker-py
   RC=$?
   if [ ${RC} -ne 1 ]; then
     echo -e "${red} ${head_skull} Please remove docker-py ${NC}"
   fi
   echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker-py; sudo ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker; sudo ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} uninstall docker-compose; ${NC}"
-  echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} install --upgrade --force-reinstall --no-cache-dir docker-compose==1.25.3 ${NC}"
+  echo -e "${red} ${head_skull} ${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION} install --upgrade --force-reinstall --no-cache-dir docker-compose==1.25.5 ${NC}"
   #exit 1
 else
   echo -e "${green} The docker-compose check completed successfully. ${NC}"

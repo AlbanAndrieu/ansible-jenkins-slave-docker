@@ -6,11 +6,11 @@
 #pip3 install cairocffi==0.8.0
 #pip3 install CairoSVG==2.0.3
 #sudo /opt/ansible/env38/bin/pip3.8 uninstall docker-py; sudo /opt/ansible/env38/bin/pip3.8 uninstall docker; sudo /opt/ansible/env38/bin/pip3.8 uninstall docker-compose;
-#sudo /opt/ansible/env38/bin/pip3.8 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.23.2
+#sudo /opt/ansible/env38/bin/pip3.8 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.25.5
 #sudo apt-get install unixodbc-dev #needed for pyodbc
 #sudo apt-get install python3.8-dev #fatal error: Python.h: No such file or directory
 #python 3.8 tested since ubuntu 19.04
-#for pre-commit python3 -m pip install --upgrade pip>=20.0.2
+#for pre-commit python3 -m pip install --upgrade pip==20.3.4
 2to3==1.0
 alabaster>=0.7.12
 alembic>=1.4.2

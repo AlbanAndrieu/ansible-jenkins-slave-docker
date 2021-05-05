@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xv
 
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+    echo "This script has to be sourced and not executed..."
+    exit 1
+fi
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
@@ -28,8 +33,8 @@ if [ -n "${CST_CONFIG}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CST_CONFIG, use the default one ${NC}"
-  #export CST_CONFIG="docker/ubuntu16/config.yaml" v
-  export CST_CONFIG="docker/centos7/config.yaml" # runtime image
+  export CST_CONFIG="docker/ubuntu18/config.yaml"
+  #export CST_CONFIG="docker/centos7/config.yaml" # runtime image
   echo -e "${magenta} CST_CONFIG : ${CST_CONFIG} ${NC}"
 fi
 
@@ -59,7 +64,7 @@ if [ -n "${DOCKER_FILE}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_FILE, use the default one ${NC}"
-  export DOCKER_FILE=${DOCKER_FILE:-"Dockerfile"}
+  export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu18/Dockerfile"}
   echo -e "${magenta} DOCKER_FILE : ${DOCKER_FILE} ${NC}"
 fi
 

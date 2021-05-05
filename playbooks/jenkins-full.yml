@@ -64,6 +64,9 @@
 - import_playbook: python-bootstrap.yml
 
 - import_playbook: hostname.yml
+  tags:
+    - hostname
+    - vm
 
 - import_playbook: administration.yml automount_enabled=true nis_enabled=true
 
@@ -79,6 +82,9 @@
 
 # Filesystem such as workspace must be created before running jenkins-slave role
 #- import_playbook: hdd.yml
+#  tags:
+#    - hdd
+#    - vm
 
 #- import_playbook: jenkins-user.yml
 
@@ -116,8 +122,14 @@
 - import_playbook: jenkins-slave.yml
 
 - import_playbook: zabbix-agent.yml
+  tags:
+    - zabbix
+    - vm
 
 - import_playbook: cron.yml
+  tags:
+    - cron
+    - vm
 
 - import_playbook: xvbf.yml
 
@@ -128,3 +140,6 @@
 - import_playbook: kubernetes.yml
 
 - import_playbook: cleaning.yml
+  tags:
+    - cleaning
+    - vm

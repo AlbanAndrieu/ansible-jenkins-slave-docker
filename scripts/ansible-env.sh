@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xv
 
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+    echo "This script has to be sourced and not executed..."
+    exit 1
+fi
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null

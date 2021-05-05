@@ -70,9 +70,11 @@ shellcheck ./*.sh -f checkstyle > checkstyle-result.xml || true
 echo -e "${green} shell check for release done. $? ${NC}"
 
 echo -e "${cyan} =========== ${NC}"
-cd "${WORKSPACE}/" || exit # pylint need .pylintrc
-pylint --output-format=junit ./**/*.py > pylint-junit-result.xml || true
-echo -e "${green} pyhton check for shell done. $? ${NC}"
+cd "${WORKSPACE}/.." || exit # pylint need .pylintrc
+if [ -f ".pylintrc" ]; then
+  pylint --output-format=junit ./**/*.py > pylint-junit-result.xml || true
+  echo -e "${green} python check for pylint done. $? ${NC}"
+fi
 
 #pyreverse -o png -p Pyreverse pylint/pyreverse/
 

@@ -48,8 +48,18 @@ echo "COMPOSE_HTTP_TIMEOUT : $COMPOSE_HTTP_TIMEOUT"
 echo -e "${cyan} =========== ${NC}"
 echo -e "${green} Checking ansible version ${NC}"
 
+which ansible
 ansible --version | grep python || true
+RC=$?
+if [ ${RC} -ne 0 ]; then
+  echo ""
+  echo -e "${red} ${head_skull} Sorry, ansible basics failed ${NC}"
+  exit 1
+fi
+
+echo -e "${magenta} ANSIBLE_CMD : Version ${NC}"
 ${ANSIBLE_CMD} --version || true
+echo -e "${magenta} ANSIBLE_GALAXY_CMD : Version ${NC}"
 ${ANSIBLE_GALAXY_CMD} --version || true
 
 # shellcheck source=/dev/null

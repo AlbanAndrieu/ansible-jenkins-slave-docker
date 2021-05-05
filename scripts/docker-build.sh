@@ -22,13 +22,13 @@ fi
 source "${WORKING_DIR}/docker-env.sh"
 
 #export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
-export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
+export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu18/Dockerfile"}
 
 echo -e "${green} Validating Docker ${NC}"
-echo -e "${magenta} hadolint ${WORKING_DIR}/${DOCKER_FILE} ${NC}"
-hadolint "${WORKING_DIR}/${DOCKER_FILE}" || true | tee -a docker-hadolint.log
+echo -e "${magenta} hadolint ${WORKING_DIR}/${DOCKER_FILE} --format json ${NC}"
+hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1> docker-hadolint.json 2> docker-hadolint-error.log || true
 echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/${DOCKER_FILE} ${NC}"
-dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}"|| true | tee -a docker-dockerfilelint.log
+dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1> docker-dockerfilelint.json 2> docker-dockerfilelint-error.log || true
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-ansible.sh"
@@ -39,16 +39,6 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 echo -e "${green} Installing roles version ${NC}"
 ${ANSIBLE_GALAXY_CMD} install -r requirements.yml -p ./roles/ --ignore-errors
-
-if [ -n "${DOCKER_BUILD_ARGS}" ]; then
-  echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
-  #export DOCKER_BUILD_ARGS="--pull"
-  #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
-  echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
-fi
 
 echo -e "${green} Building docker image ${NC}"
 echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t \"$DOCKER_ORGANISATION/$DOCKER_NAME\" -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" ${WORKING_DIR}/../ ${NC}"
@@ -61,18 +51,7 @@ if [ ${RC} -ne 0 ]; then
   exit 1
 else
   echo -e "${green} The build completed successfully. ${NC}"
-  echo -e "${magenta} Running docker history to docker history ${NC}"
-  echo -e "    docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log"
-  docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest > docker-history.log 2>&1
-  echo -e "${magenta} Running dive ${NC}"
-  echo -e "    dive ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-  CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" || true > docker-dive.log
-  RC=$?
-  if [ ${RC} -ne 0 ]; then
-    echo ""
-    echo -e "${red} ${head_skull} Sorry, dive failed ${NC}"
-    #exit 1
-  fi
+  ${WORKING_DIR}/docker-inspect.sh
 fi
 
 echo -e ""
@@ -102,14 +81,16 @@ export DOCKER_GID=${DOCKER_GID:-2000}
 printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
 printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
-echo -e "${green} User is : ${NC}"
+echo -e "${green} User is. ${happy_smiley}  : ${NC}"
 id "${USER}"
 echo -e "${magenta} Add docker group to above user. ${happy_smiley} ${NC}"
 echo -e "${magenta} sudo usermod -a -G docker ${USER} ${NC}"
 
 echo -e "To run in interactive mode for debug:"
-echo -e "    docker run -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v ${JENKINS_USER_HOME}:/home/jenkins -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker run -it -d -u ${DOCKER_UID}:${DOCKER_GID} --userns=host --name sandbox ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest cat"
+echo -e "    docker run --init -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v ${JENKINS_USER_HOME}:/home/jenkins -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker run --init -it -d -u ${DOCKER_UID}:${DOCKER_GID} --userns=host --name sandbox ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest cat"
+echo -e "    Note: --init is necessary for correct subprocesses handling (zombie reaping)"
+echo -e "    docker run --init ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest -url http://localhost:8686/ -workDir=/home/jenkins/agent <secret> <agent name>"
 echo -e "    docker exec -it sandbox /bin/bash"
 echo -e "    docker exec -u 0 -it sandbox env TERM=xterm-256color bash -l"
 echo -e ""

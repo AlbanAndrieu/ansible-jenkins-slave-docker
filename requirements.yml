@@ -372,10 +372,13 @@
 #  name: 'ssl-certificate'
 #  version: master
 #
-#- src: 'https://github.com/andrewrothstein/ansible-trust-ca'
-#  name: 'ssl-ca-certificate'
-#  scm: 'git'
-#  version:  'master'
+#- src: https://github.com/andrewrothstein/ansible-trust-ca.git
+#  name: ssl-ca-certificate
+#  version: master
+#
+#- src: https://github.com/andrewrothstein/ansible-tls.git
+#  name: andrewrothstein.tls
+#  version: master
 #
 #- src: 'https://github.com/AlbanAndrieu/ansible-supervisor_task'
 #  name: 'supervisor'
