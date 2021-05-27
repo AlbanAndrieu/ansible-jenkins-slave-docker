@@ -11,14 +11,19 @@
 <!-- toc -->
 
 - [Requirements](#requirements)
+    + [python 3.8](#python-38)
+    + [pre-commit](#pre-commit)
 - [Usage](#usage)
     + [Linting](#linting)
     + [Ideas for improvement](#ideas-for-improvement)
+  * [Folder Structure Conventions](#folder-structure-conventions)
+    + [A typical top-level directory layout](#a-typical-top-level-directory-layout)
   * [Update README.md](#update-readmemd)
     + [Contributing](#contributing)
     + [Authors and license](#authors-and-license)
   * [License](#license)
     + [Feedback, bug-reports, requests, ...](#feedback-bug-reports-requests-)
+  * [Contact](#contact)
 
 <!-- tocstop -->
 

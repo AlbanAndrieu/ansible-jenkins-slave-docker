@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- toc -->
 
+  * [Size 🌈](#size-%F0%9F%8C%88)
+- [[Unreleased]](#unreleased)
+- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
+  * [Added](#added)
+  * [Updated](#updated)
+  * [Added](#added-1)
+- [[1.0.0] - 2020-01-01](#100---2020-01-01)
+  * [Added](#added-2)
+  * [Updated](#updated-1)
+  * [Remove](#remove)
+
 <!-- tocstop -->
 
 ### Size 🌈
