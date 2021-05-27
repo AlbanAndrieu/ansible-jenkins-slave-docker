@@ -59,13 +59,13 @@ Run `git commit -am 'Add key' --no-verify`
 
 # Usage
 
-Then run the playbook, like this:
+Run the playbook, like this:
 
     ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
     or
     setup.sh
 
-Then create the docker hub image, like this:
+Create the docker hub image, like this:
 
     docker build -f docker/ubuntu18/Dockerfile -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
     or
@@ -77,7 +77,7 @@ Run Jenkins See https://github.com/jenkinsci/parallel-test-executor-plugin/tree/
     sudo chmod a+rw $(docker volume inspect -f '{{.Mountpoint}}' m2repo)
     docker run --rm -p 127.0.0.1:8080:8080 -v m2repo:/m2repo -v /var/run/docker.sock:/var/run/docker.sock --group-add=$(stat -c %g /var/run/docker.sock) -ti jenkinsci/parallel-test-executor-demo
 
-Then use the docker hub image, like this:
+Use the docker hub image, like this:
 
     #Pull image
     docker pull nabla/ansible-jenkins-slave-docker

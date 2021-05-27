@@ -332,6 +332,10 @@ RUN google-chrome --version
 
 RUN rm -f /home/jenkins/alban.andrieu.conky/files/default-themes-extra-1.tar.gz || true
 
+#For github action
+USER root
+RUN mkdir /github && chown -R jenkins /github && chmod -R 777 /github
+
 # Working dir
 WORKDIR $JENKINS_USER_HOME
 

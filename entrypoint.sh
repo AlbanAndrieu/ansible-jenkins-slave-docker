@@ -19,6 +19,9 @@ if [ "$1" ]; then
     exec "$@"
 fi
 
+sh -c "sudo chown -R jenkins /github"
+sh -c "sudo chmod -R 777 /github"
+
 case "$1" in
     list )
         exec service --status-all

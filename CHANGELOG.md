@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- tocstop -->
 
-### Size
+### Size 🌈
+
  - .linuxbrew = 761 + 86 + 58 MB
  - .cache/Homebrew = 84 MB + 41 MB + 38 MB
  - node = 60 MB
