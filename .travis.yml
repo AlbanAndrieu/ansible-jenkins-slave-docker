@@ -21,6 +21,7 @@ env:
     - JENKINS_UID=3000
     - DOCKER_GID=999
     - secure: TGUihI8NZudZK09yhYmP3DF2YarY4d9ljgm+sArpvc7Ga7NvU7A2GxJm6KJ6ZAxBd/K+R89vo6fRWQma4ZFOjbi/TLabDgWJVD+aabhY5n1gPBDuoz/N7At3v4Ws1qD4M3Bj8+ds+ye1q+0MEDy+AYko8+UUhgLEvsbGUI9d4PY=
+    - DJANGO_VERSION=2.2.6
   matrix:
 #  - ANSIBLE_VERSION=latest
 #  - ANSIBLE_VERSION=2.7.14
