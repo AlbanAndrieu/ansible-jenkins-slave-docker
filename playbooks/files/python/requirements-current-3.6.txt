@@ -53,11 +53,11 @@ cssselect2==0.2.2
 defusedxml==0.6.0
 devscripts==1.0.0
 #distro==1.5.0
-django==2.2.11
-django-cors-headers==3.2.1
-django-filter==2.2.0
-django-health-check==3.12.1
-djangorestframework==3.11.0
+#django==2.2.11
+#django-cors-headers==3.2.1
+#django-filter==2.2.0
+#django-health-check==3.12.1
+#djangorestframework==3.11.0
 docker==4.1.0
 docker-compose==1.25.3
 docker-compose-wait==1.2.1
