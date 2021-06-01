@@ -111,8 +111,8 @@ ntlm-auth==1.4.0
 oauth==1.0.1
 oauthlib==3.1.0
 olefile==0.46
-openpyxl==3.0.3
-openshift==0.10.1
+#openpyxl==3.0.3
+#openshift==0.10.1
 packaging==20.1
 padme==1.1.1
 pandas==0.25.3
