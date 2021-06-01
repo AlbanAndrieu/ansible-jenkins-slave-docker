@@ -10,7 +10,7 @@
 #sudo apt-get install unixodbc-dev #needed for pyodbc
 #sudo apt-get install python3.6-dev #fatal error: Python.h: No such file or directory
 #for pre-commit python3.6 -m pip install --upgrade pip==19.2.3 # error with 19.3.1
-ansible==2.10.3
+ansible==2.10.7
 #NOK ansible==2.8.8 (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763)
 #ansible==2.9.4 # upgraded with python 3.7
 ansible-cmdb==1.30
