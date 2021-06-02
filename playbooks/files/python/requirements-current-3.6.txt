@@ -115,7 +115,7 @@ olefile==0.46
 #openshift==0.10.1
 packaging==20.1
 padme==1.1.1
-pandas==0.25.3
+#pandas==0.25.3
 paramiko==2.7.1
 pbr==5.4.4
 pep8==1.7.1
