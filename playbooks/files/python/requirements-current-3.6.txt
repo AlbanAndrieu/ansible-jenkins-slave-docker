@@ -183,7 +183,7 @@ termcolor==1.1.0
 testresources==2.0.1
 texttable==1.6.2
 tinycss==0.4
-tinycss2==1.0.2
+#tinycss2==1.0.2
 tox==3.14.3
 tzlocal==2.0.0
 unidiff==0.5.5
