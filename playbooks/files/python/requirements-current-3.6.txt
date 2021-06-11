@@ -193,7 +193,7 @@ virtualenv>=16.7.9
 wadllib==1.3.3
 webencodings==0.5.1
 websocket-client==0.57.0
-whitenoise==5.0.1
+#whitenoise==5.0.1
 XlsxWriter==1.2.7
 xmltodict==0.12.0
 yamllint==1.20.0
