@@ -7,7 +7,7 @@ set -eo pipefail
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-export DOCKER_TAG=${DOCKER_TAG:-"1.0.10"}
+export DOCKER_TAG=${DOCKER_TAG:-"1.2.2"}
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
@@ -18,9 +18,9 @@ else
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
 
-#export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
-#export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu20/Dockerfile"}
-export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu18/Dockerfile"}
+#export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave"}
+export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu20/Dockerfile"}
+export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu20/config.yaml"}
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
@@ -38,8 +38,10 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 "${WORKING_DIR}/../clean.sh"
 
-echo -e "${green} Installing roles version ${NC}"
-${ANSIBLE_GALAXY_CMD} install -r requirements.yml -p ./roles/ --ignore-errors
+echo -e "${green} Installing key for Docker ${NC}"
+mkdir -p .ssh/
+#wget http://bm-artifacts.misys.global.ad/nexus/content/repositories/fusion-risk/download/certs/id_rsa.pub -O ${WORKING_DIR}/../.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
+#cp -p /home/kgr_mvn/.ssh/id_rsa* ${WORKING_DIR}/../.ssh/ || true
 
 export DOCKER_BUILDKIT=1
 
@@ -58,20 +60,22 @@ else
 fi
 
 echo -e ""
-echo -e "${green} This image is a trusted docker hub Image. ${happy_smiley} ${NC}"
-echo -e "See https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker/"
+echo -e "${green} This image is a trusted docker Image. ${happy_smiley} ${NC}"
 echo -e ""
 echo -e "To push it"
 echo -e "    docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password password"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker push ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_TMP}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker push ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 
 echo -e "    docker manifest inspect  ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 
 echo -e ""
 echo -e "To pull it"
-echo -e "    docker pull ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+echo -e "    docker pull ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
 echo -e ""
 echo -e "To use this docker:"
 echo -e "    docker run -d -P ${DOCKER_ORGANISATION}/${DOCKER_NAME}"
@@ -81,23 +85,19 @@ echo -e ""
 export JENKINS_USER_HOME=${JENKINS_USER_HOME:-/data1/home/jenkins/}
 export USER=${USER:-albandri}
 export GROUP=${GROUP:-docker}
-export DOCKER_UID=${DOCKER_UID:-1000}
-export DOCKER_GID=${DOCKER_GID:-2000}
+export DOCKER_UID=${DOCKER_UID:-1004}
+export DOCKER_GID=${DOCKER_GID:-999}
 # shellcheck disable=SC2059
 printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
 printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
-echo -e "${green} User is. ${happy_smiley}  : ${NC}"
+echo -e "${green} User is. ${happy_smiley} : ${NC}"
 id "${USER}"
 echo -e "${magenta} Add docker group to above user. ${happy_smiley} ${NC}"
 echo -e "${magenta} sudo usermod -a -G docker ${USER} ${NC}"
 
 echo -e "To run in interactive mode for debug:"
-echo -e "    docker run --init -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-
-echo -e ""
-echo -e "     -v ${JENKINS_USER_HOME}:/home/jenkins"
-echo -e ""
+echo -e "    docker run --init -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v ${JENKINS_USER_HOME}:/home/jenkins -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 echo -e "    docker run --init -it -d -u ${DOCKER_UID}:${DOCKER_GID} --userns=host --name sandbox ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest cat"
 echo -e "    Note: --init is necessary for correct subprocesses handling (zombie reaping)"
 echo -e "    docker run --init ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest -url http://localhost:8686/ -workDir=/home/jenkins/agent <secret> <agent name>"

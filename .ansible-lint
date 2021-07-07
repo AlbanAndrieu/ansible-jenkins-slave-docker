@@ -69,6 +69,7 @@ skip_list:
   - '602' # See https://github.com/ansible/ansible-lint/issues/457
   - '204'
   - '503'
+  - filenotfounderror
 #  - skip_this_tag
 #  - and_this_one_too
 #  - skip_this_id

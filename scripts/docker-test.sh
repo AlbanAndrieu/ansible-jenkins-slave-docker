@@ -43,7 +43,7 @@ else
   #curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 fi
 
-export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu18/config.yaml"}
+#export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu18/config.yaml"}
 
 echo -e "$HOME/bin/container-structure-test test --save -v info --image ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} --config ${WORKING_DIR}/../${CST_CONFIG} --test-report junit-docker-build-cst.xml -o junit ${NC}"
 /usr/local/bin/container-structure-test test --save -v info --image "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" --config "${WORKING_DIR}/../${CST_CONFIG}"

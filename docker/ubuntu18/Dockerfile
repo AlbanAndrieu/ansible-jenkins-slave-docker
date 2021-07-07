@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.2.1
+
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
 #FROM ubuntu:18.04
@@ -7,13 +9,13 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 # In case you need proxy
-#ENV http_proxy=${http_proxy:-"http://192.168.1.57:3128"}
+#ENV http_proxy=${http_proxy:-"http://127.0.0.1:3128"}
 #ENV https_proxy=${https_proxy:-"${http_proxy}"}
-ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.nabla.mobi,.azure.io"}
+ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu"}
 
 # dockerfile_lint - ignore
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
-LABEL Name="ansible-jenkins-slave-docker" Version="1.0.2"
+LABEL name="ansible-jenkins-slave-docker" version="1.0.2"
 LABEL description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 18.04."
 LABEL com.example.vendor="ACME Incorporated"
@@ -41,7 +43,7 @@ USER root
 # Install ansible
 # hadolint ignore=DL3008
 RUN apt-get -q update &&\
-    apt-get -q install -y -o Dpkg::Options::="--force-confnew" --no-install-recommends \
+    apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
     git bzip2 zip unzip python-yaml python-jinja2 python-pip rsyslog gpg-agent \
     ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     apt-utils apt-transport-https ca-certificates software-properties-common \
@@ -64,6 +66,31 @@ RUN echo "${TZ}" > /etc/timezone
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
 #RUN dpkg-reconfigure --frontend noninteractive tzdata \
 
+### HADOLINT
+
+ADD https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 /bin/hadolint
+
+### AZURE
+
+#RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+#RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+    ca-certificates curl apt-transport-https lsb-release gnupg \
+    wget software-properties-common \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+#RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+#    gpg --dearmor | \
+#    sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+#RUN AZ_REPO=$(lsb_release -cs) \
+#    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${AZ_REPO} main"
+#RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+RUN PS_REPO=$(lsb_release -rs) \
+    && wget -q https://packages.microsoft.com/config/ubuntu/${PS_REPO}/packages-microsoft-prod.deb \
+    && sudo dpkg -i packages-microsoft-prod.deb
+RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+    azure-cli powershell \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 ### PYTHON
 
 # error with pip==19.3.1
@@ -92,11 +119,12 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get update && apt-get install -y nodejs=8.10.0~dfsg-2ubuntu0.4 npm=3.5.2-0ubuntu4 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
-RUN npm install -g npm@6.14.4 && apt-get purge -y npm && ln -s /usr/local/bin/npm /usr/bin/npm
+RUN npm install -g npm@6.14.4 && apt-get purge -y npm
+#RUN npm install -g npm@6.14.4 && apt-get purge -y npm && ln -s /usr/local/bin/npm /usr/bin/npm
 RUN npm -v && command -v npm # 6.7.0
 RUN npm install -g bower@1.8.8 grunt@1.0.4 webdriver-manager@12.1.7 yarn@1.19.1 yo@3.1.1
 RUN npm install -g shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3
-RUN npm install -g npm@6.14.4
+RUN npm install -g newman@5.2.2 newman-reporter-htmlextra@1.19.7
 
 ARG USER=${USER:-jenkins}
 ARG GROUP=${GROUP:-docker}
@@ -171,7 +199,7 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes \
+ --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes,nodejs \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
@@ -192,7 +220,7 @@ RUN python3 -m pip install --upgrade pip==20.3.4 \
 #    && pip install ansible-lint-junit==0.15
 
 # hadolint ignore=DL3008
-RUN apt-get update && apt-get install --no-install-recommends -y curl \
+RUN apt-get -q update && apt-get install --no-install-recommends -y curl \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -200,7 +228,7 @@ RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (opti
 
 ### HELM
 
-ENV HELM_VERSION=${HELM_VERSION:-"v3.4.0"}
+ENV HELM_VERSION=${HELM_VERSION:-"v3.4.2"}
 ENV HELM_FILENAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
 ENV HELM_URL=https://get.helm.sh/${HELM_FILENAME}
 
@@ -300,12 +328,14 @@ RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 USER jenkins
 RUN mkdir ${HOME}/workspace && mkdir -p ${HOME}/.m2/repository && chmod 777 ${HOME}/ansible.log || true
 
-RUN helm plugin install https://github.com/chartmuseum/helm-push.git && \
-    helm plugin install https://github.com/databus23/helm-diff && \
-    helm plugin install https://github.com/ContainerSolutions/helm-monitor && \
-    helm plugin install https://github.com/ContainerSolutions/helm-convert && \
-#    helm plugin install https://github.com/lrills/helm-unittest && \
-    helm plugin install https://github.com/karuppiah7890/helm-schema-gen
+RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0 && \
+    helm plugin install https://github.com/technosophos/helm-gpg --version 0.1.0 && \
+    helm plugin install https://github.com/databus23/helm-diff --version 3.1.3 && \
+    helm plugin install https://github.com/ContainerSolutions/helm-monitor --version 0.4.0 && \
+    helm plugin install https://github.com/ContainerSolutions/helm-convert --version 0.5.3 && \
+    helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0 && \
+#    helm plugin install https://github.com/lrills/helm-unittest --version 0.1.5 && \
+    helm plugin install https://github.com/karuppiah7890/helm-schema-gen --version 0.0.4
 
 # Need to write on /home/jenkins/.config/helm/repositories.lock
 #RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
@@ -346,3 +376,5 @@ VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]
 #CMD ["/usr/lib/systemd/systemd"]
+
+HEALTHCHECK NONE

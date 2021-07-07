@@ -7,7 +7,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -132,7 +132,7 @@
           python: python3.6
 
 - name: Install python 3 and 3.7 to 3.8
-  hosts: Ubuntu-20*:Ubuntu-19*
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*
   become: true
   ignore_errors: true
 
@@ -313,6 +313,7 @@
         requirements: "{{ ansible_user_dir }}/requirements-current-3.6.txt"
         #virtualenv: /opt/ansible/env36
         #virtualenv_python: "python3.6"
+        executable: pip3.6
         extra_args: --user
       tags:
         - venv
