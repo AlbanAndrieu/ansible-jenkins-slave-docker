@@ -14,7 +14,7 @@
 2to3==1.0
 alabaster==0.7.12
 alembic==1.4.2
-ansible==2.10.3
+ansible==2.9.20
 ansible-cmdb==1.30
 ansible-inventory-grapher==2.5.0
 #ansible-lint==4.3.4
