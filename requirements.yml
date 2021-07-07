@@ -2,14 +2,14 @@
 # from galaxy
 # ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
 
-#- src: 'https://github.com/AlbanAndrieu/ansible-administration'
-#  name: 'alban.andrieu.administration'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-administration.git
+  name: albanandrieu.administration
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-awstats'
 #  name: 'alban.andrieu.awstats'
 #  version: master
-#
+
 - src: https://github.com/AlbanAndrieu/ansible-cmake.git
   name: albanandrieu.cmake
   version: master
@@ -21,19 +21,19 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-conky'
 #  name: 'albanandrieu.conky'
 #  version: master
-#
+
 - src: https://github.com/AlbanAndrieu/ansible-cpp.git
   name: albanandrieu.cpp
   version: master
-#
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-css'
 #  name: 'albanandrieu.css'
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-dns'
-#  name: 'albanandrieu.dns'
-#  version: master
-#
+
+- src: https://github.com/AlbanAndrieu/ansible-dns.git
+  name: albanandrieu.dns
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-dropbox'
 #  name: 'albanandrieu.dropbox'
 #  version: master
@@ -59,10 +59,10 @@
 ##  version: master
 ##  name: Stouts.hostname
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-hostname'
-#  name: 'albanandrieu.ansible_hostname'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-hostname.git
+  name: albanandrieu.ansible_hostname
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-jboss'
 #  name: 'albanandrieu.jboss'
 #  version: master
@@ -111,10 +111,10 @@
   name: albanandrieu.scons
   version: master
 
-#- src: 'https://github.com/AlbanAndrieu/ansible-selenium'
-#  name: 'albanandrieu.selenium'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-selenium.git
+  name: albanandrieu.selenium
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-shell'
 #  name: 'albanandrieu.shell'
 #  version: master
@@ -388,26 +388,26 @@
 #  name: 'vagrant'
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-galaxy.ubuntu.virtualbox'
-#  name: 'albanandrieu.virtualbox'
-#  version: master
-#
-#- src: 'https://github.com/dj-wasabi/ansible-zabbix-agent'
-#  name: 'zabbix'
-#  version: master
-#
+- src: https://github.com/AlbanAndrieu/ansible-galaxy.ubuntu.virtualbox.git
+  name: albanandrieu.virtualbox
+  version: master
+
+- src: https://github.com/dj-wasabi/ansible-zabbix-agent.git
+  name: dj-wasabi.zabbix-agent
+  version: master
+
 #- src: 'https://github.com/LIP-Computing/ansible-role-nvidia'
 #  name: 'opencl'
 #  version: master
 #
-#- src: 'https://github.com/elliotweiser/ansible-osx-command-line-tools'
-#  name: 'elliotweiser.osx-command-line-tools'
-#  version: master
-#
-#- src: 'https://github.com/geerlingguy/ansible-role-homebrew'
-#  name: 'geerlingguy.homebrew'
-#  version: master
-#
+- src: https://github.com/elliotweiser/ansible-osx-command-line-tools.git
+  name: elliotweiser.osx-command-line-tools
+  version: master
+
+- src: https://github.com/geerlingguy/ansible-role-homebrew.git
+  name: geerlingguy.homebrew
+  version: master
+
 #- src: 'https://github.com/geerlingguy/ansible-role-dotfiles'
 #  name: 'geerlingguy.dotfiles'
 #  version: master

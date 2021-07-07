@@ -26,7 +26,7 @@
   become: true
 
   roles:
-    - role: zabbix
+    - role: dj-wasabi.zabbix-agent
       name: zabbix-agent-paris
       zabbix_agent_server: localhost
       zabbix_agent_serveractive: localhost
@@ -49,7 +49,7 @@
   become: true
 
   roles:
-    - role: zabbix
+    - role: dj-wasabi.zabbix-agent
       name: zabbix-agent-gdynia
       zabbix_agent_server: localhost
       zabbix_agent_serveractive: localhost

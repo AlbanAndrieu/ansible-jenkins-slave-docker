@@ -73,10 +73,10 @@
 
 - import_playbook: administration.yml automount_enabled=true nis_enabled=true
 
-- import_playbook: solaris.yml
-  tags:
-    - solaris
-    - vm
+#- import_playbook: solaris.yml
+#  tags:
+#    - solaris
+#    - vm
 
 - import_playbook: common.yml
 
@@ -85,14 +85,14 @@
     - dns
     - vm
 
-- import_playbook: security.yml
-  tags:
-    - security
-    - vm
+#- import_playbook: security.yml
+#  tags:
+#    - security
+#    - vm
 
 - import_playbook: java.yml
 
-- import_playbook: certificate.yml
+#- import_playbook: certificate.yml
 
 #- import_playbook: chrome.yml
 
