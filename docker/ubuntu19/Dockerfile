@@ -125,6 +125,7 @@ COPY playbooks $JENKINS_USER_HOME/playbooks
 COPY roles $JENKINS_USER_HOME/roles
 COPY .ssh $JENKINS_USER_HOME/.ssh
 COPY package.json $JENKINS_USER_HOME/
+# hadolint ignore=SC2046
 RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 
 # Execute
@@ -240,4 +241,4 @@ EXPOSE 80
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/lib/systemd/systemd"]
+CMD ["/bin/bash"]

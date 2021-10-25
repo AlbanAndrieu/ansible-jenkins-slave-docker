@@ -62,7 +62,7 @@ else
     PYTHON_CMD="/usr/local/bin/python${PYTHON_MAJOR_VERSION}"
   else
     PYTHON_CMD="${VIRTUALENV_PATH}/bin/python${PYTHON_MAJOR_VERSION}"
-    #PYTHON_CMD="/usr/bin/python3.5"
+    #PYTHON_CMD="/usr/bin/python${PYTHON_MAJOR_VERSION}"
   fi
   export PYTHON_CMD
   echo -e "${magenta} PYTHON_CMD : ${PYTHON_CMD} ${NC}"
@@ -82,7 +82,7 @@ if [ -f "${VIRTUALENV_PATH}/bin/activate" ]; then
   #PYTHON_ENV=$(python${PYTHON_MAJOR_VERSION} -c "import sys; sys.stdout.write('1') if hasattr(sys, 'real_prefix') else sys.stdout.write('0')")
   #echo -e "${cyan} PYTHON_ENV : ${PYTHON_ENV} ${NC}"
 
-  VIRTUALENV_ENABLE=$(pip3 -V | grep "/opt/ansible/env")
+  VIRTUALENV_ENABLE=$(pip${PYTHON_MAJOR_VERSION} -V | grep "/opt/ansible/env")
   echo -e "${cyan} VIRTUALENV_ENABLE : ${VIRTUALENV_ENABLE} ${NC}"
 
   if [ -n "${VIRTUALENV_ENABLE}" ]; then

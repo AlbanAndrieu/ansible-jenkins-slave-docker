@@ -378,20 +378,20 @@ commandTests:
 #   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
 #   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
 
- - name: "check node v11.12 version"
+ - name: "check node v11.15 version"
    command: "node"
    args: ["--version"]
-   expectedOutput: ["v11.12.*"]
+   expectedOutput: ["v11.15.*"]
 
  - name: "check nodejs v11.15 version"
    command: "nodejs"
    args: ["--version"]
    expectedOutput: ["v11.15.*"]
 
- - name: "check npm 6.7"
+ - name: "check npm 6.14 version"
    command: "npm"
    args: ["--version"]
-   expectedOutput: ["6.7.*"]
+   expectedOutput: ["6.14.*"]
 
  - name: "check newman version"
    command: "newman"   # /usr/local/bin/newman
@@ -418,12 +418,12 @@ commandTests:
  - name: "check pip 3 version"
    command: "pip3"
    args: ["--version"]
-   expectedOutput: ['pip 20.3.* from /usr/local/lib/python3.7/dist-packages/pip.*.*']
+   expectedOutput: ['pip 20.3.* from /usr/local/lib/python3.8/dist-packages/pip.*.*']
 
  - name: "check python 3 version"
    command: "python3"
    args: ["--version"]
-   expectedOutput: ['Python 3.7.*']
+   expectedOutput: ['Python 3.8.*']
 
 # - name: "check python 3.5.7"
 #   command: "python3.5"
@@ -450,10 +450,25 @@ commandTests:
 #   args: ["--version"]
 #   expectedOutput: ['pip 19.3.* from /usr/local/lib/python3.7/dist-packages/pip (python 3.7)']
 
+ - name: "check ansible 2.10.14 version"
+   command: "/usr/local/bin/ansible"
+   args: ["--version"]
+   expectedOutput: ['ansible 2.10.*']
+
  - name: "check ansible 2.10.3 version"
    command: "/opt/ansible/env38/bin/ansible"
    args: ["--version"]
    expectedOutput: ['ansible 2.10.*']
+
+# setup a virtualenv, and verify the correct python binary is run
+# source /opt/ansible/env38/bin/activate
+# pip show pyyaml
+
+ - name: "check ansible-cmdb 1.30 version"
+   setup: [["virtualenv", "/opt/ansible/env38"]]
+   command: "/opt/ansible/env38/bin/ansible-cmdb"
+   args: ["--version"]
+   expectedOutput: ['ansible-cmdb.py v1.30.*']
 
  - name: "check docker 19.03.4 version"
    command: "docker"
@@ -507,10 +522,15 @@ commandTests:
 #   args: ["--version"]
 #   expectedOutput: ['x86_64-w64-mingw32-g\+\+ (GCC) .*-win32.*']
 
- - name: "check chromium-browser 89.0 version"
+ - name: "check chromium-browser 94.0 version"
    command: "/usr/bin/chromium-browser"
    args: ["--version"]
-   expectedOutput: ['Chromium 89.0..* Built on Ubuntu.*']
+   expectedOutput: ['Chromium 94.0..* Built on Ubuntu.*']
+
+ - name: "check chromedriver 94.0 version"
+   command: "/usr/bin/chromedriver"
+   args: ["--version"]
+   expectedOutput: ['ChromeDriver 94.0..*']
 
 # - name: "check chromium 86.0 version"
 #   command: "/usr/bin/chromium"
@@ -522,10 +542,15 @@ commandTests:
    args: ["--version"]
    expectedOutput: ['Google Chrome 86..*']
 
- - name: "check chromedriver 89.0 version"
-   command: "/usr/bin/chromedriver"
+ - name: "check sonar-scanner 4.6 version"
+   command: "/usr/local/sonar-scanner-4.6.1.2450/bin/sonar-scanner"
    args: ["--version"]
-   expectedOutput: ['ChromeDriver 89.0..*']
+   expectedOutput: ['INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*']
+
+ - name: "check sonar-scanner link version"
+   command: "/usr/local/sonar-runner/bin/sonar-scanner"
+   args: ["--version"]
+   expectedOutput: ['INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*']
 
 metadataTest:
   env:

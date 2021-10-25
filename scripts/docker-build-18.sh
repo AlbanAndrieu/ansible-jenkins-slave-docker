@@ -10,7 +10,7 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 export DOCKER_TAG=${DOCKER_TAG:-"1.1.18"}
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
-  echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
+  echo -e "${green} DOCKER_BUILD_ARGS is defined : overiding ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
   export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
@@ -31,7 +31,7 @@ echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}
 dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1> docker-dockerfilelint.json 2> docker-dockerfilelint-error.log || true
 
 # shellcheck source=/dev/null
-source "${WORKING_DIR}/run-ansible.sh"
+#source "${WORKING_DIR}/run-ansible.sh"
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
@@ -63,11 +63,11 @@ echo -e "${green} This image is a trusted docker Image. ${happy_smiley} ${NC}"
 echo -e ""
 echo -e "To push it"
 echo -e "    docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password password"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_TMP}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_TMP}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 echo -e "    docker push ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 
 echo -e "    docker manifest inspect  ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
@@ -96,12 +96,23 @@ echo -e "${magenta} Add docker group to above user. ${happy_smiley} ${NC}"
 echo -e "${magenta} sudo usermod -a -G docker ${USER} ${NC}"
 
 echo -e "To run in interactive mode for debug:"
-echo -e "    docker run --init -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v ${JENKINS_USER_HOME}:/home/jenkins -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker run --init -it -u ${DOCKER_UID}:${DOCKER_GID} --userns=host -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e ""
+echo -e "     -v ${JENKINS_USER_HOME}:/home/jenkins"
+echo -e ""
 echo -e "    docker run --init -it -d -u ${DOCKER_UID}:${DOCKER_GID} --userns=host --name sandbox ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest cat"
 echo -e "    Note: --init is necessary for correct subprocesses handling (zombie reaping)"
-echo -e "    docker run --init ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest -url http://localhost:8686/ -workDir=/home/jenkins/agent <secret> <agent name>"
-echo -e "    docker exec -it sandbox /bin/bash"
-echo -e "    docker exec -u 0 -it sandbox env TERM=xterm-256color bash -l"
+
+export JENKINS_URL=${JENKINS_URL:="http://albandri.misys.global.ad:8686"}
+#export JENKINS_CRUMB=$(curl "$JENKINS_URL/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
+echo -e "JENKINS_CRUMB : ${JENKINS_CRUMB} ${NC}"
+export JENKINS_AGENT_NAME=${JENKINS_AGENT_NAME:="docker-test"}
+#export JENKINS_SECRET=$(curl -L -s -u admin:password -H "Jenkins-Crumb:${JENKINS_CRUMB}" -X GET ${JENKINS_URL}/computer/docker-test/slave-agent.jnlp | sed "s/.*<application-desc main-class=\"hudson.remoting.jnlp.Main\"><argument>\([a-z0-9]*\).*/\1/")
+echo -e "JENKINS_SECRET : ${JENKINS_SECRET} ${NC}"
+
+echo -e "    docker run --init ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest /usr/local/bin/jenkins-agent -url ${JENKINS_URL} -workDir=/home/jenkins/agent ${JENKINS_SECRET} ${JENKINS_AGENT_NAME} ${NC}"
+echo -e "    docker exec -it sandbox /bin/bash ${NC}"
+echo -e "    docker exec -u 0 -it sandbox env TERM=xterm-256color bash -l ${NC}"
 echo -e ""
 
 echo -e "${magenta} Run CST test ${NC}"

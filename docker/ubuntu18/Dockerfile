@@ -98,7 +98,7 @@ RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-reco
 # Before ansible install default python is 3.6
 # TODO pip==20.2.4 # pip resolver ResolutionTooDeep(max_rounds)
 RUN python3 -m pip install --upgrade pip==20.3.4 \
-    && pip3 install ansible==2.10.3 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
+    && pip3 install ansible==4.6.0 ansible-core>=2.11.6 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
 ### DOCKER
@@ -122,9 +122,9 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 RUN npm install -g npm@6.14.4 && apt-get purge -y npm
 #RUN npm install -g npm@6.14.4 && apt-get purge -y npm && ln -s /usr/local/bin/npm /usr/bin/npm
 RUN npm -v && command -v npm # 6.7.0
-RUN npm install -g bower@1.8.8 grunt@1.0.4 webdriver-manager@12.1.7 yarn@1.19.1 yo@3.1.1
-RUN npm install -g shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3
-RUN npm install -g newman@5.2.2 newman-reporter-htmlextra@1.19.7
+RUN npm install -g bower@1.8.12 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
+
+### USER
 
 ARG USER=${USER:-jenkins}
 ARG GROUP=${GROUP:-docker}
@@ -215,7 +215,7 @@ RUN ls -lrta $JENKINS_USER_HOME/.cache/ && ls -lrta $JENKINS_USER_HOME/.cache/pi
 # for local python, not the one in virtualenv
 #/usr/bin/python3.8 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade pip==20.3.4 \
-    && pip install ansible==2.10.3 docker-compose==1.25.5 pre-commit==2.9.0 \
+    && pip install ansible==4.6.0 ansible-core>=2.11.6 docker-compose==1.25.5 pre-commit==2.9.0 \
     && pip3 --version && python3 --version
 #    && pip install ansible-lint-junit==0.15
 

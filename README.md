@@ -5,6 +5,7 @@
 [![Branch](http://img.shields.io/github/tag/AlbanAndrieu/ansible-jenkins-slave-docker.svg?style=flat-square)](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/tree/master)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-alban.andrieu.eclipse-660198.svg?style=flat)](https://galaxy.ansible.com/AlbanAndrieu/ansible-jenkins-slave-docker)
 [![Platforms](http://img.shields.io/badge/platforms-el%20/%20macosx%20/%20ubuntu-lightgrey.svg?style=flat)]()
+[![Docker Pulls](https://img.shields.io/docker/pulls/nabla/ansible-jenkins-slave-docker)](https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker)<br/>
 
 # Table of contents
 
@@ -13,6 +14,7 @@
 - [Requirements](#requirements)
     + [python 3.8](#python-38)
     + [pre-commit](#pre-commit)
+    + [npm-groovy-lint groovy formating for Jenkinsfile](#npm-groovy-lint-groovy-formating-for-jenkinsfile)
 - [Usage](#usage)
     + [Linting](#linting)
     + [Ideas for improvement](#ideas-for-improvement)
@@ -61,6 +63,16 @@ Run `pre-commit run --all-files`
 
 Run `SKIP=ansible-lint git commit -am 'Add key'`
 Run `git commit -am 'Add key' --no-verify`
+
+### npm-groovy-lint groovy formating for Jenkinsfile
+
+Tested with nodejs 12 and 16 on ubuntu 20 and 21 (not working with nodejs 11 and 16)
+
+```
+npm install -g npm-groovy-lint@8.2.0
+npm-groovy-lint --format
+ls -lrta .groovylintrc.json
+```
 
 # Usage
 
