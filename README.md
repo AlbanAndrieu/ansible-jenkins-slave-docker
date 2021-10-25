@@ -1,4 +1,4 @@
-## NABLA Jenkins slave Docker image
+## [![Nabla](http://albandrieu.com/nabla/index/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu) Jenkins slave Docker image
 
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Travis CI](https://img.shields.io/travis/AlbanAndrieu/ansible-jenkins-slave-docker.svg?style=flat)](https://travis-ci.org/AlbanAndrieu/ansible-jenkins-slave-docker)
@@ -189,13 +189,13 @@ repository and send us your changes via pull requests.
     ├── packs                    # Files used to build docker image and chart
     │   config.yaml              # File to run CST
     │   Dockerfile               # File to build docker image
-    │   └── jenkins-slave          # Name of the helm chart
+    │   └── jenkins-slave        # Name of the helm chart
     │       └── charts
     │           Chart.yaml
     │           README.md
     │           └── templates
     │               deployment.yaml
-    │               _helpers.tpl
+    │               helpers.tpl
     │               └── tests
     │                   test-connection.yaml
     │           values.yaml
