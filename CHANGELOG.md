@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<!--lint disable no-undefined-references-->
 ## [1.0.13] - 2020-06-01
 
 I strongly advice you to move to helm 3
@@ -60,6 +61,7 @@ I strongly advice you to move to helm 3
 
 ### Added
 
+<!--lint disable no-undefined-references-->
 ## [1.0.0] - 2020-01-01
 
 I strongly advice you to move to python 3.7.5

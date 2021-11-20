@@ -1,6 +1,20 @@
 # comment
+
+.env
+.editorconfig
+.git
+.github
+.cache
+
 hooks/
-doc/
+
 *.md
 !README.md
-.git/
+
+
+docs/
+target/
+node_modules/
+scripts/
+docker/
+#roles/

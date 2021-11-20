@@ -14,10 +14,11 @@
 2to3==1.0
 alabaster==0.7.12
 alembic==1.4.2
-ansible==2.10.3
-ansible-cmdb==1.30
+ansible==4.6.0
+ansible-cmdb==1.31
+ansible-core>=2.11.6
 ansible-inventory-grapher==2.5.0
-#ansible-lint==4.3.4
+#ansible-lint==5.0.8
 #ansible-lint-junit==0.15 # error no module named lxml
 #ansible-tower-cli==3.3.9
 ansible-playbook-grapher==0.11.0
@@ -90,7 +91,7 @@ et-xmlfile==1.0.1
 extras==1.0.0
 fastcov==1.10
 fasteners==0.15
-feedparser==5.2.1
+feedparser==6.0.2
 file-magic==0.4.0
 filelock==3.0.12
 fire==0.3.1
@@ -189,8 +190,8 @@ piston-mini-client==0.7.5
 pluggy==0.13.1
 pluginbase==1.0.0
 poyo==0.5.0
-pre-commit==2.9.0
-pre-commit-hooks==3.3.0
+pre-commit==2.15.0
+pre-commit-hooks>=3.3.0
 prettytable==0.7.2
 psutil==5.7.0
 ptyprocess==0.6.0
@@ -218,6 +219,7 @@ pyrsistent==0.16.0
 PySimpleSOAP==1.16.2
 pytest==6.1.2
 pytest-cov==2.10.1
+pytest-testinfra==6.4.0
 python-dateutil==2.8.1
 python-debian==0.1.37
 python-debianbts==3.0.1
@@ -235,6 +237,7 @@ pytz==2019.3
 pywinrm==0.4.1
 pyxdg==0.26
 #PyYAML==5.3.1
+PyYAML==5.4.1 # See https://github.com/yaml/pyyaml/issues/291
 reportlab==3.5.42
 requests==2.25.1
 requests-credssp==1.1.1
@@ -276,7 +279,7 @@ svn==1.0.1
 tabulate==0.8.7
 termcolor==1.1.0
 terminaltables==3.1.0
-#testinfra==5.3.1
+testinfra==6.0.0
 testresources==2.0.1
 testtools==2.4.0
 texttable==1.6.2

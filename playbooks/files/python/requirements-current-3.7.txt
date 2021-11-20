@@ -253,7 +253,6 @@ SecretStorage==3.1.2
 selenium==3.141.0
 semver==2.9.0
 setup-cfg-fmt==1.6.0
-#setuptools==45.1.0 # TO TEST
 setuptools==41.0.0 # See https://github.com/ansible/molecule/issues/2350
 sh==1.12.14
 shellingham==1.3.1

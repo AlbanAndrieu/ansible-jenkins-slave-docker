@@ -3,14 +3,15 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
 #FROM ubuntu:18.04
-FROM selenium/standalone-chrome:3.141.59-20201117
+FROM selenium/standalone-chrome:3.141.59-20201117 as selenium
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 # In case you need proxy
 #ENV http_proxy=${http_proxy:-"http://127.0.0.1:3128"}
-#ENV https_proxy=${https_proxy:-"${http_proxy}"}
+ENV http_proxy=${http_proxy:-"http://10.21.185.171:3128"}
+ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu"}
 
 # dockerfile_lint - ignore
@@ -79,18 +80,13 @@ RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-reco
     ca-certificates curl apt-transport-https lsb-release gnupg \
     wget software-properties-common \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-#RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
-#    gpg --dearmor | \
-#    sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-#RUN AZ_REPO=$(lsb_release -cs) \
-#    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${AZ_REPO} main"
-#RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
 RUN PS_REPO=$(lsb_release -rs) \
     && wget -q https://packages.microsoft.com/config/ubuntu/${PS_REPO}/packages-microsoft-prod.deb \
-    && sudo dpkg -i packages-microsoft-prod.deb
-RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+    && sudo dpkg -i packages-microsoft-prod.deb \
+    && apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
     azure-cli powershell \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 ### PYTHON
 
 # error with pip==19.3.1
@@ -116,11 +112,10 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -qqy docker-ce
 # hadolint ignore=DL3008,DL3015
 # See issue https://askubuntu.com/questions/1036278/npm-is-incorrect-version-on-latest-ubuntu-18-04-installation
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-    apt-get update && apt-get install -y nodejs=8.10.0~dfsg-2ubuntu0.4 npm=3.5.2-0ubuntu4 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get update && apt-get install -y nodejs=12* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
 RUN npm install -g npm@6.14.4 && apt-get purge -y npm
-#RUN npm install -g npm@6.14.4 && apt-get purge -y npm && ln -s /usr/local/bin/npm /usr/bin/npm
 RUN npm -v && command -v npm # 6.7.0
 RUN npm install -g bower@1.8.12 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
@@ -171,13 +166,11 @@ ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 ARG ANSIBLE_VAULT_PASS
 ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"microsoft"}
 RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
-#COPY vault.passwd $JENKINS_USER_HOME/vault.passwd
-#COPY ansible.cfg
+#COPY ansible.cfg $JENKINS_USER_HOME/
 COPY *.yml $JENKINS_USER_HOME/
 #COPY roles $JENKINS_USER_HOME/
 COPY inventory $JENKINS_USER_HOME/inventory
 COPY playbooks $JENKINS_USER_HOME/playbooks
-#COPY roles $JENKINS_USER_HOME/.ansible/roles
 RUN rm -Rf $JENKINS_USER_HOME/.ansible/roles/
 #RUN rm -f $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.jenkins-slave $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.workstation $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.cpp $JENKINS_USER_HOME/.ansible/roles/alban.andrieu.gcc $JENKINS_USER_HOME/.ansible/roles/chrome
 #RUN ls -lrta $JENKINS_USER_HOME/.ansible/roles | true
@@ -199,10 +192,10 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes,nodejs \
+ --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes,nodejs,secret  \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
- && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
+ && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
  && rm -Rf $JENKINS_USER_HOME/playbooks/.node_cache/ \
  && rm -Rf $JENKINS_USER_HOME/.cpan $JENKINS_USER_HOME/.ansible \
  && rm -Rf $JENKINS_USER_HOME/.npm $JENKINS_USER_HOME/.node_cache $JENKINS_USER_HOME/.cache/pip \
@@ -281,10 +274,6 @@ RUN curl -L -o /tmp/${DRAFT_FILENAME} ${DRAFT_URL} \
   && chmod -R 777 ${JENKINS_USER_HOME}/.draft && ls -lrta ${JENKINS_USER_HOME}/.draft/plugins/  # for .draft/plugins
 # $JENKINS_USER_HOME/.draft/*
 
-# hadolint ignore=DL3020
-ADD https://get.aquasec.com/microscanner /
-RUN chmod +x /microscanner
-
 COPY wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
 #VOLUME /var/lib/docker
@@ -352,10 +341,6 @@ RUN chmod 700 ${HOME}/.ssh && chmod 600 ${HOME}/.ssh/id_rsa* && chmod 644 ${HOME
 #BELOW npm install is adding 700Mb to the images
 #RUN npm install --only=production && npm run update-webdriver
 
-#RUN /microscanner ${MICROSCANNER_TOKEN} --continue-on-failure 2>&1 > ${HOME}/microscanner.log
-#RUN echo "No vulnerabilities!"
-#RUN /microscanner ${token} && rm /microscanner
-
 # Will create $JENKINS_USER_HOME/.local/share/applications/mimeapps.list
 RUN google-chrome --version
 #RUN chromium-browser --version
@@ -375,6 +360,5 @@ VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]
-#CMD ["/usr/lib/systemd/systemd"]
 
 HEALTHCHECK NONE

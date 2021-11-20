@@ -13,7 +13,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined : overiding ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --squash"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -103,7 +103,7 @@ echo -e ""
 echo -e "    docker run --init -it -d -u ${DOCKER_UID}:${DOCKER_GID} --userns=host --name sandbox ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest cat"
 echo -e "    Note: --init is necessary for correct subprocesses handling (zombie reaping)"
 
-export JENKINS_URL=${JENKINS_URL:="http://albandri.misys.global.ad:8686"}
+export JENKINS_URL=${JENKINS_URL:="http://albandrieu/jenkins"}
 #export JENKINS_CRUMB=$(curl "$JENKINS_URL/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
 echo -e "JENKINS_CRUMB : ${JENKINS_CRUMB} ${NC}"
 export JENKINS_AGENT_NAME=${JENKINS_AGENT_NAME:="docker-test"}

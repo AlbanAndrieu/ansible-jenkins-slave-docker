@@ -84,7 +84,6 @@ ENV TZ "UTC"
 RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
-#package.json group_vars .ssh ansible.pub.key
 COPY *.yml package.json playbooks hosts roles $JENKINS_USER_HOME/
 RUN chown -R jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 

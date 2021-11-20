@@ -1,3 +1,4 @@
+---
 extends: default
 
 rules:
@@ -8,6 +9,12 @@ rules:
     max-spaces-inside: 1
     level: error
   line-length: disable
-  truthy: disable
+  # truthy: disable
   # NOTE(retr0h): Templates no longer fail this lint rule.
   #               Uncomment if running old Molecule templates.
+  truthy:
+    allowed-values: ['true', 'false', 'on']
+  # https://github.com/adrienverge/yamllint/issues/141
+  comments-indentation: disable
+ignore: |
+  .tox

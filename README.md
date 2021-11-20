@@ -5,6 +5,7 @@
 [![Branch](http://img.shields.io/github/tag/AlbanAndrieu/ansible-jenkins-slave-docker.svg?style=flat-square)](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/tree/master)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-albanandrieu.ansible--jenkins--slave--docker-660198.svg?style=flat)](https://galaxy.ansible.com/AlbanAndrieu/ansible-jenkins-slave-docker)
 [![Platforms](http://img.shields.io/badge/platforms-el%20/%20macosx%20/%20ubuntu-lightgrey.svg?style=flat)]()
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/AlbanAndrieu/ansible-jenkins-slave-docker.svg)](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/pulls)
 [![Docker Pulls](https://img.shields.io/docker/pulls/nabla/ansible-jenkins-slave-docker)](https://hub.docker.com/r/nabla/ansible-jenkins-slave-docker)<br/>
 
 # Table of contents
@@ -199,6 +200,14 @@ repository and send us your changes via pull requests.
     │                   test-connection.yaml
     │           values.yaml
 
+## Dependency Graph
+
+### Python 3.8 graphviz
+
+```
+python3 ./docs/files/ansible-roles-dependencies.py
+```
+
 ## Update README.md
 
 
@@ -206,7 +215,7 @@ repository and send us your changes via pull requests.
   * With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
 
 ```
-npm install --save markdown-toc
+npm install -g markdown-toc
 markdown-toc README.md
 markdown-toc CHANGELOG.md  -i
 ```

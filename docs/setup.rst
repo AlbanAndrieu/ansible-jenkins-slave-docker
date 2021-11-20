@@ -25,6 +25,7 @@ We advise, that you install ansible and other dependencies inside virtual enviro
 This will be helpful in case there is problem with any software version.
 
 .. code-block:: bash
+   :linenos:
 
    # virtualenv is installed globally on the system
    pip3 install virtualenv==16.1.0
@@ -48,7 +49,7 @@ Verification
 After installing Python modules, following should work::
 
    $ ansible --version
-   ansible 2.7.5
+   ansible 2.9.7
 
    $ ansible localhost -m ping
    localhost | SUCCESS => {

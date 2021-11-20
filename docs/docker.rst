@@ -7,7 +7,10 @@ Pull image::
 
    docker pull registry/nabla/ansible-jenkins-slave
 
-Start container::
+Start container:
+
+.. code-block:: bash
+   :linenos:
 
    #Sample using container to buid my local workspace
    docker run -t -d -w /sandbox/project-to-build -v /workspace/users/albandri30/:/sandbox/project-to-build:rw --name sandbox registry/nabla/ansible-jenkins-slave:latest cat
@@ -20,12 +23,19 @@ Build::
 
    docker exec sandbox /opt/maven/apache-maven-3.2.1/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=/home/jenkins/.m2/.repository -Dmaven.test.failure.ignore=true -s /home/jenkins/.m2/settings.xml -f cmr/pom.xml clean install
 
-Stop & remove container::
+Stop & remove container:
+
+.. code-block:: bash
+   :linenos:
 
    docker stop sandbox
    docker rm sandbox
 
-Build & development::
+Build & development:
+
+
+.. code-block:: bash
+   :linenos:
 
    ./run-ansible-workstation.sh` # for building like Jenkins.
    ./setup.sh` # for building.

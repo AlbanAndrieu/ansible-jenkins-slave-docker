@@ -5,7 +5,7 @@ globalEnvVars:
   - key: "VIRTUAL_ENV"
     value: "/opt/ansible/env38"
   - key: "PATH"
-    value: "/env/bin:$PATH"
+    value: "/opt/ansible/env38/bin:$PATH"
   - key: "JAVA_HOME"
     value: "/usr/lib/jvm/java-8-openjdk-amd64"
 
@@ -153,6 +153,21 @@ fileExistenceTests:
    permissions: '-rwxrwxrwx'
    uid: 2000
    gid: 2000
+#
+# - name: 'jenkins .bowerrc'
+#   path: '/home/jenkins/.bowerrc'
+#   shouldExist: true
+#   permissions: '-rwxrwxrwx'
+#   uid: 2000
+#   gid: 2000
+#
+# - name: 'jenkins .npmrc'
+#   path: '/home/jenkins/.npmrc'
+#   shouldExist: true
+#   permissions: '-rwxrwxrwx'
+#   uid: 2000
+#   gid: 2000
+
 
  - name: "check molecule"
    path: '/opt/ansible/env38/bin/molecule'
@@ -197,7 +212,8 @@ fileExistenceTests:
    permissions: 'drwxrwxrwx'
 
  - name: 'bower'
-   path: '/usr/local/bin/bower'
+   #path: '/usr/local/bin/bower'
+   path: '/usr/bin/bower'
    shouldExist: true
    permissions: 'Lrwxrwxrwx'
 
@@ -327,7 +343,7 @@ commandTests:
  - name: "check PATH"
    command: "echo"
    args: ["${PATH}"]
-   expectedOutput: ["/env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"]
+   expectedOutput: ["/opt/ansible/env38/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"]
 
 # - name: "molecule"
 #   setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"], ["pip", "install", "molecule", "ansible"]]
@@ -346,7 +362,8 @@ commandTests:
    expectedOutput: ["git-lfs/2..*"]
 
  - name: "check docker-compose version"
-   command: "docker-compose"   # /usr/local/bin/docker-compose
+   setup: [["virtualenv", "/opt/ansible/env38"]]
+   command: "docker-compose"   # /opt/ansible/env38/bin/docker-compose
    args: ["version"]
    expectedOutput: ["docker-compose version 1.25.*"]
 
@@ -378,22 +395,22 @@ commandTests:
 #   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
 #   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
 
- - name: "check node v11.15 version"
+ - name: "check node v12 version"
    command: "node"
    args: ["--version"]
-   expectedOutput: ["v11.15.*"]
+   expectedOutput: ["v12..*"]
 
- - name: "check nodejs v11.15 version"
+ - name: "check nodejs v12 version"
    command: "nodejs"
    args: ["--version"]
-   expectedOutput: ["v11.15.*"]
+   expectedOutput: ["v12..*"]
 
  - name: "check npm 6.14 version"
    command: "npm"
    args: ["--version"]
    expectedOutput: ["6.14.*"]
 
- - name: "check newman version"
+ - name: "check newman 5.2 version"
    command: "newman"   # /usr/local/bin/newman
    args: ["--version"]
    expectedOutput: ["5.2..*"]
@@ -405,8 +422,13 @@ commandTests:
 #   args: ["python3.8"]
 #   expectedOutput: ["/opt/ansible/env38/bin/python3.8\n"]
 
- - name: "check python 2.7 version"
+ - name: "check default python version"
    command: "python"
+   args: ["--version"]
+   expectedOutput: ['Python 3.8.*']
+
+ - name: "check python 2.7 version"
+   command: "python2"
    args: ["--version"]
    expectedError: ['Python 2.7.*']
 
@@ -418,7 +440,7 @@ commandTests:
  - name: "check pip 3 version"
    command: "pip3"
    args: ["--version"]
-   expectedOutput: ['pip 20.3.* from /usr/local/lib/python3.8/dist-packages/pip.*.*']
+   expectedOutput: ['pip 21.3.* from /opt/ansible/env38/lib/python3.8/site-packages/pip.*.*']
 
  - name: "check python 3 version"
    command: "python3"
@@ -450,36 +472,38 @@ commandTests:
 #   args: ["--version"]
 #   expectedOutput: ['pip 19.3.* from /usr/local/lib/python3.7/dist-packages/pip (python 3.7)']
 
- - name: "check ansible 2.10.14 version"
+ - name: "check ansible core 2.11.6 version"
    command: "/usr/local/bin/ansible"
    args: ["--version"]
-   expectedOutput: ['ansible 2.10.*']
+   expectedOutput: ["ansible.*core 2.11.*"]
 
- - name: "check ansible 2.10.3 version"
+ - name: "check ansible 2.11.6 version"
    command: "/opt/ansible/env38/bin/ansible"
    args: ["--version"]
-   expectedOutput: ['ansible 2.10.*']
+   expectedOutput: ["ansible.*core 2.11.*"]
 
 # setup a virtualenv, and verify the correct python binary is run
 # source /opt/ansible/env38/bin/activate
 # pip show pyyaml
 
- - name: "check ansible-cmdb 1.30 version"
+ - name: "check ansible-cmdb"
    setup: [["virtualenv", "/opt/ansible/env38"]]
-   command: "/opt/ansible/env38/bin/ansible-cmdb"
-   args: ["--version"]
-   expectedOutput: ['ansible-cmdb.py v1.30.*']
+   #command: "/opt/ansible/env38/bin/ansible-cmdb"
+   #args: ["--version"]
+   command: "which"
+   args: ["ansible-cmdb"]
+   expectedOutput: ["/opt/ansible/env38/bin/ansible-cmdb"]
+   #expectedOutput: ['ansible-cmdb.py v1.30.*']
 
  - name: "check docker 19.03.4 version"
    command: "docker"
    args: ["--version"]
    expectedOutput: ['Docker version 19.03.*']
 
- - name: "check helm version"
+ - name: "check helm 3.4 version"
    command: "helm"
    args: ["version", "--client"]
    expectedOutput: ['version.BuildInfo{Version:\"v3.4..*\", GitTreeState:\"clean\", GoVersion:\"go1.14..*\"}.*']
-   #expectedOutput: ['Client: &version.Version{SemVer:\"v3.2..*\", GitCommit:\".*\", GitTreeState:\"clean\"}.*']
 
 #hadolint --version
 #dockerfile_lint version

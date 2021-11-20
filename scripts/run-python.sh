@@ -129,7 +129,8 @@ if [ -f "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_
       #exit 1
     else
       echo " VER : $VER lt"
-      #"${VIRTUALENV_PATH}/bin/pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
+      "pip${PYTHON_MAJOR_VERSION}" uninstall -y ansible || true
+      "pip${PYTHON_MAJOR_VERSION}" uninstall -y ansible-base || true
       "pip${PYTHON_MAJOR_VERSION}" install -r "${WORKING_DIR}/../playbooks/files/python/requirements-current-${PYTHON_MAJOR_VERSION}.txt"
       #--use-deprecated=legacy-resolver
     fi

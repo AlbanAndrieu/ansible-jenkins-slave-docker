@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+# See https://github.com/jenkinsci/docker-inbound-agent/blob/master/jenkins-agent
 # The MIT License
 #
 #  Copyright (c) 2015-2020, CloudBees, Inc.

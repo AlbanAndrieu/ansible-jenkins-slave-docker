@@ -400,9 +400,9 @@
 #  name: 'opencl'
 #  version: master
 #
-- src: https://github.com/elliotweiser/ansible-osx-command-line-tools.git
-  name: elliotweiser.osx-command-line-tools
-  version: master
+#- src: https://github.com/elliotweiser/ansible-osx-command-line-tools.git
+#  name: elliotweiser.osx-command-line-tools
+#  version: master
 
 - src: https://github.com/geerlingguy/ansible-role-homebrew.git
   name: geerlingguy.homebrew
