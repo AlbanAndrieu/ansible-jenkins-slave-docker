@@ -142,7 +142,7 @@ requests-ntlm==1.1.0
 requests-oauthlib==0.8.0
 requests-toolbelt==0.8.0
 restructuredtext-lint==1.2.1
-rsa==4.0
+rsa==4.7
 s3cmd==2.0.2
 s3transfer==0.1.13
 scons==3.0.5
