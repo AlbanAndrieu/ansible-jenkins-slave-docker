@@ -1,5 +1,4 @@
 ---
-
 - hosts: all
   gather_facts: true
   gather_subset: hardware
@@ -18,9 +17,9 @@
   tasks:
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-                 is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7/8, CentOS 6/7/8, or
-                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7/8, CentOS 6/7/8, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Enable repositories (RHEL, CentOS)
@@ -35,7 +34,7 @@
       when: ((ansible_distribution == 'CentOS') and ansible_distribution_major_version == '6')
       with_items:
         #- "https://centos6.iuscommunity.org/ius-release.rpm"
-         - "https://repo.ius.io/ius-release-el6.rpm"
+        - "https://repo.ius.io/ius-release-el6.rpm"
       become: true
 
     - name: Install python repo (RedHat and CentOS based)
@@ -49,28 +48,28 @@
       become: true
 
 #TODO at first run there is no jenkins user, so it will not work properly
-- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   tasks:
-#    - name: python | Remove venv
-#      file: path=/opt/ansible/{{ item }} state=absent
-#      with_items:
-#        - "env35"
-#        - "env36"
-#        - "env37"
+    #    - name: python | Remove venv
+    #      file: path=/opt/ansible/{{ item }} state=absent
+    #      with_items:
+    #        - "env35"
+    #        - "env36"
+    #        - "env37"
 
     - name: Create virtualenv directory
       file:
-       path: "/opt/{{ item.path }}"
-       state: directory
-       mode: 0775
-       recurse: yes
-       group: "docker"
-       owner: "jenkins"
+        path: "/opt/{{ item.path }}"
+        state: directory
+        mode: 0775
+        recurse: yes
+        group: "docker"
+        owner: "jenkins"
       #when: item.stat.exists == false
       with_items:
-        - { path: 'ansible' }
+        - { path: "ansible" }
       become: true
       changed_when: false
       tags:
@@ -82,7 +81,7 @@
         dest: "{{ ansible_user_dir }}"
       with_items:
         - "requirements-current-2.7.txt"
-#        - "requirements-current-3.5.txt"
+        #        - "requirements-current-3.5.txt"
         - "requirements-current-3.6.txt"
         - "requirements-current-3.6-uninstall.txt"
         - "requirements-current-3.7.txt"
@@ -94,7 +93,7 @@
         - requirements
 
 - name: Install python 2.7
-  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
   ignore_errors: true
 
@@ -102,14 +101,14 @@
     - python
 
   vars:
-      python_versions: [2.7]
-      # python_ppa: no # TODO for Ubuntu-19
-      python_install: [numpy, pylint, pandas]
-      python_virtualenv_user: jenkins
-      python_pip_installed_enabled: false # Do not want latest pip 21.0.1
-      python_virtualenvs:
-        - path: /opt/ansible/env
-          python: python2.7
+    python_versions: [2.7]
+    # python_ppa: no # TODO for Ubuntu-19
+    python_install: [numpy, pylint, pandas]
+    python_virtualenv_user: jenkins
+    python_pip_installed_enabled: false # Do not want latest pip 21.0.1
+    python_virtualenvs:
+      - path: /opt/ansible/env
+        python: python2.7
 
 - name: Install python 3 and 3.6 to 3.8
   hosts: Ubuntu-18*:Ubuntu-16*
@@ -120,16 +119,16 @@
     - python
 
   vars:
-      python_versions: [3, 3.6, 3.7, 3.8]
-      #python_install: [numpy, pylint, pandas]
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env38
-          python: python3.8
-        - path: /opt/ansible/env37
-          python: python3.7
-        - path: /opt/ansible/env36
-          python: python3.6
+    python_versions: [3, 3.6, 3.7, 3.8]
+    #python_install: [numpy, pylint, pandas]
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env38
+        python: python3.8
+      - path: /opt/ansible/env37
+        python: python3.7
+      - path: /opt/ansible/env36
+        python: python3.6
 
 - name: Install python 3 and 3.7 to 3.8
   hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*
@@ -140,14 +139,14 @@
     - python
 
   vars:
-      python_versions: [3, 3.7, 3.8]
-      #python_install: [numpy, pylint, pandas]
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env38
-          python: python3.8
-        - path: /opt/ansible/env37
-          python: python3.7
+    python_versions: [3, 3.7, 3.8]
+    #python_install: [numpy, pylint, pandas]
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env38
+        python: python3.8
+      - path: /opt/ansible/env37
+        python: python3.7
 
 # Only python 2.6 is installed as default for python2 we need python 2.7
 - name: Install python 2.7
@@ -158,14 +157,14 @@
     - python
 
   vars:
-      python_versions: [2.7]
-      python_yum_enablerepo: epel
-      python_pkg_bin: /usr/bin
-      python_bin: /usr/bin/python
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env
-          python: python2.7
+    python_versions: [2.7]
+    python_yum_enablerepo: epel
+    python_pkg_bin: /usr/bin
+    python_bin: /usr/bin/python
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env
+        python: python2.7
 
 - name: Install python 2
   hosts: RedHat-7*:CentOS-7*
@@ -175,14 +174,14 @@
     - python
 
   vars:
-      python_versions: [2]
-      python_yum_enablerepo: epel
-      python_pkg_bin: /bin
-      python_bin: /bin/python
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env
-          python: python2.7
+    python_versions: [2]
+    python_yum_enablerepo: epel
+    python_pkg_bin: /bin
+    python_bin: /bin/python
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env
+        python: python2.7
 
 - name: Install python 3.5
   hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:CentOS-5*
@@ -193,14 +192,14 @@
     - python
 
   vars:
-      python_versions: [3.5u]
-      python_yum_enablerepo: ius
-      python_pkg_bin: /usr/bin
-      python_bin: /usr/bin/python
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env35
-          python: python3.5
+    python_versions: [3.5u]
+    python_yum_enablerepo: ius
+    python_pkg_bin: /usr/bin
+    python_bin: /usr/bin/python
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env35
+        python: python3.5
 
 - name: Install python 3.6
   hosts: RedHat-8*:RedHat-7*:CentOS-7*:CentOS-6*:CentOS-5*
@@ -211,14 +210,14 @@
     - python
 
   vars:
-      python_versions: [3.6u]
-      python_yum_enablerepo: ius
-      python_pkg_bin: /bin
-      python_bin: /bin/python
-      python_virtualenv_user: jenkins
-      python_virtualenvs:
-        - path: /opt/ansible/env36
-          python: python3.6
+    python_versions: [3.6u]
+    python_yum_enablerepo: ius
+    python_pkg_bin: /bin
+    python_bin: /bin/python
+    python_virtualenv_user: jenkins
+    python_virtualenvs:
+      - path: /opt/ansible/env36
+        python: python3.6
 
 - name: Install python requirements
   hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
@@ -248,8 +247,7 @@
         - python35
       environment:
         PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
-      ignore_errors: true  # RedHat 7.6 have now python 3.6 as default, 3.5 targeted to be deprecated
-
+      ignore_errors: true # RedHat 7.6 have now python 3.6 as default, 3.5 targeted to be deprecated
 
     - name: python3.6 | Create venv and install requirements
       pip:
@@ -324,7 +322,7 @@
       #ignore_errors: true
 
 # Since Ubuntu 19 we do not maintain python 3.5 and 3.6
-- hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*
+- hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*
   become: true
 
   tasks:
@@ -367,7 +365,7 @@
       #  PATH: "{{ ansible_env.PATH }}:{{ ansible_user_dir }}/.local/bin"
       #ignore_errors: true
 
-- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   tasks:
@@ -382,7 +380,7 @@
       become: true
       become_user: root
       changed_when: false
-#      ignore_errors: true
+      #      ignore_errors: true
       tags:
         - venv
         - requirements

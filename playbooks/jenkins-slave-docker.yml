@@ -27,7 +27,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -38,9 +38,9 @@
   tasks:
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-                 is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04."
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04/21.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 # USELESS playbook will fail before
@@ -52,13 +52,47 @@
 #      #shell: ansible-galaxy install -r ../requirements.yml -p ../roles/ --ignore-errors --force
 #      ignore_errors: true
 
+#- hosts: all
+#  remote_user: root
+#
+#  tasks:
+#    - name: set http_proxy to default
+#      set_fact: http_proxy="http://150.151.144.119:3128"
+#
+#    - name: set https_proxy to default
+#      set_fact: https_proxy="{{ http_proxy }}"
+
+- name: Update cache
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  #  remote_user: root
+  become: true
+
+  tasks:
+    - name: Update
+      apt:
+        update_cache: yes
+      ignore_errors: false
+
 - import_playbook: python-bootstrap.yml
+  tags:
+    - python
+    - vm
+
+- import_playbook: hostname.yml
+  tags:
+    - hostname
+    - vm
 
 - import_playbook: common.yml
 
-#- import_playbook: dns.yml
+- import_playbook: dns.yml
+  tags:
+    - dns
+    - vm
 
 - import_playbook: python.yml
+  tags:
+    - python
 
 #Below ntp role is included in administration role
 - name: Apply ntp configuration
@@ -72,24 +106,16 @@
     - geerlingguy.ntp
 
   vars:
-       ntp_timezone: Europe/Paris
-
-#- import_playbook: hostname.yml
+    ntp_timezone: Europe/Paris
 
 #- import_playbook: administration.yml automount_enabled=false nis_enabled=false
-
-#- name: Install git
-#  hosts: all
-#  become: true
-#  remote_user: root
-##  connection: local
-#
-#  roles:
-#    - role: geerlingguy.git
 
 - import_playbook: java.yml
 
 - import_playbook: maven.yml
+  tags:
+    - maven
+    - vm
 
 #- import_playbook: chrome.yml google_talkplugin_enabled=false
 
@@ -104,9 +130,17 @@
 
 - import_playbook: cpp.yml
 
-#- import_playbook: certificate.yml
-
 - import_playbook: xvbf.yml
   tags:
     - xvbf
+    - vm
+
+#- import_playbook: kubernetes.yml
+#  tags:
+#    - kubernetes
+#    - vm
+
+- import_playbook: cleaning.yml
+  tags:
+    - cleaning
     - vm

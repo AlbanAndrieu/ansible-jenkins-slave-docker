@@ -1,7 +1,31 @@
 ---
+# This playbook deploys common tools.
+- hosts: all
+  gather_facts: true
+  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+#Use below only if you want your servers to be part of MGR build farm
 - name: Apply common configuration to all nodes
-  hosts: common
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-18*:Ubuntu-16*:Ubuntu-14*:Ubuntu-12*
   gather_facts: false
   remote_user: root
 
@@ -9,5 +33,7 @@
     - albanandrieu.ansible_common
 
   vars:
-     apt_notification_email: "alban.andrieu@free.fr"
-     apt_upgrade_system_enabled: no
+    apt_notification_email: "alban.andrieu@free.fr"
+    apt_upgrade_system_enabled: no
+    #apt_install_proxy: 'http://150.151.144.119:3128'
+    #apt_install_proxy_enabled: true

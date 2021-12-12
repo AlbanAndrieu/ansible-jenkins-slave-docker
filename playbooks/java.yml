@@ -19,9 +19,9 @@
   tasks:
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-                 is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Install java 8 License
@@ -44,7 +44,6 @@
 
     - name: jdk12 | Accept Java 12 License
       debconf: name='oracle-java12-installer' question='shared/accepted-oracle-license-v1-2' value='true' vtype='select'
-
 # debian | ubuntu | Java 11
 
 #- name: Install java (1)

@@ -2,17 +2,17 @@
 #set -xv
 
 if [ "$0" = "${BASH_SOURCE[0]}" ]; then
-    echo "This script has to be sourced and not executed..."
-    exit 1
+  echo "This script has to be sourced and not executed..."
+  exit 1
 fi
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/step-1-os.sh"
 
 function float_gt() {
-    perl -e "{if($1>$2){print 1} else {print 0}}"
+  perl -e "{if($1>$2){print 1} else {print 0}}"
 }
 
 function versionToInt() {
@@ -92,8 +92,7 @@ else
   # if virtualenv is not used and there is system installation
   # of python3, it should be used
   ANSIBLE_CMD="ansible"
-  if [[ -z $VIRTUAL_ENV ]]
-  then
+  if [[ -z $VIRTUAL_ENV ]]; then
     #/usr/bin/ansible for RedHat
     #/usr/local/bin/ansible for Ubuntu
     echo "No VIRTUAL_ENV"
@@ -155,8 +154,7 @@ else
   # if virtualenv is not used and there is system installation
   # of python3, it should be used
   ANSIBLE_GALAXY_CMD="ansible-galaxy"
-  if [[ -z $VIRTUAL_ENV ]]
-  then
+  if [[ -z $VIRTUAL_ENV ]]; then
     #/usr/bin/ansible-galaxy for RedHat
     #/usr/local/bin/ansible-galaxy for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then
@@ -194,8 +192,7 @@ else
   # if virtualenv is not used and there is system installation
   # of python3, it should be used
   ANSIBLE_PLAYBOOK_CMD="ansible-playbook"
-  if [[ -z $VIRTUAL_ENV ]]
-  then
+  if [[ -z $VIRTUAL_ENV ]]; then
     #/usr/bin/ansible-playbook for RedHat
     #/usr/local/bin/ansible-playbook for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then
@@ -233,8 +230,7 @@ else
   # if virtualenv is not used and there is system installation
   # of python3, it should be used
   ANSIBLE_LINT_CMD="ansible-lint"
-  if [[ -z $VIRTUAL_ENV ]]
-  then
+  if [[ -z $VIRTUAL_ENV ]]; then
     #/usr/bin/ansible-lint for RedHat
     #/usr/local/bin/ansible-lint for Ubuntu
     if [ "${OS}" == "Ubuntu" ]; then

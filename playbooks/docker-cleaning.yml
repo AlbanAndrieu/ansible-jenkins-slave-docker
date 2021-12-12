@@ -19,19 +19,21 @@
       changed_when: false
       ignore_errors: true
       tags:
+        - clean
         - docker
-        - vm # do not install on docker image
+        - vm
 
     - name: Log into private registry
       docker_login:
         registry: https://hub.docker.com
         username: "{{ docker_registry_login }}"
         password: "{{ docker_registry_password }}"
-#        reauthorize: yes
+      #        reauthorize: yes
       ignore_errors: true
       tags:
+        - clean
         - docker
-        - vm # do not install on docker image
+        - vm
 
 - hosts: docker-cleaning
   become: true
@@ -53,23 +55,23 @@
         name: hello-world:latest
         force: yes
 
-#    - name: Remove test image
-#      docker_image:
-#        state: absent
-#        name: nabla/ansible-jenkins-slave-docker
-#        tag: test
+    #    - name: Remove test image
+    #      docker_image:
+    #        state: absent
+    #        name: nabla/ansible-jenkins-slave-docker
+    #        tag: test
 
-# Below might be useless (duplicated) when running full cleaning
-#    - name: Remove unwanted dangling images
-#      shell: "docker rmi $(docker images -f dangling=true -q)"
-#      ignore_errors: true
-#      changed_when: false
+    # Below might be useless (duplicated) when running full cleaning
+    #    - name: Remove unwanted dangling images
+    #      shell: "docker rmi $(docker images -f dangling=true -q)"
+    #      ignore_errors: true
+    #      changed_when: false
 
-# Below might be useless (duplicated) when running full cleaning
-#    - name: Remove unwanted ‘dangling’ volumes
-#      shell: "docker volume rm $(docker volume ls -qf dangling=true)"
-#      ignore_errors: true
-#      changed_when: false
+    # Below might be useless (duplicated) when running full cleaning
+    #    - name: Remove unwanted ‘dangling’ volumes
+    #      shell: "docker volume rm $(docker volume ls -qf dangling=true)"
+    #      ignore_errors: true
+    #      changed_when: false
 
     - name: Remove container which are running since more than 1 day
       shell: "docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up [0-9]+ days' | awk '{print $1}')"
@@ -89,9 +91,18 @@
         - docker
         - vm
 
-#TODO below is slow, we have to pull all the images again after
+    - name: Remove reclaimable volumes
+      command: "docker system prune --volumes -f "
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - docker
+        - vm
+
+    #TODO below is slow, we have to pull all the images again after
     - name: Remove reclaimable images and volumes
-      command: "docker system prune -a --volumes -f"
+      command: "docker system prune -a -f --filter until=20m"
       changed_when: false
       ignore_errors: true
       tags:
@@ -108,56 +119,54 @@
         - docker
         - vm
 
-#    - name: Pull ansible-jenkins-slave-docker images
-#      docker_image:
-#        name: hub.docker.com/nabla/ansible-jenkins-slave-docker
-#        force: yes
-#        tag: 1.0.0
-#
+    #    - name: Pull ansible-jenkins-slave-docker images
+    #      docker_image:
+    #        name: hub.docker.com/nabla/ansible-jenkins-slave-docker
+    #        force: yes
+    #        tag: 1.0.0
+    #
     - name: Pull ansible-jenkins-slave-docker latest images
       docker_image:
         name: hub.docker.com/nabla/ansible-jenkins-slave-docker
         force: yes
         tag: latest
 
-
     - name: Check image is fully available
       command: "docker inspect -f . nabla/ansible-jenkins-slave-docker:latest"
       changed_when: false
-
 #docker ps -a -s
 #docker images
 
-- hosts: docker-cleaning
-  become: true
-
-  tasks:
-    - name: Fix docker permission issue on config.json (jenkins user)
-      file:
-            path: "{{ jenkins_home|default('/home/jenkins') }}/.docker/config.json"
-            owner: jenkins
-            group: docker
-            state: touch
-            mode: g+rw
-      become: true
-      become_user: root
-      changed_when: false
-      ignore_errors: true
-      tags:
-        - clean
-        - docker
-        - vm
-
-    - name: Log into private registry (jenkins user)
-      docker_login:
-        registry: https://hub.docker.com
-        username: "{{ docker_registry_login }}"
-        password: "{{ docker_registry_password }}"
-        reauthorize: yes
-      become: true
-      become_user: jenkins
-      # ignore_errors: true # I will not ignore failure on purpose, goal is to catch docker login issue
-      tags:
-        - clean
-        - docker
-        - vm
+#- hosts: docker-cleaning
+#  become: true
+#
+#  tasks:
+#    - name: Fix docker permission issue on config.json (jenkins user)
+#      file:
+#            path: "{{ jenkins_home|default('/home/jenkins') }}/.docker/config.json"
+#            owner: jenkins
+#            group: docker
+#            state: touch
+#            mode: g+rw
+#      become: true
+#      become_user: root
+#      changed_when: false
+#      ignore_errors: true
+#      tags:
+#        - clean
+#        - docker
+#        - vm
+#
+#    - name: Log into private registry (jenkins user)
+#      docker_login:
+#        registry: https://hub.docker.com
+#        username: "{{ docker_registry_login }}"
+#        password: "{{ docker_registry_password }}"
+#        reauthorize: yes
+#      become: true
+#      become_user: jenkins
+#      # ignore_errors: true # I will not ignore failure on purpose, goal is to catch docker login issue
+#      tags:
+#        - clean
+#        - docker
+#        - vm

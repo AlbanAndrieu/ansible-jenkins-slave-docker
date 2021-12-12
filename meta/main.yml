@@ -2,11 +2,11 @@
 dependencies:
   - { role: albanandrieu.ansible_common }
   - { role: albanandrieu.ansible_cpp }
-#  - { role: albanandrieu.cmake }
-#  - { role: albanandrieu.scons }
-#  - { role: albanandrieu.gcc }
+  #  - { role: albanandrieu.cmake }
+  #  - { role: albanandrieu.scons }
+  #  - { role: albanandrieu.gcc }
   - { role: albanandrieu.ansible-workstation }
-  - { role: albanandrieu.xvbf }
+  #  - { role: albanandrieu.xvbf }
   - { role: albanandrieu.jenkins_slave }
   - { role: albanandrieu.java }
   - { role: albanandrieu.selenium }
@@ -22,6 +22,6 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-      - all
+        - all
   galaxy_tags:
     - development

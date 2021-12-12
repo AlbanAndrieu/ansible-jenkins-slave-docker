@@ -1,5 +1,4 @@
 ---
-
 - name: Install brew
   hosts: jenkins-slaves
   become: true

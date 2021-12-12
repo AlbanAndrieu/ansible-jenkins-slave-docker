@@ -5,7 +5,7 @@ if [ -d "${WORKSPACE}/ansible" ]; then
   cd "${WORKSPACE}/ansible" || exit
 fi
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 #export PYTHON_MAJOR_VERSION=3.7
 
@@ -61,18 +61,18 @@ fi
 cd "${WORKSPACE}/bm/Scripts/shell" || exit
 
 echo -e "${cyan} =========== ${NC}"
-shellcheck ./*.sh -f checkstyle > checkstyle-result.xml || true
+shellcheck ./*.sh -f checkstyle >checkstyle-result.xml || true
 echo -e "${green} shell check for shell done. $? ${NC}"
 
 echo -e "${cyan} =========== ${NC}"
 cd "${WORKSPACE}/scripts/" || exit
-shellcheck ./*.sh -f checkstyle > checkstyle-result.xml || true
+shellcheck ./*.sh -f checkstyle >checkstyle-result.xml || true
 echo -e "${green} shell check for release done. $? ${NC}"
 
 echo -e "${cyan} =========== ${NC}"
 cd "${WORKSPACE}/.." || exit # pylint need .pylintrc
 if [ -f ".pylintrc" ]; then
-  pylint --output-format=junit ./**/*.py > pylint-junit-result.xml || true
+  pylint --output-format=junit ./**/*.py >pylint-junit-result.xml || true
   echo -e "${green} python check for pylint done. $? ${NC}"
 fi
 

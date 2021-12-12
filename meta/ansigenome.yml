@@ -1,20 +1,19 @@
 ---
-
 ansigenome_info: # noqa 701
-  galaxy_id: ''
-  galaxy_url: 'https://galaxy.ansible.com/alban.andrieu/ansible-jenkins-slave-docker/'
-  galaxy_user: 'alban.andrieu'
-  galaxy_name: 'ansible-jenkins-slave-docker'
-  galaxy_docker_name: 'ansible-jenkins-slave-docker'
+  galaxy_id: ""
+  galaxy_url: "https://galaxy.ansible.com/alban.andrieu/ansible-jenkins-slave-docker/"
+  galaxy_user: "alban.andrieu"
+  galaxy_name: "ansible-jenkins-slave-docker"
+  galaxy_docker_name: "ansible-jenkins-slave-docker"
 
   travis: true
 
   authors:
-    - name: 'Alban Andrieu'
-      url: 'fr.linkedin.com/in/nabla/'
-      email: 'alban.andrieu@free.fr'
-      twitter: 'AlbanAndrieu'
-      github: 'AlbanAndrieu'
+    - name: "Alban Andrieu"
+      url: "fr.linkedin.com/in/nabla/"
+      email: "alban.andrieu@free.fr"
+      twitter: "AlbanAndrieu"
+      github: "AlbanAndrieu"
 
   description: A role for creating docker image ansible-jenkins-slave-docker for jenkins slaves
   company: Nabla
@@ -24,7 +23,7 @@ ansigenome_info: # noqa 701
   platforms:
     - name: Ubuntu
       versions:
-      - all
+        - all
   galaxy_tags:
     - development
     - docker

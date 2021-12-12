@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -xve
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # source only if terminal supports color, otherwise use unset color vars
 # shellcheck source=/dev/null
@@ -19,6 +19,7 @@ echo -e "${green} Ansible vault password. ${NC}"
 if [ -c "${WORKING_DIR}/../vault.passwd" ]; then
   echo -e "${green} ${WORKING_DIR}/../vault.passwd exist ${happy_smiley} : *** ${NC}"
 else
+  echo -e "${cyan} No {WORKING_DIR}/../vault.passwd ${NC}"
   if [ -n "${ANSIBLE_VAULT_PASS}" ]; then
     echo -e "${green} ANSIBLE_VAULT_PASS is defined ${happy_smiley} : *** ${NC}"
     #echo "${ANSIBLE_VAULT_PASS}" > ${WORKING_DIR}/../vault.passwd || true
@@ -48,7 +49,12 @@ echo "COMPOSE_HTTP_TIMEOUT : $COMPOSE_HTTP_TIMEOUT"
 echo -e "${cyan} =========== ${NC}"
 echo -e "${green} Checking ansible version ${NC}"
 
-which ansible
+# which ansible
+if command -v ansible; then
+  echo -e "${green} ansible found ${NC}"
+else
+  echo -e "${red} ansible not found ${NC}"
+fi
 ansible --version | grep python || true
 RC=$?
 if [ ${RC} -ne 0 ]; then

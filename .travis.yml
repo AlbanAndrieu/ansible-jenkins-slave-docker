@@ -1,12 +1,12 @@
 ---
 language: python
 python:
-#  - 2.7
-#  - 3.3
-#  - 3.4
-#  - 3.5
-#  - 3.6
-#  - 3.7
+  #  - 2.7
+  #  - 3.3
+  #  - 3.4
+  #  - 3.5
+  #  - 3.6
+  #  - 3.7
   - 3.8
 
 services:
@@ -23,9 +23,9 @@ env:
     - secure: TGUihI8NZudZK09yhYmP3DF2YarY4d9ljgm+sArpvc7Ga7NvU7A2GxJm6KJ6ZAxBd/K+R89vo6fRWQma4ZFOjbi/TLabDgWJVD+aabhY5n1gPBDuoz/N7At3v4Ws1qD4M3Bj8+ds+ye1q+0MEDy+AYko8+UUhgLEvsbGUI9d4PY=
     - DJANGO_VERSION=2.2.6
   matrix:
-#  - ANSIBLE_VERSION=latest
-#  - ANSIBLE_VERSION=2.7.14
-  - ANSIBLE_VERSION=2.9.4
+    #  - ANSIBLE_VERSION=latest
+    #  - ANSIBLE_VERSION=2.7.14
+    - ANSIBLE_VERSION=2.9.4
 
 sudo: required
 #dist: trusty
@@ -34,7 +34,7 @@ dist: travis_lts
 
 branches:
   only:
-  - master
+    - master
 virtualenv:
   system_site_packages: false
 before_install:
@@ -67,10 +67,10 @@ script:
   # Add user jenkins to the image
   - id -a
   - getent passwd 3000 || true # 3000 not found we can use it for jenkins user
-#  - groupadd -g ${DOCKER_GID} docker && \
+  #  - groupadd -g ${DOCKER_GID} docker && \
   - sudo adduser --quiet --disabled-password --shell /bin/bash --uid ${JENKINS_UID} --gid ${DOCKER_GID} --home ${JENKINS_HOME} --gecos "Jenkins" jenkins
   # Set password for the jenkins user (you may want to alter this).
-#  - sudo echo "jenkins:jenkins1234" | sudo chpasswd
+  #  - sudo echo "jenkins:jenkins1234" | sudo chpasswd
 
   - echo "${ANSIBLE_VAULT_PASS}" > vault.passwd
   #- ansible-vault view --vault-password-file vault.passwd playbooks/group_vars/all/vault.yml
@@ -109,5 +109,5 @@ notifications:
   email:
     recipients:
       - alban.andrieu@nabla.mobi
-    on_success: [always|never|change]         # default: change
-    on_failure: [always|never|change]         # default: always
+    on_success: [always|never|change] # default: change
+    on_failure: [always|never|change] # default: always

@@ -5,16 +5,16 @@ shopt -s extglob
 #set -ueo pipefail
 set -eo pipefail
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-export DOCKER_TAG=${DOCKER_TAG:-"1.2.2"}
+export DOCKER_TAG=${DOCKER_TAG:-"2.0.0"}
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --squash"
-  #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
+  export DOCKER_BUILD_ARGS=" --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --no-cache "
+  #export DOCKER_BUILD_ARGS="--build-arg --no-cache --squash"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
 
@@ -26,14 +26,14 @@ source "${WORKING_DIR}/docker-env.sh"
 
 echo -e "${green} Validating Docker ${NC}"
 echo -e "${magenta} hadolint ${WORKING_DIR}/${DOCKER_FILE} --format json ${NC}"
-hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1> docker-hadolint.json 2> docker-hadolint-error.log || true
+hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1>docker-hadolint.json 2>docker-hadolint-error.log || true
 echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/${DOCKER_FILE} ${NC}"
-dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1> docker-dockerfilelint.json 2> docker-dockerfilelint-error.log || true
+dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1>docker-dockerfilelint.json 2>docker-dockerfilelint-error.log || true
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-ansible.sh"
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 "${WORKING_DIR}/../clean.sh"
 
@@ -42,11 +42,22 @@ mkdir -p .ssh/
 #wget http://bm-artifacts.misys.global.ad/nexus/content/repositories/fusion-risk/download/certs/id_rsa.pub -O ${WORKING_DIR}/../.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
 #cp -p /home/kgr_mvn/.ssh/id_rsa* ${WORKING_DIR}/../.ssh/ || true
 
-export DOCKER_BUILDKIT=1
+#export DOCKER_BUILDKIT=1
+export DOCKER_BUILDKIT=0
+#export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
+export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
+#export BUILDKIT_STEP_LOG_MAX_SIZE=-1
+export BUILDKIT_STEP_LOG_MAX_SPEED=-1
 
 echo -e "${green} Building docker image ${NC}"
+
+#docker buildx create --use --name larger_log --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=50000000
+#buildx create --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=-1
+
 echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t \"$DOCKER_ORGANISATION/$DOCKER_NAME\" -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" ${WORKING_DIR}/../ ${NC}"
-time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" ${WORKING_DIR}/../ | tee docker.log
+#time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" ${WORKING_DIR}/../ | tee docker.log
+#  >docker.log 2>&1
+time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" ${WORKING_DIR}/../
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -87,8 +98,8 @@ export GROUP=${GROUP:-docker}
 export DOCKER_UID=${DOCKER_UID:-1004}
 export DOCKER_GID=${DOCKER_GID:-999}
 # shellcheck disable=SC2059
-printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
-printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
+printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" &&
+  printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
 echo -e "${green} User is. ${happy_smiley} : ${NC}"
 id "${USER}"

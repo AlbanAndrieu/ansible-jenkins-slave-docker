@@ -12,6 +12,7 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../library'))
 
 
@@ -109,15 +110,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -128,8 +126,11 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (
-        master_doc, 'Nabla.tex', 'Nabla Ansible Documentation',
-        'Alban Andrieu', 'manual',
+        master_doc,
+        'Nabla.tex',
+        'Nabla Ansible Documentation',
+        'Alban Andrieu',
+        'manual',
     ),
 ]
 
@@ -140,8 +141,11 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (
-        master_doc, 'Nabla', 'Nabla Ansible Documentation',
-        [author], 1,
+        master_doc,
+        'Nabla',
+        'Nabla Ansible Documentation',
+        [author],
+        1,
     ),
 ]
 
@@ -153,8 +157,12 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc, 'Nabla', 'Nabla Ansible Documentation',
-        author, 'Nabla', 'One line description of project.',
+        master_doc,
+        'Nabla',
+        'Nabla Ansible Documentation',
+        author,
+        'Nabla',
+        'One line description of project.',
         'Miscellaneous',
     ),
 ]

@@ -5,12 +5,12 @@
 
 - hosts: all
   gather_facts: true
-#  gather_subset: hardware
+  #  gather_subset: hardware
   tasks:
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -21,9 +21,9 @@
   tasks:
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-                 is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04."
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04/21.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 # USELESS playbook will fail before
@@ -100,9 +100,9 @@
 
 #- import_playbook: javascript.yml
 
-- import_playbook: yarn.yml
+#- import_playbook: yarn.yml
 
-- import_playbook: sonar-runner.yml
+#- import_playbook: sonar-runner.yml
 
 # TODO jenkins-slaves.yml contains some python fixes. It must be run first
 # but jenkins-slaves.yml might need virtualenv and python
@@ -113,7 +113,7 @@
     - docker
     - vm
 
-- import_playbook: perl.yml
+#- import_playbook: perl.yml
 
 - import_playbook: jenkins-slave.yml
 
@@ -122,16 +122,16 @@
     - zabbix
     - vm
 
-- import_playbook: cron.yml
-  tags:
-    - cron
-    - vm
+#- import_playbook: cron.yml
+#  tags:
+#    - cron
+#    - vm
 
 - import_playbook: xvbf.yml
 
-- import_playbook: opencl.yml
+#- import_playbook: opencl.yml
 
-- import_playbook: kubernetes.yml
+#- import_playbook: kubernetes.yml
 
 - import_playbook: cleaning.yml
   tags:

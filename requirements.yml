@@ -7,7 +7,7 @@
   version: master
 
 #- src: 'https://github.com/AlbanAndrieu/ansible-awstats'
-#  name: 'alban.andrieu.awstats'
+#  name: 'albanandrieu.awstats'
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-cmake.git

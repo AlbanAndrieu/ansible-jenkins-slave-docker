@@ -42,11 +42,11 @@ else
   export DRY_RUN="--check"
 fi
 
-type -p ansible-playbook > /dev/null
+type -p ansible-playbook >/dev/null
 if [ $? -ne 0 ]; then
-    echo -e "${red} \u00BB Oops! I cannot find ansible.  Please be sure to install ansible before proceeding. ${NC}"
-    echo -e "${red} \u00BB For guidance on installing ansible, consult http://docs.ansible.com/intro_installation.html. ${NC}"
-    exit 1
+  echo -e "${red} \u00BB Oops! I cannot find ansible.  Please be sure to install ansible before proceeding. ${NC}"
+  echo -e "${red} \u00BB For guidance on installing ansible, consult http://docs.ansible.com/intro_installation.html. ${NC}"
+  exit 1
 fi
 
 #export ANSIBLE_DEBUG=1
@@ -60,31 +60,31 @@ LOG_FILE="${LOG_DIR}/setup-${TIMESTAMP}.log"
 
 # When using an interactive shell, force colorized ansible output
 if [ -t "0" ]; then
-    ANSIBLE_FORCE_COLOR=True
+  ANSIBLE_FORCE_COLOR=True
 fi
 
 getopts "e:" EXTRA_ARGS
 if [ "$OPTARG" != "" ]; then
-    echo -e "${green} Running with extra args: ${OPTARG} ${NC}"
-    #-c local  --become-method=sudo
-    PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i staging -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} -e "$OPTARG" ${TARGET_PLAYBOOK} | tee setup.log
+  echo -e "${green} Running with extra args: ${OPTARG} ${NC}"
+  #-c local  --become-method=sudo
+  PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i staging -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} -e "$OPTARG" ${TARGET_PLAYBOOK} | tee setup.log
 else
-    PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i staging -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} ${TARGET_PLAYBOOK} -vvvv | tee setup.log
+  PYTHONUNBUFFERED=x ANSIBLE_FORCE_COLOR=$ANSIBLE_FORCE_COLOR ANSIBLE_ERROR_ON_UNDEFINED_VARS=True ansible-playbook -i staging -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} ${TARGET_PLAYBOOK} -vvvv | tee setup.log
 fi
 RC=$?
 if [ ${RC} -ne 0 ]; then
-    echo -e "${red} ${head_skull} Sorry, playboook failed ${NC}"
+  echo -e "${red} ${head_skull} Sorry, playboook failed ${NC}"
 else
-    echo -e "${green} playboook succeed. ${NC}"
-    #ansible-playbook -i staging ${TARGET_PLAYBOOK} -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} --become-method=sudo | grep -q 'unreachable=0.*failed=0' && (echo 'Main test: pass' && exit 0) || (echo 'Main test: fail' && exit 1)
+  echo -e "${green} playboook succeed. ${NC}"
+  #ansible-playbook -i staging ${TARGET_PLAYBOOK} -vvvv --limit ${TARGET_SLAVE} ${DRY_RUN} --become-method=sudo | grep -q 'unreachable=0.*failed=0' && (echo 'Main test: pass' && exit 0) || (echo 'Main test: fail' && exit 1)
 fi
 
 echo -e "${green} Ansible done. $? ${NC}"
 
 # Save logfile
 if [ -d "${LOG_DIR}" ]; then
-    sudo cp setup.log "${LOG_FILE}"
-    echo -e "${green} Setup log saved to ${LOG_FILE} ${NC}"
+  sudo cp setup.log "${LOG_FILE}"
+  echo -e "${green} Setup log saved to ${LOG_FILE} ${NC}"
 fi
 
 exit ${RC}

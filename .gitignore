@@ -1,3 +1,11 @@
+node_modules/
+.project
+.settings/
+docker-dockerfilelint.json
+docker-hadolint.json
+pylint-junit-result.xml
+docker-dive.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -111,6 +119,7 @@ venv.bak/
 hooks
 
 roles/alban.andrieu.*
+roles/albanandrieu.*
 roles/Stouts.*
 roles/andrewrothstein.*
 roles/angstwad.docker-ubuntu
@@ -141,6 +150,7 @@ roles/yarn/
 roles/zabbix/
 roles/anxs.perl/
 roles/jermon.ansible-role-cpan/
+roles/dj-wasabi.zabbix-agent/
 
 # To avoid adding encrypted files with git add -u or -a
 .idea/*

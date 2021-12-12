@@ -7,7 +7,6 @@ from ansible.utils.unsafe_proxy import AnsibleUnsafeText
 
 
 class FilterModule(object):
-
     def filters(self: object):
         return {
             'capture_group': capture_group,

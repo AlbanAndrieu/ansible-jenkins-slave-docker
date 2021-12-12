@@ -17,7 +17,9 @@ def get_system_ca_bundle():
 
 def get_csrf_token(host, auth, ca_bundle):
     url = 'https://{}/crumbIssuer/api/json'.format(host)
-    response = requests.get(url, auth=(auth['username'], auth['password']), verify=ca_bundle)
+    response = requests.get(
+        url, auth=(auth['username'], auth['password']), verify=ca_bundle,
+    )
     return response
 
 
@@ -51,7 +53,6 @@ def main():
             'hostname': {
                 'type': 'str',
                 'default': 'albandrieu.com:8686/jenkins',
-
             },
             'auth': {
                 'type': 'dict',
@@ -69,7 +70,9 @@ def main():
     )
     if token_request.status_code != 200:
         module.fail_json(
-            msg='Request for CSRF token to Jenkins failed with status code {}'.format(token_request.status_code),
+            msg='Request for CSRF token to Jenkins failed with status code {}'.format(
+                token_request.status_code,
+            ),
         )
     token = token_request.json()['crumb']
     module.exit_json(changed=True, token=token)

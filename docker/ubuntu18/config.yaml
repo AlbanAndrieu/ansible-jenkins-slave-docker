@@ -1,4 +1,3 @@
-
 schemaVersion: "2.0.0"
 
 globalEnvVars:
@@ -10,576 +9,600 @@ globalEnvVars:
     value: "/usr/lib/jvm/java-8-openjdk-amd64"
 
 fileExistenceTests:
-# Disable because of https://github.com/GoogleContainerTools/container-structure-test/issues/237
-# - name: 'Root'
-#   path: '/'
-#   shouldExist: true
-#   permissions: 'drwxr-xr-x'
-#   uid: 0
-#   gid: 0
-#   isExecutableBy: 'group'
+  # Disable because of https://github.com/GoogleContainerTools/container-structure-test/issues/237
+  # - name: 'Root'
+  #   path: '/'
+  #   shouldExist: true
+  #   permissions: 'drwxr-xr-x'
+  #   uid: 0
+  #   gid: 0
+  #   isExecutableBy: 'group'
 
-# - name: 'jenkins-slave-startup'
-#   path: '/jenkins-slave-startup.sh'
-#   shouldExist: true
-#   permissions: '-rwxr-xr-x'
-#   uid: 0
-#   gid: 0
-#   isExecutableBy: 'group'
+  # - name: 'jenkins-slave-startup'
+  #   path: '/jenkins-slave-startup.sh'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
+  #   uid: 0
+  #   gid: 0
+  #   isExecutableBy: 'group'
 
- - name: 'entrypoint'
-   path: '/entrypoint.sh'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+  # - name: 'entrypoint'
+  #   path: '/entrypoint.sh'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
+  #   uid: 0
+  #   gid: 0
+  #   isExecutableBy: 'group'
 
-#/workspace/slave
-#/workspace/slavearc
-#/home/jenkins/.gitconfig
-#/home/jenkins/.npmrc
+  #/workspace/slave
+  #/workspace/slavearc
+  #/home/jenkins/.gitconfig
+  #/home/jenkins/.npmrc
 
-# Disable because of https://github.com/GoogleContainerTools/container-structure-test/issues/237
-# - name: 'jenkins directory'
-#   path: '/home/jenkins'
-#   shouldExist: true
-#   permissions: 'drwxrwxrwx'
-#   uid: 2000
+  # Disable because of https://github.com/GoogleContainerTools/container-structure-test/issues/237
+  # - name: 'jenkins directory'
+  #   path: '/home/jenkins'
+  #   shouldExist: true
+  #   permissions: 'drwxrwxrwx'
+  #   uid: 2000
 
- - name: 'jenkins gitconfig'
-   path: '/home/jenkins/.gitconfig'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
+  # - name: 'jenkins gitconfig'
+  #   path: '/home/jenkins/.gitconfig'
+  #   shouldExist: true
+  #   permissions: '-rwxrwxrwx'
+  #   uid: 2000
 
- - name: 'jenkins local'
-   path: '/home/jenkins/.local/'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "jenkins local"
+    path: "/home/jenkins/.local/"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
-# HELM
+  # HELM
 
- - name: 'home .helm'
-   path: '/home/jenkins/.helm'
-   shouldExist: false
+  - name: "home .helm"
+    path: "/home/jenkins/.helm"
+    shouldExist: false
 
- - name: 'helm'
-   path: '/bin/helm'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
+  - name: "helm"
+    path: "/bin/helm"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
 
- - name: 'jenkins local share helm'
-   path: '/home/jenkins/.local/share/helm'
-   shouldExist: true
-   permissions: 'drwxr-xr-x'  # TODO ? --> drwxrwxrwx
-   uid: 2000
+  - name: "jenkins local share helm"
+    path: "/home/jenkins/.local/share/helm"
+    shouldExist: true
+    permissions: "drwxr-xr-x" # TODO ? --> drwxrwxrwx
+    uid: 2000
 
- - name: 'jenkins local helm cache'
-   path: '/home/jenkins/.cache/'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "jenkins local helm cache"
+    path: "/home/jenkins/.cache/"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
- - name: 'jenkins local helm cache repository custom-index.yaml'
-   path: '/home/jenkins/.cache/helm/repository/custom-index.yaml'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
+  - name: "jenkins local helm cache repository custom-index.yaml"
+    path: "/home/jenkins/.cache/helm/repository/custom-index.yaml"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
 
- - name: 'jenkins local helm cache repository custom-charts.txt'
-   path: '/home/jenkins/.cache/helm/repository/custom-charts.txt'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
+  - name: "jenkins local helm cache repository custom-charts.txt"
+    path: "/home/jenkins/.cache/helm/repository/custom-charts.txt"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
 
- - name: 'jenkins local helm config repositories.lock'
-   path: '/home/jenkins/.config/helm/repositories.lock'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
+  - name: "jenkins local helm config repositories.lock"
+    path: "/home/jenkins/.config/helm/repositories.lock"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
 
-# CHROME
+  # CHROME
 
- - name: 'jenkins local share applications'
-   path: '/home/jenkins/.local/share/applications'
-   shouldExist: true
-   permissions: 'drwxr-xr-x'  # TODO ? --> drwxrwxrwx
-   uid: 2000
+  - name: "jenkins local share applications"
+    path: "/home/jenkins/.local/share/applications"
+    shouldExist: true
+    permissions: "drwxr-xr-x" # TODO ? --> drwxrwxrwx
+    uid: 2000
 
- - name: 'jenkins config'
-   path: '/home/jenkins/.config/'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "jenkins config"
+    path: "/home/jenkins/.config/"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
- - name: 'jenkins .bashrc'
-   path: '/home/jenkins/.bashrc'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
-   gid: 2000
-#   isExecutableBy: 'group'
+  - name: "jenkins .bashrc"
+    path: "/home/jenkins/.bashrc"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
+    gid: 2000
+  #   isExecutableBy: 'group'
 
- - name: 'jenkins docker'
-   path: '/home/jenkins/.docker/'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "jenkins docker"
+    path: "/home/jenkins/.docker/"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
-# - name: 'jenkins kube'
-#   path: '/home/jenkins/.kube/'
-#   shouldExist: true
-#   permissions: 'drwxr-xr-x'
-#   uid: 2000
-#
-# - name: 'jenkins linuxbrew'
-#   path: '/home/jenkins/.linuxbrew/'
-#   shouldExist: true
-#   permissions: 'drwxr-xr-x'
-#   uid: 2000
+  # - name: 'jenkins kube'
+  #   path: '/home/jenkins/.kube/'
+  #   shouldExist: true
+  #   permissions: 'drwxr-xr-x'
+  #   uid: 2000
+  #
+  # - name: 'jenkins linuxbrew'
+  #   path: '/home/jenkins/.linuxbrew/'
+  #   shouldExist: true
+  #   permissions: 'drwxr-xr-x'
+  #   uid: 2000
 
- - name: 'jenkins settings.xml'
-   path: '/home/jenkins/.m2/settings.xml'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
-   gid: 2000
+  - name: "jenkins settings.xml"
+    path: "/home/jenkins/.m2/settings.xml"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
+    gid: 2000
 
- - name: 'jenkins settings-security.xml'
-   path: '/home/jenkins/.m2/settings-security.xml'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
-   uid: 2000
-   gid: 2000
-#
-# - name: 'jenkins .bowerrc'
-#   path: '/home/jenkins/.bowerrc'
-#   shouldExist: true
-#   permissions: '-rwxrwxrwx'
-#   uid: 2000
-#   gid: 2000
-#
-# - name: 'jenkins .npmrc'
-#   path: '/home/jenkins/.npmrc'
-#   shouldExist: true
-#   permissions: '-rwxrwxrwx'
-#   uid: 2000
-#   gid: 2000
+  - name: "jenkins settings-security.xml"
+    path: "/home/jenkins/.m2/settings-security.xml"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
+    uid: 2000
+    gid: 2000
+  #
+  # - name: 'jenkins .bowerrc'
+  #   path: '/home/jenkins/.bowerrc'
+  #   shouldExist: true
+  #   permissions: '-rwxrwxrwx'
+  #   uid: 2000
+  #   gid: 2000
+  #
+  # - name: 'jenkins .npmrc'
+  #   path: '/home/jenkins/.npmrc'
+  #   shouldExist: true
+  #   permissions: '-rwxrwxrwx'
+  #   uid: 2000
+  #   gid: 2000
 
+  - name: "check molecule"
+    path: "/opt/ansible/env38/bin/molecule"
+    shouldExist: true
+    isExecutableBy: "group"
 
- - name: "check molecule"
-   path: '/opt/ansible/env38/bin/molecule'
-   shouldExist: true
-   isExecutableBy: 'group'
+  - name: "jenkins container-structure-test"
+    path: "/usr/local/bin/container-structure-test"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
 
- - name: 'jenkins container-structure-test'
-   path: '/usr/local/bin/container-structure-test'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
+  # - name: 'docker access for jenkins'
+  #   path: '/var/run/docker.sock'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
+  #   gid: 2000
 
-# - name: 'docker access for jenkins'
-#   path: '/var/run/docker.sock'
-#   shouldExist: true
-#   permissions: '-rwxr-xr-x'
-#   gid: 2000
+  # SONAR
 
-# SONAR
+  - name: "sonar-build-wrapper"
+    path: "/usr/local/sonar-build-wrapper/build-wrapper-linux-x86-64"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
 
- - name: 'sonar-build-wrapper'
-   path: '/usr/local/sonar-build-wrapper/build-wrapper-linux-x86-64'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
+  - name: "sonar-scanner"
+    #path: '/usr/local/sonar-runner/bin/sonar-scanner'
+    path: "/usr/local/sonar-runner"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
 
- - name: 'sonar-scanner'
-   #path: '/usr/local/sonar-runner/bin/sonar-scanner'
-   path: '/usr/local/sonar-runner'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
+  # BOWER
 
-# BOWER
+  - name: "jenkins local share bower"
+    path: "/home/jenkins/.local/share/bower"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
- - name: 'jenkins local share bower'
-   path: '/home/jenkins/.local/share/bower'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "bower .config/configstore/bower-github.json"
+    path: "/home/jenkins/.config"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
 
- - name: 'bower .config/configstore/bower-github.json'
-   path: '/home/jenkins/.config'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
+  - name: "bower"
+    #path: '/usr/local/bin/bower'
+    path: "/usr/bin/bower"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
- - name: 'bower'
-   #path: '/usr/local/bin/bower'
-   path: '/usr/bin/bower'
-   shouldExist: true
-   permissions: 'Lrwxrwxrwx'
+  # NPM cache cleaned (to spare disk space)
 
-# NPM cache cleaned (to spare disk space)
+  - name: "jenkins npm"
+    path: "/home/jenkins/.npm/"
+    shouldExist: false
 
- - name: 'jenkins npm'
-   path: '/home/jenkins/.npm/'
-   shouldExist: false
+  - name: "npm"
+    path: "/usr/bin/npm"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
- - name: 'npm'
-   path: '/usr/bin/npm'
-   shouldExist: true
-   permissions: 'Lrwxrwxrwx'
+  - name: "node"
+    path: "/usr/bin/node"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
 
- - name: 'node'
-   path: '/usr/bin/node'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
+  # - name: 'node 11.12.0'
+  #   path: '/usr/local/n/versions/node/11.12.0'
+  #   shouldExist: true
+  #   permissions: 'drwxr-xr-x'
 
-# - name: 'node 11.12.0'
-#   path: '/usr/local/n/versions/node/11.12.0'
-#   shouldExist: true
-#   permissions: 'drwxr-xr-x'
+  - name: "docker credentials"
+    path: "/home/jenkins/.docker/config.json"
+    shouldExist: true
+    permissions: "-rwxrwxrwx"
 
- - name: 'docker credentials'
-   path: '/home/jenkins/.docker/config.json'
-   shouldExist: true
-   permissions: '-rwxrwxrwx'
+  # PYTHON pip cache cleaned (to spare disk space)
 
-# PYTHON pip cache cleaned (to spare disk space)
+  - name: "home .cache pip"
+    path: "/home/jenkins/.cache/pip"
+    shouldExist: false
+  #   permissions: 'drwxrwxrwx'
 
- - name: 'home .cache pip'
-   path: '/home/jenkins/.cache/pip'
-   shouldExist: false
-#   permissions: 'drwxrwxrwx'
+  - name: "home .config configstore"
+    path: "/home/jenkins/.config/configstore"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
 
- - name: 'home .config configstore'
-   path: '/home/jenkins/.config/configstore'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
+  # - name: 'hadolint'
+  #   path: '/home/jenkins/.linuxbrew/bin/hadolint'
+  #   shouldExist: true
+  #   permissions: '-rwxrwxrwx'
+  #
+  - name: "dockerfile_lint"
+    path: "/usr/local/bin/dockerfile_lint"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
-# - name: 'hadolint'
-#   path: '/home/jenkins/.linuxbrew/bin/hadolint'
-#   shouldExist: true
-#   permissions: '-rwxrwxrwx'
-#
- - name: 'dockerfile_lint'
-   path: '/usr/local/bin/dockerfile_lint'
-   shouldExist: true
-   permissions: 'Lrwxrwxrwx'
+  - name: "draft"
+    path: "/bin/draft"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
 
- - name: 'draft'
-   path: '/bin/draft'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
+  - name: "tmp"
+    path: "/tmp"
+    shouldExist: true
+    permissions: "dtrwxrwxrwx"
 
- - name: 'tmp'
-   path: '/tmp'
-   shouldExist: true
-   permissions: 'dtrwxrwxrwx'
+  # - name: 'workspace tmp'
+  #   path: '/workspace/tmp'
+  #   shouldExist: true
+  #   permissions: 'drwxrwxrwx'
 
-# - name: 'workspace tmp'
-#   path: '/workspace/tmp'
-#   shouldExist: true
-#   permissions: 'drwxrwxrwx'
+  # - name: 'java default'
+  #   path: '/usr/java/default'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
 
-# - name: 'java default'
-#   path: '/usr/java/default'
-#   shouldExist: true
-#   permissions: '-rwxr-xr-x'
+  - name: "java java-openjdk"
+    path: "/usr/lib/jvm/java-openjdk"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
- - name: 'java java-openjdk'
-   path: '/usr/lib/jvm/java-openjdk'
-   shouldExist: true
-   permissions: 'Lrwxrwxrwx'
+  - name: "java jre-openjdk"
+    path: "/usr/lib/jvm/jre-openjdk"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
- - name: 'java jre-openjdk'
-   path: '/usr/lib/jvm/jre-openjdk'
-   shouldExist: true
-   permissions: 'Lrwxrwxrwx'
+  # - name: 'java java-oraclejdk'
+  #   path: '/usr/lib/jvm/java-oraclejdk'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
+  #
+  # - name: 'java jre-oraclejdk'
+  #   path: '/usr/lib/jvm/java-oraclejre'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
 
-# - name: 'java java-oraclejdk'
-#   path: '/usr/lib/jvm/java-oraclejdk'
-#   shouldExist: true
-#   permissions: '-rwxr-xr-x'
-#
-# - name: 'java jre-oraclejdk'
-#   path: '/usr/lib/jvm/java-oraclejre'
-#   shouldExist: true
-#   permissions: '-rwxr-xr-x'
+  # - name: 'certificates'
+  #   path: '/etc/ssl/certs/ca.pem'
+  #   shouldExist: true
+  #   permissions: 'Lrwxrwxrwx'
 
-# - name: 'certificates'
-#   path: '/etc/ssl/certs/ca.pem'
-#   shouldExist: true
-#   permissions: 'Lrwxrwxrwx'
+  # - name: 'certificates ca.crt'
+  #   path: '/usr/local/share/ca-certificates/ca.crt'
+  #   shouldExist: true
+  #   permissions: '-rw-r--r--'
 
-# - name: 'certificates ca.crt'
-#   path: '/usr/local/share/ca-certificates/ca.crt'
-#   shouldExist: true
-#   permissions: '-rw-r--r--'
+  - name: "python virtualenv 2.7"
+    path: "/opt/ansible/env"
+    shouldExist: true
+    permissions: "drwxrwxr-x"
 
- - name: 'python virtualenv 2.7'
-   path: '/opt/ansible/env'
-   shouldExist: true
-   permissions: 'drwxrwxr-x'
+  - name: "python virtualenv 3.8"
+    path: "/opt/ansible/env38"
+    shouldExist: true
+    permissions: "drwxrwxr-x"
 
- - name: 'python virtualenv 3.8'
-   path: '/opt/ansible/env38'
-   shouldExist: true
-   permissions: 'drwxrwxr-x'
+  - name: "maven"
+    path: "/usr/bin/mvn"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
 
 fileContentTests:
- - name: 'jenkins .bashrc'
-   path: '/home/jenkins/.bashrc'
-   expectedContents: ['.*JAVA_HOME=.*/usr/lib/jvm/java-8-openjdk-amd64.*']
-   excludedContents: ['.*/usr/lib/jvm/java-1.8.0-openjdk-amd64.*', '.*/usr/lib/jvm/java-12-oracle.*']
+  - name: "jenkins .bashrc"
+    path: "/home/jenkins/.bashrc"
+    expectedContents: [".*JAVA_HOME=.*/usr/lib/jvm/java-8-openjdk-amd64.*"]
+    excludedContents:
+      [
+        ".*/usr/lib/jvm/java-1.8.0-openjdk-amd64.*",
+        ".*/usr/lib/jvm/java-12-oracle.*",
+      ]
 
 commandTests:
- - name: "check jenkins user"
-   command: "whoami"
-   expectedOutput: ["jenkins"]
+  - name: "check jenkins user"
+    command: "whoami"
+    expectedOutput: ["jenkins"]
 
- - name: "check jenkins uid/gid used for config generation"
-   command: "id"
-   expectedOutput: ["uid=2000.jenkins. gid=2000.docker. .*"]
+  - name: "check jenkins uid/gid used for config generation"
+    command: "id"
+    expectedOutput: ["uid=2000.jenkins. gid=2000.docker. .*"]
 
- - name: "check PATH"
-   command: "echo"
-   args: ["${PATH}"]
-   expectedOutput: ["/opt/ansible/env38/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"]
+  - name: "check PATH"
+    command: "echo"
+    args: ["${PATH}"]
+    expectedOutput:
+      [
+        "/opt/ansible/env38/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      ]
 
-# - name: "molecule"
-#   setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"], ["pip", "install", "molecule", "ansible"]]
-#   command: "which"
-#   args: ["molecule"]
-#   expectedOutput: ["/opt/ansible/env36/bin/molecule"]
+  # - name: "molecule"
+  #   setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"], ["pip", "install", "molecule", "ansible"]]
+  #   command: "which"
+  #   args: ["molecule"]
+  #   expectedOutput: ["/opt/ansible/env36/bin/molecule"]
 
- - name: "check git version"
-   command: "git"
-   args: ["--version"]
-   expectedOutput: ["git version 2.17.*"]
+  - name: "check git version"
+    command: "git"
+    args: ["--version"]
+    expectedOutput: ["git version 2.17.*"]
 
- - name: "check git-lfs version"
-   command: "git-lfs"   # /usr/bin/git-lfs
-   args: ["version"]
-   expectedOutput: ["git-lfs/2..*"]
+  - name: "check git-lfs version"
+    command: "git-lfs" # /usr/bin/git-lfs
+    args: ["version"]
+    expectedOutput: ["git-lfs/2..*"]
 
- - name: "check docker-compose version"
-   setup: [["virtualenv", "/opt/ansible/env38"]]
-   command: "docker-compose"   # /opt/ansible/env38/bin/docker-compose
-   args: ["version"]
-   expectedOutput: ["docker-compose version 1.25.*"]
+  - name: "check docker-compose version"
+    setup: [["virtualenv", "/opt/ansible/env38"]]
+    command: "docker-compose" # /opt/ansible/env38/bin/docker-compose
+    args: ["version"]
+    expectedOutput: ["docker-compose version 1.25.*"]
 
-# - name: "check hadolint version"
-#   command: "hadolint"
-#   args: ["--version"]
-#   expectedOutput: ["Haskell Dockerfile Linter 1.17..*"]
+  # - name: "check hadolint version"
+  #   command: "hadolint"
+  #   args: ["--version"]
+  #   expectedOutput: ["Haskell Dockerfile Linter 1.17..*"]
 
- - name: "git config"
-   command: "git"
-   args: ["config", "--global", "--list"]
-   expectedOutput: ["user.email=alban.andrieu@free.fr.*"]
+  - name: "git config"
+    command: "git"
+    args: ["config", "--global", "--list"]
+    expectedOutput: ["user.email=alban.andrieu@free.fr.*"]
 
-# - name: "apt-get upgrade"
-#   command: "apt-get"
-#   args: ["-qqs", "upgrade"]
-#   excludedOutput: [".*Inst.*Security.* | .*Security.*Inst.*"]
-#   excludedError: [".*Inst.*Security.* | .*Security.*Inst.*"]
+  # - name: "apt-get upgrade"
+  #   command: "apt-get"
+  #   args: ["-qqs", "upgrade"]
+  #   excludedOutput: [".*Inst.*Security.* | .*Security.*Inst.*"]
+  #   excludedError: [".*Inst.*Security.* | .*Security.*Inst.*"]
 
- - name: "check openjdk 1.8.0"
-   command: "${JAVA_HOME}/bin/java"
-   args: ["-version"]
-   expectedError: ['openjdk version \"1\.8\..*\".*']
+  - name: "check openjdk 1.8.0"
+    command: "${JAVA_HOME}/bin/java"
+    args: ["-version"]
+    expectedError: ['openjdk version \"1\.8\..*\".*']
 
-# - name: "check openjdk CA root imported"
-#   envVars:
-#   - key: "PATH"
-#     value: "${JAVA_HOME}:${PATH}"
-#   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
-#   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
+  # - name: "check openjdk CA root imported"
+  #   envVars:
+  #   - key: "PATH"
+  #     value: "${JAVA_HOME}:${PATH}"
+  #   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
+  #   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
 
- - name: "check node v12 version"
-   command: "node"
-   args: ["--version"]
-   expectedOutput: ["v12..*"]
+  - name: "check node v12 version"
+    command: "node"
+    args: ["--version"]
+    expectedOutput: ["v12..*"]
 
- - name: "check nodejs v12 version"
-   command: "nodejs"
-   args: ["--version"]
-   expectedOutput: ["v12..*"]
+  - name: "check nodejs v12 version"
+    command: "nodejs"
+    args: ["--version"]
+    expectedOutput: ["v12..*"]
 
- - name: "check npm 6.14 version"
-   command: "npm"
-   args: ["--version"]
-   expectedOutput: ["6.14.*"]
+  - name: "check npm 6.14 version"
+    command: "npm"
+    args: ["--version"]
+    expectedOutput: ["6.14.*"]
 
- - name: "check newman 5.2 version"
-   command: "newman"   # /usr/local/bin/newman
-   args: ["--version"]
-   expectedOutput: ["5.2..*"]
+  - name: "check newman 5.2 version"
+    command: "newman" # /usr/local/bin/newman
+    args: ["--version"]
+    expectedOutput: ["5.2..*"]
 
-# setup a virtualenv, and verify the correct python binary is run
-# - name: "python in virtualenv"
-#   setup: [["virtualenv", "/opt/ansible/env38"]]
-#   command: "which"
-#   args: ["python3.8"]
-#   expectedOutput: ["/opt/ansible/env38/bin/python3.8\n"]
+  # setup a virtualenv, and verify the correct python binary is run
+  # - name: "python in virtualenv"
+  #   setup: [["virtualenv", "/opt/ansible/env38"]]
+  #   command: "which"
+  #   args: ["python3.8"]
+  #   expectedOutput: ["/opt/ansible/env38/bin/python3.8\n"]
 
- - name: "check default python version"
-   command: "python"
-   args: ["--version"]
-   expectedOutput: ['Python 3.8.*']
+  - name: "check default python version"
+    command: "python"
+    args: ["--version"]
+    expectedOutput: ["Python 3.8.*"]
 
- - name: "check python 2.7 version"
-   command: "python2"
-   args: ["--version"]
-   expectedError: ['Python 2.7.*']
+  - name: "check python 2.7 version"
+    command: "python2"
+    args: ["--version"]
+    expectedError: ["Python 2.7.*"]
 
- - name: "check pip 2 version"
-   command: "pip2"
-   args: ["--version"]
-   expectedOutput: ['pip 20.3.* from /usr/local/lib/python2.7/dist-packages/pip.*.*\n']
+  - name: "check pip 2 version"
+    command: "pip2"
+    args: ["--version"]
+    expectedOutput:
+      ['pip 20.3.* from /usr/local/lib/python2.7/dist-packages/pip.*.*\n']
 
- - name: "check pip 3 version"
-   command: "pip3"
-   args: ["--version"]
-   expectedOutput: ['pip 21.3.* from /opt/ansible/env38/lib/python3.8/site-packages/pip.*.*']
+  - name: "check pip 3 version"
+    command: "pip3"
+    args: ["--version"]
+    expectedOutput:
+      ["pip 21.3.* from /opt/ansible/env38/lib/python3.8/site-packages/pip.*.*"]
 
- - name: "check python 3 version"
-   command: "python3"
-   args: ["--version"]
-   expectedOutput: ['Python 3.8.*']
+  - name: "check python 3 version"
+    command: "python3"
+    args: ["--version"]
+    expectedOutput: ["Python 3.8.*"]
 
-# - name: "check python 3.5.7"
-#   command: "python3.5"
-#   args: ["--version"]
-#   expectedOutput: ['Python 3.5.*']
+  # - name: "check python 3.5.7"
+  #   command: "python3.5"
+  #   args: ["--version"]
+  #   expectedOutput: ['Python 3.5.*']
 
- - name: "check python 3.6.8"
-   command: "python3.6"
-   args: ["--version"]
-   expectedOutput: ['Python 3.6.*']
+  - name: "check python 3.6.8"
+    command: "python3.6"
+    args: ["--version"]
+    expectedOutput: ["Python 3.6.*"]
 
-# - name: "check python 3.7.5 version"
-#   command: "python3.7"
-#   args: ["--version"]
-#   expectedOutput: ['Python 3.7.*']
+  # - name: "check python 3.7.5 version"
+  #   command: "python3.7"
+  #   args: ["--version"]
+  #   expectedOutput: ['Python 3.7.*']
 
- - name: "check python 3.8.5 version"
-   command: "python3.8"
-   args: ["--version"]
-   expectedOutput: ['Python 3.8.*']
+  - name: "check python 3.8.5 version"
+    command: "python3.8"
+    args: ["--version"]
+    expectedOutput: ["Python 3.8.*"]
 
-# - name: "check pip3 19.3.1 version"
-#   command: "pip3"
-#   args: ["--version"]
-#   expectedOutput: ['pip 19.3.* from /usr/local/lib/python3.7/dist-packages/pip (python 3.7)']
+  # - name: "check pip3 19.3.1 version"
+  #   command: "pip3"
+  #   args: ["--version"]
+  #   expectedOutput: ['pip 19.3.* from /usr/local/lib/python3.7/dist-packages/pip (python 3.7)']
 
- - name: "check ansible core 2.11.6 version"
-   command: "/usr/local/bin/ansible"
-   args: ["--version"]
-   expectedOutput: ["ansible.*core 2.11.*"]
+  - name: "check ansible core 2.11.6 version"
+    command: "/usr/local/bin/ansible"
+    args: ["--version"]
+    expectedOutput: ["ansible.*core 2.11.*"]
 
- - name: "check ansible 2.11.6 version"
-   command: "/opt/ansible/env38/bin/ansible"
-   args: ["--version"]
-   expectedOutput: ["ansible.*core 2.11.*"]
+  - name: "check ansible 2.11.6 version"
+    command: "/opt/ansible/env38/bin/ansible"
+    args: ["--version"]
+    expectedOutput: ["ansible.*core 2.11.*"]
 
-# setup a virtualenv, and verify the correct python binary is run
-# source /opt/ansible/env38/bin/activate
-# pip show pyyaml
+  # setup a virtualenv, and verify the correct python binary is run
+  # source /opt/ansible/env38/bin/activate
+  # pip show pyyaml
+  - name: "check ansible-cmdb"
+    setup: [["virtualenv", "/opt/ansible/env38"]]
+    #command: "/opt/ansible/env38/bin/ansible-cmdb"
+    #args: ["--version"]
+    command: "which"
+    args: ["ansible-cmdb"]
+    expectedOutput: ["/opt/ansible/env38/bin/ansible-cmdb"]
+    #expectedOutput: ['ansible-cmdb.py v1.30.*']
 
- - name: "check ansible-cmdb"
-   setup: [["virtualenv", "/opt/ansible/env38"]]
-   #command: "/opt/ansible/env38/bin/ansible-cmdb"
-   #args: ["--version"]
-   command: "which"
-   args: ["ansible-cmdb"]
-   expectedOutput: ["/opt/ansible/env38/bin/ansible-cmdb"]
-   #expectedOutput: ['ansible-cmdb.py v1.30.*']
+  - name: "check docker 19.03.4 version"
+    command: "docker"
+    args: ["--version"]
+    expectedOutput: ["Docker version 19.03.*"]
 
- - name: "check docker 19.03.4 version"
-   command: "docker"
-   args: ["--version"]
-   expectedOutput: ['Docker version 19.03.*']
+  - name: "check helm 3.4 version"
+    command: "helm"
+    args: ["version", "--client"]
+    expectedOutput:
+      [
+        'version.BuildInfo{Version:\"v3.4..*\", GitTreeState:\"clean\", GoVersion:\"go1.14..*\"}.*',
+      ]
 
- - name: "check helm 3.4 version"
-   command: "helm"
-   args: ["version", "--client"]
-   expectedOutput: ['version.BuildInfo{Version:\"v3.4..*\", GitTreeState:\"clean\", GoVersion:\"go1.14..*\"}.*']
+  #hadolint --version
+  #dockerfile_lint version
 
-#hadolint --version
-#dockerfile_lint version
+  - name: "check draft version"
+    command: "draft"
+    args: ["version"]
+    expectedOutput:
+      [
+        '&version.Version{SemVer:\"v0.16..*\", GitCommit:\".*\", GitTreeState:\"dirty\"}',
+      ]
 
- - name: "check draft version"
-   command: "draft"
-   args: ["version"]
-   expectedOutput: ['&version.Version{SemVer:\"v0.16..*\", GitCommit:\".*\", GitTreeState:\"dirty\"}']
+  - name: "check mingw32 gcc"
+    command: "which"
+    args: ["i686-w64-mingw32-gcc"]
+    expectedOutput: ["/usr/bin/i686-w64-mingw32-gcc.*"]
 
- - name: "check mingw32 gcc"
-   command: "which"
-   args: ["i686-w64-mingw32-gcc"]
-   expectedOutput: ['/usr/bin/i686-w64-mingw32-gcc.*']
+  - name: "check mingw32 g++"
+    command: "which"
+    args: ["i686-w64-mingw32-g++"]
+    expectedOutput: ['/usr/bin/i686-w64-mingw32-g\+\+.*']
 
- - name: "check mingw32 g++"
-   command: "which"
-   args: ["i686-w64-mingw32-g++"]
-   expectedOutput: ['/usr/bin/i686-w64-mingw32-g\+\+.*']
+  # - name: "check mingw32 gcc version"
+  #   command: "i686-w64-mingw32-gcc"
+  #   args: ["--version"]
+  #   expectedOutput: ['i686-w64-mingw32-gcc (GCC) .*']
+  #
+  # - name: "check mingw32 g++ version"
+  #   command: "i686-w64-mingw32-g++"
+  #   args: ["--version"]
+  #   expectedOutput: ['i686-w64-mingw32-g\+\+ (GCC) .*']
 
-# - name: "check mingw32 gcc version"
-#   command: "i686-w64-mingw32-gcc"
-#   args: ["--version"]
-#   expectedOutput: ['i686-w64-mingw32-gcc (GCC) .*']
-#
-# - name: "check mingw32 g++ version"
-#   command: "i686-w64-mingw32-g++"
-#   args: ["--version"]
-#   expectedOutput: ['i686-w64-mingw32-g\+\+ (GCC) .*']
+  # For 64 bits X compile
+  #x86_64-w64-mingw32-gcc -v
 
-# For 64 bits X compile
-#x86_64-w64-mingw32-gcc -v
+  # - name: "check mingw32 64 bits gcc version"
+  #   command: "x86_64-w64-mingw32-gcc"
+  #   args: ["--version"]
+  #   expectedOutput: ['x86_64-w64-mingw32-gcc (GCC) .*-win32.*']
+  #
+  # - name: "check mingw32 64 bits g++ version"
+  #   command: "x86_64-w64-mingw32-g++"
+  #   args: ["--version"]
+  #   expectedOutput: ['x86_64-w64-mingw32-g\+\+ (GCC) .*-win32.*']
 
-# - name: "check mingw32 64 bits gcc version"
-#   command: "x86_64-w64-mingw32-gcc"
-#   args: ["--version"]
-#   expectedOutput: ['x86_64-w64-mingw32-gcc (GCC) .*-win32.*']
-#
-# - name: "check mingw32 64 bits g++ version"
-#   command: "x86_64-w64-mingw32-g++"
-#   args: ["--version"]
-#   expectedOutput: ['x86_64-w64-mingw32-g\+\+ (GCC) .*-win32.*']
+  - name: "check chromium-browser 95.0 version"
+    command: "/usr/bin/chromium-browser"
+    args: ["--version"]
+    expectedOutput: ["Chromium 95.0..* Built on Ubuntu.*"]
 
- - name: "check chromium-browser 94.0 version"
-   command: "/usr/bin/chromium-browser"
-   args: ["--version"]
-   expectedOutput: ['Chromium 94.0..* Built on Ubuntu.*']
+  - name: "check chromedriver 95.0 version"
+    command: "/usr/bin/chromedriver"
+    args: ["--version"]
+    expectedOutput: ["ChromeDriver 95.0..*"]
 
- - name: "check chromedriver 94.0 version"
-   command: "/usr/bin/chromedriver"
-   args: ["--version"]
-   expectedOutput: ['ChromeDriver 94.0..*']
+  # - name: "check chromium 86.0 version"
+  #   command: "/usr/bin/chromium"
+  #   args: ["--version"]
+  #   expectedOutput: ['Chromium 86.0..*']
 
-# - name: "check chromium 86.0 version"
-#   command: "/usr/bin/chromium"
-#   args: ["--version"]
-#   expectedOutput: ['Chromium 86.0..*']
+  - name: "check google-chrome 86.0 version"
+    command: "/usr/bin/google-chrome"
+    args: ["--version"]
+    expectedOutput: ["Google Chrome 86..*"]
 
- - name: "check google-chrome 86.0 version"
-   command: "/usr/bin/google-chrome"
-   args: ["--version"]
-   expectedOutput: ['Google Chrome 86..*']
+  - name: "check sonar-scanner 4.6 version"
+    command: "/usr/local/sonar-scanner-4.6.1.2450/bin/sonar-scanner"
+    args: ["--version"]
+    expectedOutput:
+      [
+        "INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*",
+      ]
 
- - name: "check sonar-scanner 4.6 version"
-   command: "/usr/local/sonar-scanner-4.6.1.2450/bin/sonar-scanner"
-   args: ["--version"]
-   expectedOutput: ['INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*']
-
- - name: "check sonar-scanner link version"
-   command: "/usr/local/sonar-runner/bin/sonar-scanner"
-   args: ["--version"]
-   expectedOutput: ['INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*']
+  - name: "check sonar-scanner link version"
+    command: "/usr/local/sonar-runner/bin/sonar-scanner"
+    args: ["--version"]
+    expectedOutput:
+      [
+        "INFO: Scanner configuration file: /usr/local/sonar-scanner-4.6.1.*/conf/sonar-scanner.properties.*",
+      ]
 
 metadataTest:
   env:
     - key: TZ
-      value: 'Europe/Paris'
+      value: "Europe/Paris"
     - key: "PATH"
       value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     - key: "JAVA_HOME"
@@ -587,12 +610,12 @@ metadataTest:
     - key: "HOME"
       value: "/home/jenkins"
   labels:
-    - key: 'com.example.vendor'
-      value: 'ACME Incorporated'
+    - key: "com.example.vendor"
+      value: "ACME Incorporated"
   exposedPorts: []
-#  exposedPorts: ["8080", "2345"]
+  #  exposedPorts: ["8080", "2345"]
   volumes: []
-#  volumes: ["/test"]
+  #  volumes: ["/test"]
   entrypoint: [/entrypoint.sh]
   cmd: ["/bin/bash"]
   workdir: "/home/jenkins"

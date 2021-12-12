@@ -1,0 +1,18 @@
+{
+  "threshold": 10,
+  "reporters": ["html", "markdown"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/.rbenv/**",
+    "**/.venv'/**",
+    "**/*cache*/**",
+    "**/.github/**",
+    "**/.idea/**",
+    "**/report/**",
+    "**/target/**",
+    "src/test/resources/callstacks/**",
+    "src/test/jenkins/lib/**",
+    "**/*.svg"
+  ]
+}

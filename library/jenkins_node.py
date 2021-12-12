@@ -117,7 +117,9 @@ def configure_jenkins_node(params, verify=None):
     # this configuration part is created separately, because we do not want to add
     # environment in node configuration, if there are no env vars or no tools at all
     if params['env'] != []:
-        configuration['nodeProperties']['hudson-slaves-EnvironmentVariablesNodeProperty'] = {
+        configuration['nodeProperties'][
+            'hudson-slaves-EnvironmentVariablesNodeProperty'
+        ] = {
             'env': params['env'],
         }
     if params['tools'] != []:
@@ -266,12 +268,10 @@ def main():
                 'type': 'str',
                 'default': '',
                 'required': False,
-
             },
             'hostname': {
                 'type': 'str',
                 'required': True,
-
             },
             'state': {
                 'default': 'present',
@@ -283,7 +283,6 @@ def main():
             'credentialsId': {
                 'type': 'str',
                 'default': '1234',  # jenkins@unix-slaves
-
             },
             'javaPath': {
                 'type': 'str',
@@ -296,37 +295,30 @@ def main():
             'nodeDescription': {
                 'type': 'str',
                 'default': 'Jenkins node automatically created by Ansible',
-
             },
             'labels': {
                 'type': 'list',
                 'default': list(),
-
             },
             'env': {
                 'type': 'list',
                 'default': list(),
-
             },
             'tools': {
                 'type': 'list',
                 'default': list(),
-
             },
             'remoteFS': {
                 'type': 'str',
                 'default': '/home/jenkins',
-
             },
             'numExecutors': {
                 'type': 'int',
                 'default': 1,
-
             },
             'type': {
                 'type': 'str',
                 'default': 'hudson.slaves.DumbSlave',
-
             },
             'retentionStrategy': {
                 'type': 'str',
@@ -339,12 +331,10 @@ def main():
             'port': {
                 'type': 'int',
                 'default': 22,
-
             },
             'x_jenkins_server': {
                 'type': 'str',
                 'default': 'albandrieu.com:8686/jenkins',
-
             },
             'x_auth': {
                 'type': 'dict',
@@ -354,7 +344,6 @@ def main():
                 'type': 'str',
                 'default': '',
                 'required': False,
-
             },
         },
     )

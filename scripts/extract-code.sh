@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -xv
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # source only if terminal supports color, otherwise use unset color vars
 # shellcheck source=/dev/null
@@ -77,6 +77,6 @@ ansigenome export -o ./test.dot -f dot -d 500
 /usr/bin/dot -V
 /usr/bin/dot -v
 #/usr/bin/dot -Tps test.dot -o test.ps
-/usr/bin/dot -Tpng test.dot > test.png
+/usr/bin/dot -Tpng test.dot >test.png
 
 ansigenome export -o ./test.png -f png -d 500

@@ -2,11 +2,11 @@
 #set -xv
 
 if [ "$0" = "${BASH_SOURCE[0]}" ]; then
-    echo "This script has to be sourced and not executed..."
-    exit 1
+  echo "This script has to be sourced and not executed..."
+  exit 1
 fi
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
@@ -22,7 +22,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --restart=on-failure:2 --memory 512mb --cpus=\"1.5\" --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  export DOCKER_BUILD_ARGS="--pull --restart=on-failure:2 --memory 512mb --cpus=\"1.5\" --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --squash --no-cache "
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -71,7 +71,7 @@ else
 fi
 
 #readonly DOCKER_REGISTRY=${DOCKER_REGISTRY:-"https://hub.docker.com/"}
-readonly DOCKER_REGISTRY=${DOCKER_REGISTRY:-""}
+export DOCKER_REGISTRY=${DOCKER_REGISTRY:-""}
 readonly DOCKER_ORGANISATION=${DOCKER_ORGANISATION:-"nabla"}
 readonly DOCKER_USERNAME=${DOCKER_USERNAME:-""}
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}

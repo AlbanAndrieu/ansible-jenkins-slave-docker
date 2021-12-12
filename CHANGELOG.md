@@ -11,33 +11,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   * [Size 🌈](#size-%F0%9F%8C%88)
 - [[Unreleased]](#unreleased)
-- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
-  * [Added](#added)
+- [[2.0.0] - TODO](#200---todo)
   * [Updated](#updated)
-  * [Added](#added-1)
-- [[1.0.0] - 2020-01-01](#100---2020-01-01)
-  * [Added](#added-2)
-  * [Updated](#updated-1)
   * [Remove](#remove)
+- [[1.0.18] - TODO](#1018---todo)
+- [[1.0.17] - 2021-12-03](#1017---2021-12-03)
+  * [Added](#added)
+- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
+  * [Added](#added-1)
+  * [Updated](#updated-1)
+  * [Added](#added-2)
+- [[1.0.0] - 2020-01-01](#100---2020-01-01)
+  * [Added](#added-3)
+  * [Updated](#updated-2)
+  * [Remove](#remove-1)
 
 <!-- tocstop -->
 
 ### Size 🌈
 
- - .linuxbrew = 761 + 86 + 58 MB
- - .cache/Homebrew = 84 MB + 41 MB + 38 MB
- - node = 60 MB
- - .npm = 38 + 18 + 15 + 15 MB
- - skaffold = 48 MB
- - kubect = 44 MB
- - java 8 = 131 + 27 MB
- - draft = 14 MB
- - helm 13 MB
- - chromedriver 12 MB
+- .linuxbrew = 761 + 86 + 58 MB
+- .cache/Homebrew = 84 MB + 41 MB + 38 MB
+- node = 60 MB
+- .npm = 38 + 18 + 15 + 15 MB
+- skaffold = 48 MB
+- kubect = 44 MB
+- java 8 = 131 + 27 MB
+- draft = 14 MB
+- helm 13 MB
+- chromedriver 12 MB
 
 ## [Unreleased]
 
 <!--lint disable no-undefined-references-->
+
+## [2.0.0] - TODO
+
+Ubuntu 20.04
+
+`docker pull  nabla/ansible-jenkins-slave-docker:2.0.0`
+
+### Updated
+- node v14.16.1
+- npm to 7.11.2
+- helm 3.5.4 an plugin version hard coded
+
+### Remove
+- adobe-flashplugin (remove flashplayer support)
+
+## [1.0.18] - TODO
+
+## [1.0.17] - 2021-12-03
+
+Ubuntu 18.04
+
+### Added
+- Squash image
+
 ## [1.0.13] - 2020-06-01
 
 I strongly advice you to move to helm 3
@@ -79,7 +109,7 @@ I strongly advice you to move to python 3.7.5
 ### Updated
 - Ubuntu 18.04
 - pip to 20.0.1
-- python 3.6 fix setuptools==41.0.0 # See https://github.com/ansible/molecule/issues/2350
+- python 3.6 fix setuptools==41.0.0 # See <https://github.com/ansible/molecule/issues/2350>
 - python3 default is python 3.7.6
 - pip 2 and 3.7 to 20.0.1 pip 3.6 to 20.0.1
 - java updated to openjdk version "1.8.0_232"
@@ -103,9 +133,9 @@ dive report
   userWastedPercent: 10.3672 %
 `
 
- - ubuntu 16.04 -> ansible==2.7.14
- - ubuntu 18.04 -> ansible==2.7.14 (2.8.6 and 2.8.8 are buggy)
- - ubuntu 19.04 -> ansible===2.9.1
+- ubuntu 16.04 -> ansible==2.7.14
+- ubuntu 18.04 -> ansible==2.7.14 (2.8.6 and 2.8.8 are buggy)
+- ubuntu 19.04 -> ansible===2.9.1
 
 ### Remove
 - Python 3.6.9 will no more be supported on Ubuntu 19, Even if you install it by hand. because of [sqlite3](https://github.com/gunthercox/chatterbot-corpus/issues/116)
@@ -119,4 +149,4 @@ dive report
 - Drop support for docker below 19.03.3
 - Drop support for ansible below 2.7.9
 
-`docker run -it -u 1004:999 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash registry.misys.global.ad/fusion-risk/ansible-jenkins-slave:1.0.0`
+`docker run -it -u 1004:999 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash registry.hub.docker.com/nabla/ansible-jenkins-slave:1.0.0`

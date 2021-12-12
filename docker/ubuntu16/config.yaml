@@ -1,83 +1,83 @@
 schemaVersion: "2.0.0"
 
 fileExistenceTests:
- - name: 'Root'
-   path: '/'
-   shouldExist: true
-   permissions: 'drwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+  - name: "Root"
+    path: "/"
+    shouldExist: true
+    permissions: "drwxr-xr-x"
+    uid: 0
+    gid: 0
+    isExecutableBy: "group"
 
- - name: 'jenkins-slave-startup'
-   path: '/jenkins-slave-startup.sh'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+  - name: "jenkins-slave-startup"
+    path: "/jenkins-slave-startup.sh"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
+    uid: 0
+    gid: 0
+    isExecutableBy: "group"
 
- - name: 'entrypoint'
-   path: '/entrypoint.sh'
-   shouldExist: true
-   permissions: '-rwxr-xr-x'
-   uid: 0
-   gid: 0
-   isExecutableBy: 'group'
+  - name: "entrypoint"
+    path: "/entrypoint.sh"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
+    uid: 0
+    gid: 0
+    isExecutableBy: "group"
 
-#/workspace/slave
-#/workspace/slavearc
-#/home/jenkins/.gitconfig
-#/home/jenkins/.npmrc
+  #/workspace/slave
+  #/workspace/slavearc
+  #/home/jenkins/.gitconfig
+  #/home/jenkins/.npmrc
 
- - name: 'jenkins directory'
-   path: '/home/jenkins'
-   shouldExist: true
-   permissions: 'drwxrwxrwx'
-   uid: 2000
+  - name: "jenkins directory"
+    path: "/home/jenkins"
+    shouldExist: true
+    permissions: "drwxrwxrwx"
+    uid: 2000
 
 commandTests:
-- name: "check jenkins user"
-  command: "whoami"
-  expectedOutput: ["jenkins"]
+  - name: "check jenkins user"
+    command: "whoami"
+    expectedOutput: ["jenkins"]
 
-- name: "check jenkins uid/gid used for config generation"
-  command: "id"
-  expectedOutput: ["uid=2000.jenkins. gid=2000.docker. .*"]
+  - name: "check jenkins uid/gid used for config generation"
+    command: "id"
+    expectedOutput: ["uid=2000.jenkins. gid=2000.docker. .*"]
 
-- name: "check bash"
-#  setup: [["entrypoint.sh"]]
-#  setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"]]
-  command: "/bin/echo $SHELL"
-  expectedOutput: ["/bin/bash"]
+  - name: "check bash"
+    #  setup: [["entrypoint.sh"]]
+    #  setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"]]
+    command: "/bin/echo $SHELL"
+    expectedOutput: ["/bin/bash"]
 
-- name: "check virtualenv"
-  setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"]]
-  command: "/usr/bin/which molecule"
-  expectedOutput: ["/opt/ansible/env36/bin/molecule"]
+  - name: "check virtualenv"
+    setup: [["/bin/bash", "source", "/opt/ansible/env36/bin/activate"]]
+    command: "/usr/bin/which molecule"
+    expectedOutput: ["/opt/ansible/env36/bin/molecule"]
 
-#- name: "molecule"
-#  setup: [["virtualenv", "/opt/ansible/env36"], ["pip", "install", "molecule", "ansible"]]
-#  command: "which"
-#  args: ["molecule"]
-#  expectedOutput: ["/opt/ansible/env36/bin/molecule"]
-- name:  "apt-get upgrade"
-  command: "apt-get"
-  args: ["-qqs", "upgrade"]
-  excludedOutput: [".*Inst.*Security.* | .*Security.*Inst.*"]
-  excludedError: [".*Inst.*Security.* | .*Security.*Inst.*"]
+  #- name: "molecule"
+  #  setup: [["virtualenv", "/opt/ansible/env36"], ["pip", "install", "molecule", "ansible"]]
+  #  command: "which"
+  #  args: ["molecule"]
+  #  expectedOutput: ["/opt/ansible/env36/bin/molecule"]
+  - name: "apt-get upgrade"
+    command: "apt-get"
+    args: ["-qqs", "upgrade"]
+    excludedOutput: [".*Inst.*Security.* | .*Security.*Inst.*"]
+    excludedError: [".*Inst.*Security.* | .*Security.*Inst.*"]
 
 metadataTest:
   env:
     - key: TZ
-      value: 'Europe/Paris'
-#  labels:
-#    - key: 'com.example.vendor'
-#      value: 'ACME Incorporated'
+      value: "Europe/Paris"
+  #  labels:
+  #    - key: 'com.example.vendor'
+  #      value: 'ACME Incorporated'
   exposedPorts: []
-#  exposedPorts: ["8080", "2345"]
+  #  exposedPorts: ["8080", "2345"]
   volumes: []
-#  volumes: ["/test"]
+  #  volumes: ["/test"]
   entrypoint: [/entrypoint.sh]
   cmd: ["/jenkins-slave-startup.sh"]
   workdir: "/home/jenkins"

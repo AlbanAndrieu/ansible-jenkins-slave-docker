@@ -19,14 +19,14 @@
   tasks:
     - name: fail for unsupported distribution
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-                 is not a supported OS for a Tower installation.  Supported
-                 OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-                 Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Boot cleaning
-  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
-#  remote_user: root
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  #  remote_user: root
   become: true
 
   tasks:
@@ -59,11 +59,11 @@
         purge: yes
       ignore_errors: true
 
-#    - name: Clean kernel by hand
-      #shell: rm -rf /boot/*-4.4.0-{59,81,93,104,108,109,112,130,131,138,139}-*
-      #shell: rm -rf /boot/*-4.15.0-{70,72,126,128}-*
+    #    - name: Clean kernel by hand
+    #shell: rm -rf /boot/*-4.4.0-{59,81,93,104,108,109,112,130,131,138,139}-*
+    #shell: rm -rf /boot/*-4.15.0-{70,72,126,128}-*
 
-#find .  -regextype posix-egrep  -regex '^.*\-4\.4\.0\-(139|42)\-.*$'
+    #find .  -regextype posix-egrep  -regex '^.*\-4\.4\.0\-(139|42)\-.*$'
 
     - name: Clean kernel by hand (1)
       find:
@@ -83,12 +83,12 @@
     - name: Install fix # noqa 303
       command: apt-get -f install
       changed_when: false
-#      ignore_errors: true
+    #      ignore_errors: true
 
     - name: Grub update-grub
       command: update-grub
       changed_when: false
-      ignore_errors: true   # for docker
+      ignore_errors: true # for docker
       tags:
         - clean
         - vm
@@ -103,20 +103,19 @@
       apt:
         autoclean: yes
 
-#    - name: Cron | Purge kernel images @reboot special time
-#      cron:
-#        name: "Purge kernel images"
-#        special_time: reboot
-#        job: apt-get -y autoremove ; purge-old-kernels -y --keep 3 -q
-#        cron_file: "purge_kernel_images"
-#        user: root
-#      when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-#      become: true
+    #    - name: Cron | Purge kernel images @reboot special time
+    #      cron:
+    #        name: "Purge kernel images"
+    #        special_time: reboot
+    #        job: apt-get -y autoremove ; purge-old-kernels -y --keep 3 -q
+    #        cron_file: "purge_kernel_images"
+    #        user: root
+    #      when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    #      become: true
 
-
-#    - name: Reboot a slow machine that might have lots of updates to apply
-#      reboot:
-#        reboot_timeout: 3600
+    #    - name: Reboot a slow machine that might have lots of updates to apply
+    #      reboot:
+    #        reboot_timeout: 3600
 
     - name: Homebrew cleanup
       command: brew cleanup
@@ -157,26 +156,31 @@
         state: absent
       with_items: "{{ tmp_files_to_delete.files }}"
 
+    #systemctl stop mysql
+    #ls /var/log/mysql/mysql.err
+    #systemctl start mysql
+    #rm -f /var/log/mail.log*
+    #rm -f /var/log/bandwidth
+    #rm -f /var/log/kern.log
+    #rm -f /var/log/syslog*
+    #systemctl stop proftpd
+    #rm /var/log/proftpd/tls.log
+    #rm -Rf /jenkins/.linuxbrew/
+    #rm -Rf /jenkins/.jenkins/cache/
+    #rm -Rf /jenkins/.m2
 
-#systemctl stop mysql
-#ls /var/log/mysql/mysql.err
-#systemctl start mysql
-#rm -f /var/log/mail.log*
-#rm -f /var/log/bandwidth
-#rm -f /var/log/kern.log
-#rm -f /var/log/syslog*
-#systemctl stop proftpd
-#rm /var/log/proftpd/tls.log
-#rm -Rf /jenkins/.linuxbrew/
-#rm -Rf /jenkins/.jenkins/cache/
-#rm -Rf /jenkins/.m2
-
-#systemctl stop sendmail
-#rm -Rf /var/spool/mqueue-client/
-#systemctl start sendmail
+    #systemctl stop sendmail
+    #rm -Rf /var/spool/mqueue-client/
+    #systemctl start sendmail
 
     - name: Mqueue cleanup # noqa 301 306
       file:
         path: /var/spool/mqueue-client/
+        state: absent
+      ignore_errors: true
+
+    - name: Coredumps cleanup # noqa 301 306
+      file:
+        path: /home/jenkins/coredumps
         state: absent
       ignore_errors: true

@@ -5,7 +5,7 @@ shopt -s extglob
 #set -ueo pipefail
 set -eo pipefail
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 export DOCKER_TAG=${DOCKER_TAG:-"1.1.18"}
 
@@ -13,7 +13,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined : overiding ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --squash"
+  export DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} --squash --no-cache"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -26,14 +26,14 @@ source "${WORKING_DIR}/docker-env.sh"
 
 echo -e "${green} Validating Docker ${NC}"
 echo -e "${magenta} hadolint ${WORKING_DIR}/${DOCKER_FILE} --format json ${NC}"
-hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1> docker-hadolint.json 2> docker-hadolint-error.log || true
+hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1>docker-hadolint.json 2>docker-hadolint-error.log || true
 echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/${DOCKER_FILE} ${NC}"
-dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1> docker-dockerfilelint.json 2> docker-dockerfilelint-error.log || true
+dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1>docker-dockerfilelint.json 2>docker-dockerfilelint-error.log || true
 
 # shellcheck source=/dev/null
 #source "${WORKING_DIR}/run-ansible.sh"
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 "${WORKING_DIR}/../clean.sh"
 
@@ -87,8 +87,8 @@ export GROUP=${GROUP:-docker}
 export DOCKER_UID=${DOCKER_UID:-1004}
 export DOCKER_GID=${DOCKER_GID:-999}
 # shellcheck disable=SC2059
-printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
-printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
+printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" &&
+  printf "\033[1;32mWITH $USER\ngroup: $GROUP \033[0m\n"
 
 echo -e "${green} User is. ${happy_smiley} : ${NC}"
 id "${USER}"

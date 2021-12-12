@@ -11,17 +11,17 @@
   become: true
 
   pre_tasks:
-  - name: docker | Remove old docker repo # noqa 301 302
-    raw: |
-      rm -f /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list*
+    - name: docker | Remove old docker repo # noqa 301 302
+      raw: |
+        rm -f /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list*
 
-  - name: docker | Install docker repo # noqa 301
-    raw: |
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    - name: docker | Install docker repo # noqa 301
+      raw: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-  - name: docker | Install docker repo # noqa 301
-    raw: |
-      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
+    - name: docker | Install docker repo # noqa 301
+      raw: |
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
 
 - name: Install docker
   hosts: Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
@@ -37,26 +37,27 @@
     docker_install_compose: false # using pip instead
     docker_compose_version: "1.25.0"
     docker_edition: ce
-    docker_version: 5:19.03.4~3-0~ubuntu-bionic
-     #TODO make sure it does not conflit with jenkins-slave python36.yml and requirements-current-3.6.txt
-     #pip_install_packages:
-     #  - name: docker
-     #    version: "2.7.0"
-     #    virtualenv: /opt/ansible/env35
-     #
-     #  # Or uninstall a package.
-     #  - name: awscli
-     #    state: absent
-     #    virtualenv: /opt/ansible/env35
-     #
-     #  # Or force a reinstall.
-     #  - name: docker-compose
-     #    version: "1.12.0"
-     #    state: forcereinstall
-     #    virtualenv: /opt/ansible/env35
-     #docker_users:
-     #  - docker
-     #  - jenkins
+    docker_version:
+      5:19.03.4~3-0~ubuntu-bionic
+      #TODO make sure it does not conflict with jenkins-slave python36.yml and requirements-current-3.6.txt
+      #pip_install_packages:
+      #  - name: docker
+      #    version: "2.7.0"
+      #    virtualenv: /opt/ansible/env35
+      #
+      #  # Or uninstall a package.
+      #  - name: awscli
+      #    state: absent
+      #    virtualenv: /opt/ansible/env35
+      #
+      #  # Or force a reinstall.
+      #  - name: docker-compose
+      #    version: "1.12.0"
+      #    state: forcereinstall
+      #    virtualenv: /opt/ansible/env35
+      #docker_users:
+      #  - docker
+      #  - jenkins
 
 - name: Install docker
   hosts: Ubuntu-19*
@@ -121,24 +122,21 @@
       become: true
       changed_when: false
     - name: docker | Create a docker group
-      group:
-          name=docker
-          state=present
+      group: name=docker
+        state=present
       become: true
-#      ignore_errors: true
+    #      ignore_errors: true
 
     - name: docker | Add user(s) to docker group
-      user:
-          name="{{ lookup('env','USER') }}"
-          group=docker
-          state=present
+      user: name="{{ lookup('env','USER') }}"
+        group=docker
+        state=present
       become: true
       ignore_errors: true
 
     - name: docker | Add user(s) to docker group
-      user:
-          name="{{ remote_user|default('jenkins') }}"
-          group=docker
-          state=present
+      user: name="{{ remote_user|default('jenkins') }}"
+        group=docker
+        state=present
       become: true
       ignore_errors: true

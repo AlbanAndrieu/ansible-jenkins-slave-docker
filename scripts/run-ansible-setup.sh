@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -xve
 
-WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/ansible-env.sh"

@@ -7,7 +7,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
   roles:
-     - role: maven
+    - role: maven
 
   vars:
-       maven_version: 3.6.3
+    maven_version: 3.6.3

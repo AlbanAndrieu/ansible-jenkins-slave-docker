@@ -21,11 +21,15 @@
     + [Ideas for improvement](#ideas-for-improvement)
   * [Folder Structure Conventions](#folder-structure-conventions)
     + [A typical top-level directory layout](#a-typical-top-level-directory-layout)
+  * [Dependency Graph](#dependency-graph)
+    + [Python 3.8 graphviz](#python-38-graphviz)
+  * [mega-linter](#mega-linter)
+  * [Check secret](#check-secret)
   * [Update README.md](#update-readmemd)
     + [Contributing](#contributing)
     + [Authors and license](#authors-and-license)
   * [License](#license)
-    + [Feedback, bug-reports, requests, ...](#feedback-bug-reports-requests-)
+    + [Feedback, bug-reports, requests,](#feedback-bug-reports-requests)
   * [Contact](#contact)
 
 <!-- tocstop -->
@@ -89,7 +93,7 @@ Create the docker hub image, like this:
     or
     ./scripts/docker-build.sh
 
-Run Jenkins See https://github.com/jenkinsci/parallel-test-executor-plugin/tree/master/demo
+Run Jenkins See <https://github.com/jenkinsci/parallel-test-executor-plugin/tree/master/demo>
 
     docker volume create --name=m2repo
     sudo chmod a+rw $(docker volume inspect -f '{{.Mountpoint}}' m2repo)
@@ -208,11 +212,23 @@ repository and send us your changes via pull requests.
 python3 ./docs/files/ansible-roles-dependencies.py
 ```
 
+## mega-linter
+
+```bash
+npx mega-linter-runner
+```
+
+## Check secret
+
+```
+npx @secretlint/quick-start "**/*"
+```
+
 ## Update README.md
 
 
-  * [github-markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-  * With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
+* [github-markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+* With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
 
 ```
 npm install -g markdown-toc
@@ -250,7 +266,7 @@ License
 
 - License: [GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 
-### Feedback, bug-reports, requests, ...
+### Feedback, bug-reports, requests,
 
 Are [welcome](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/issues)!
 

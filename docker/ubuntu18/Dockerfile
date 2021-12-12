@@ -3,20 +3,24 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
 #FROM ubuntu:18.04
+# See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
+# bionic
 FROM selenium/standalone-chrome:3.141.59-20201117 as selenium
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 # In case you need proxy
+ENV http_proxy=${http_proxy:-""}
 #ENV http_proxy=${http_proxy:-"http://127.0.0.1:3128"}
-ENV http_proxy=${http_proxy:-"http://10.21.185.171:3128"}
+#ENV http_proxy=${http_proxy:-"http://150.151.144.119:3128"}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
-ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu"}
+#ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu"}
+ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
 # dockerfile_lint - ignore
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
-LABEL name="ansible-jenkins-slave-docker" version="1.0.2"
+LABEL name="ansible-jenkins-slave-docker" version="1.0.18"
 LABEL description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 18.04."
 LABEL com.example.vendor="ACME Incorporated"
@@ -93,8 +97,8 @@ RUN PS_REPO=$(lsb_release -rs) \
 # error with ansible==2.9.1 and (2.8.6 and 2.8.8) (buggy https://github.com/ansible/ansible/issues/13763), ok with 2.7.14 and ok with 20.0.2 on ubuntu 18 with python 3.6 and 19 with python 3.7
 # Before ansible install default python is 3.6
 # TODO pip==20.2.4 # pip resolver ResolutionTooDeep(max_rounds)
-RUN python3 -m pip install --upgrade pip==20.3.4 \
-    && pip3 install ansible==4.6.0 ansible-core>=2.11.6 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
+RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==20.3.4 \
+    && pip3 --proxy=${http_proxy} install ansible==4.6.0 ansible-core>=2.11.6 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 virtualenv>=20.0.18 \
     && pip3 --version && python3 --version
 
 ### DOCKER
@@ -128,11 +132,6 @@ ARG GID=${GID:-2000}
 # hadolint ignore=SC2059
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
     printf "\033[1;32mWITH user: $USER\ngroup: $GROUP \033[0m\n"
-
-#ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${UID}/bus
-#RUN export DBUS_SESSION_BUS_ADDRESS=`dbus-daemon --session --fork --print-address`
-#ENV DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS}
-RUN printenv DBUS_SESSION_BUS_ADDRESS || true
 
 RUN groupmod -g ${GID} docker
 #RUN cat /etc/group | grep docker || true
@@ -192,10 +191,11 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 # -e "jdk_home=/usr/lib/jvm/java-8-openjdk-amd64/" \
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
- --skip-tags=restart,vm,python35,python36,brew,objc,kubernetes,nodejs,secret  \
+ -e "python_enabled=false" \
+ --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs,selenium \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
- && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" \
+ && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/inventory" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" "$JENKINS_USER_HOME/requirements-*.txt" \
  && rm -Rf $JENKINS_USER_HOME/playbooks/.node_cache/ \
  && rm -Rf $JENKINS_USER_HOME/.cpan $JENKINS_USER_HOME/.ansible \
  && rm -Rf $JENKINS_USER_HOME/.npm $JENKINS_USER_HOME/.node_cache $JENKINS_USER_HOME/.cache/pip \
