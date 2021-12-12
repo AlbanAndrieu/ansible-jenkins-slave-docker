@@ -5,7 +5,7 @@
   remote_user: root
 
   roles:
-    - albanandrieu.dns
+    - albanandrieu.ansible_dns
 
   vars:
     defaultdomain: albandrieu.com

@@ -192,7 +192,7 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
  -e "jenkins_id=${UID}" -e "docker_gid=${GID}" \
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
  -e "python_enabled=false" \
- --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs,selenium \
+ --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs,selenium,xvfb \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/inventory" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" "$JENKINS_USER_HOME/requirements-*.txt" \
@@ -329,7 +329,6 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0
 # Need to write on /home/jenkins/.config/helm/repositories.lock
 #RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
 #RUN ls -lrta ${JENKINS_USER_HOME}/.helm
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/
 
 #RUN chmod g-w,o-w ${HOME} # Home directory on the server should not be writable by others
 #WARNING below give access to all servers

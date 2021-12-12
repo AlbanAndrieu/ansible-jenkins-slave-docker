@@ -319,9 +319,9 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0
 #RUN helm repo add custom ${HELM_CUSTOM_REPO_URL} --insecure-skip-tls-verify
 # && mkdir ${HOME}/.helm
 # Need to write on /home/jenkins/.config/helm/repositories.lock
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm
+RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm/ || true
 #RUN ls -lrta ${JENKINS_USER_HOME}/.helm
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/
+RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/ || true
 
 #RUN chmod g-w,o-w ${HOME} # Home directory on the server should not be writable by others
 #WARNING below give access to all servers

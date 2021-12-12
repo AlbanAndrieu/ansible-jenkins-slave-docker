@@ -18,7 +18,9 @@ def get_system_ca_bundle():
 def get_csrf_token(host, auth, ca_bundle):
     url = 'https://{}/crumbIssuer/api/json'.format(host)
     response = requests.get(
-        url, auth=(auth['username'], auth['password']), verify=ca_bundle,
+        url,
+        auth=(auth['username'], auth['password']),
+        verify=ca_bundle,
     )
     return response
 

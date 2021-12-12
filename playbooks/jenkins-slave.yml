@@ -73,5 +73,6 @@
     jenkins_jdk8_enable: yes
     jenkins_jdk14_enable: false
     #gcc_version: "4:4.8.2-1ubuntu6"
+    gcc_package_list: []
     #cppunit_version: "1.13-0"
     #boost_version: "1.54"

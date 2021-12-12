@@ -67,7 +67,9 @@ for path in glob('roles/*/meta/main.yml'):
                     link_roles(dependent_role, depended_role)
             except (RuntimeError, TypeError, NameError):
                 logging.exception(
-                    'Probleme with %s dependency: %s', dependent_role, dependency,
+                    'Probleme with %s dependency: %s',
+                    dependent_role,
+                    dependency,
                 )
 dot.format = 'png'
 dot.render('roles.gv', view=True)

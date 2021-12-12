@@ -29,7 +29,7 @@
     + [Contributing](#contributing)
     + [Authors and license](#authors-and-license)
   * [License](#license)
-    + [Feedback, bug-reports, requests,](#feedback-bug-reports-requests)
+    + [Feedback, bug-reports, requests](#feedback-bug-reports-requests)
   * [Contact](#contact)
 
 <!-- tocstop -->
@@ -266,7 +266,7 @@ License
 
 - License: [GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 
-### Feedback, bug-reports, requests,
+### Feedback, bug-reports, requests
 
 Are [welcome](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/issues)!
 

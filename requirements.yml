@@ -6,8 +6,8 @@
   name: albanandrieu.administration
   version: master
 
-#- src: 'https://github.com/AlbanAndrieu/ansible-awstats'
-#  name: 'albanandrieu.awstats'
+#- src: https://github.com/AlbanAndrieu/ansible-awstats.git
+#  name: albanandrieu.awstats
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-cmake.git
@@ -18,8 +18,8 @@
   name: albanandrieu.ansible_common
   version: master
 
-#- src: 'https://github.com/AlbanAndrieu/ansible-conky'
-#  name: 'albanandrieu.conky'
+#- src: https://github.com/AlbanAndrieu/ansible-conky.git
+#  name: albanandrieu.conky
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-cpp.git
@@ -31,19 +31,19 @@
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-dns.git
-  name: albanandrieu.dns
+  name: albanandrieu.ansible_dns
   version: master
 
-#- src: 'https://github.com/AlbanAndrieu/ansible-dropbox'
-#  name: 'albanandrieu.dropbox'
+#- src: https://github.com/AlbanAndrieu/ansible-dropbox.git
+#  name: albanandrieu.dropbox
+#  version: master
+
+#- src: https://github.com/AlbanAndrieu/ansible-eclipse.git
+#  name: albanandrieu.eclipse
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-eclipse'
-#  name: 'albanandrieu.eclipse'
-#  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-evasive'
-#  name: 'albanandrieu.evasive'
+#- src: https://github.com/AlbanAndrieu/ansible-evasive.git
+#  name: albanandrieu.evasive
 #  version: master
 
 - src: https://github.com/AlbanAndrieu/ansible-gcc.git
@@ -147,18 +147,14 @@
 #  name: 'albanandrieu.visualvm'
 #  version: master
 #
-#- src: 'https://github.com/AlbanAndrieu/ansible-web'
-#  name: 'albanandrieu.web'
+#- src: https://github.com/AlbanAndrieu/ansible-web.git
+#  name: albanandrieu.web
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-webmin'
-#  name: 'albanandrieu.webmin'
+
+#- src: https://github.com/AlbanAndrieu/ansible-webmin.git
+#  name: albanandrieu.webmin
 #  version: master
-#
-#- src: 'https://github.com/AlbanAndrieu/ansible-windows'
-#  name: 'albanandrieu.windows'
-#  version: master
-#
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-workstation'
 #  name: 'albanandrieu.workstation'
 #  version: master
@@ -359,15 +355,15 @@
 #- src: 'https://github.com/AlbanAndrieu/ansible-role-security'
 #  name: 'security'
 #  version: master
-#
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-sonar'
 #  name: 'sonar'
 #  version: master
-#
-#- src: 'https://github.com/geerlingguy/ansible-role-sonar-runner'
-#  name: 'geerlingguy.sonar-runner'
-#  version: master
-#
+
+- src: https://github.com/geerlingguy/ansible-role-sonar-runner.git
+  name: geerlingguy.sonar-runner
+  version: master
+
 #- src: 'https://github.com/AlbanAndrieu/ansible-role-ssl-certs'
 #  name: 'ssl-certificate'
 #  version: master
@@ -399,7 +395,7 @@
 #- src: 'https://github.com/LIP-Computing/ansible-role-nvidia'
 #  name: 'opencl'
 #  version: master
-#
+
 #- src: https://github.com/elliotweiser/ansible-osx-command-line-tools.git
 #  name: elliotweiser.osx-command-line-tools
 #  version: master

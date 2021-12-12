@@ -1,21 +1,6 @@
-[submodule "roles/alban.andrieu.subversion"]
-	path = roles/alban.andrieu.subversion
-	url = https://github.com/AlbanAndrieu/ansible-subversion.git
 [submodule "roles/alban.andrieu.jenkins-slave"]
 	path = roles/alban.andrieu.jenkins-slave
 	url = https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
-[submodule "roles/alban.andrieu.xvbf"]
-	path = roles/alban.andrieu.xvbf
-	url = https://github.com/AlbanAndrieu/ansible-xvbf
-[submodule "roles/alban.andrieu.hostname"]
-	path = roles/alban.andrieu.hostname
-	url = https://github.com/AlbanAndrieu/ansible-hostname.git
-[submodule "roles/alban.andrieu.selenium"]
-	path = roles/alban.andrieu.selenium
-	url = https://github.com/AlbanAndrieu/ansible-selenium.git
 [submodule "roles/maven"]
 	path = roles/maven
 	url = https://github.com/AlbanAndrieu/ansible-maven.git
-[submodule "roles/alban.andrieu.jboss"]
-	path = roles/alban.andrieu.jboss
-	url = https://github.com/AlbanAndrieu/ansible-jboss.git

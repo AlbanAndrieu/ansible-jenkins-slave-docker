@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   * [Size 🌈](#size-%F0%9F%8C%88)
 - [[Unreleased]](#unreleased)
-- [[2.0.0] - TODO](#200---todo)
+- [[2.0.1] - TODO](#201---todo)
+- [[2.0.0] - 13-12-2021](#200---13-12-2021)
   * [Updated](#updated)
   * [Remove](#remove)
 - [[1.0.18] - TODO](#1018---todo)
@@ -45,11 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.0] - TODO
+## [2.0.1] - TODO
+
+## [2.0.0] - 13-12-2021
 
 Ubuntu 20.04
 
-`docker pull  nabla/ansible-jenkins-slave-docker:2.0.0`
+`docker pull nabla/ansible-jenkins-slave-docker:2.0.0`
 
 ### Updated
 - node v14.16.1
