@@ -55,8 +55,8 @@ repos:
           (?x)^(
               .*/molecule/default/tests/test_default.py|
           )$
-      - id: no-commit-to-branch
-        args: [--branch, develop, --branch, master, --branch, release/*]
+#      - id: no-commit-to-branch
+#        args: [--branch, develop, --branch, master, --branch, release/*]
       - id: end-of-file-fixer
       - id: fix-encoding-pragma
       - id: requirements-txt-fixer
@@ -134,7 +134,14 @@ repos:
       - id: markdown-toc
         args: [--maxdepth, "3", -i]
       - id: dockerfile_lint
-        args: [--json, --verbose, --dockerfile]
+        #args: [--json, --verbose, --dockerfile docker/ubuntu20/Dockerfile]
+        args: [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
+#  - repo: https://github.com/gitguardian/ggshield
+#    rev: v1.10.7
+#    hooks:
+#      - id: ggshield
+#        language_version: python3
+#        stages: [commit]
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:

@@ -6,7 +6,7 @@ ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 
 # dockerfile_lint - ignore
 MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
-LABEL Name="ansible-jenkins-slave-docker" Version="1.0.0"
+LABEL name="ansible-jenkins-slave-docker" version="1.0.0"
 LABEL description="Image used by Nabla products to build Java/Javascript and CPP\
  this image is running on Ubuntu 16.04."
 

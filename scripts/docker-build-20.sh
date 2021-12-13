@@ -42,8 +42,8 @@ mkdir -p .ssh/
 #wget http://bm-artifacts.misys.global.ad/nexus/content/repositories/fusion-risk/download/certs/id_rsa.pub -O ${WORKING_DIR}/../.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
 #cp -p /home/kgr_mvn/.ssh/id_rsa* ${WORKING_DIR}/../.ssh/ || true
 
-#export DOCKER_BUILDKIT=1
-export DOCKER_BUILDKIT=0
+export DOCKER_BUILDKIT=1
+#export DOCKER_BUILDKIT=0
 #export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
 export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
 #export BUILDKIT_STEP_LOG_MAX_SIZE=-1

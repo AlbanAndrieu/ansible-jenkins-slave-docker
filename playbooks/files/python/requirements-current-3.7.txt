@@ -252,8 +252,9 @@ scons==3.1.2
 SecretStorage==3.1.2
 selenium==3.141.0
 semver==2.9.0
-setup-cfg-fmt==1.6.0
-setuptools==41.0.0 # See https://github.com/ansible/molecule/issues/2350
+setup-cfg-fmt==1.9.0
+#setuptools==41.0.0 # See https://github.com/ansible/molecule/issues/2350
+setuptools==56.2.0
 sh==1.12.14
 shellingham==1.3.1
 simplejson==3.17.0
