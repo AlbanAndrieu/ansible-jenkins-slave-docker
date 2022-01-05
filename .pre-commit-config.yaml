@@ -53,7 +53,8 @@ repos:
       - id: name-tests-test
         exclude: >
           (?x)^(
-              .*/molecule/default/tests/test_default.py|
+              molecule/default/tests/.*|
+              .*test_default\.py|
           )$
 #      - id: no-commit-to-branch
 #        args: [--branch, develop, --branch, master, --branch, release/*]

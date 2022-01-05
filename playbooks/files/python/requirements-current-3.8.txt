@@ -150,7 +150,8 @@ Mako==1.1.2
 MarkupSafe==1.1.1
 matplotlib==3.2.1
 mccabe==0.6.1
-molecule==3.2.0
+molecule==3.5.2
+molecule-docker==1.1.0  # Docker driver is now "out" of Molecule core, so you have to install it apart
 monotonic==1.5
 more-itertools==8.2.0
 msgpack==1.0.0
@@ -279,7 +280,7 @@ svn==1.0.1
 tabulate==0.8.7
 termcolor==1.1.0
 terminaltables==3.1.0
-testinfra==6.0.0
+#testinfra==6.0.0   # replaced by pytest-testinfra
 testresources==2.0.1
 testtools==2.4.0
 texttable==1.6.2
