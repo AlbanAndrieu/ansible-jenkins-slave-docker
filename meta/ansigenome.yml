@@ -3,7 +3,7 @@ ansigenome_info: # noqa 701
   galaxy_id: ""
   galaxy_url: "https://galaxy.ansible.com/alban.andrieu/ansible-jenkins-slave-docker/"
   galaxy_user: "alban.andrieu"
-  galaxy_name: "ansible-jenkins-slave-docker"
+  galaxy_name: "ansible_jenkins_slave_docker"
   galaxy_docker_name: "ansible-jenkins-slave-docker"
 
   travis: true

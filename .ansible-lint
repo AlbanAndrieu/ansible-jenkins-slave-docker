@@ -72,11 +72,11 @@ skip_list:
   - '503'
   - '208' # File permissions not mentioned
   - filenotfounderror
-#  - skip_this_tag
-#  - and_this_one_too
-#  - skip_this_id
-#tags:
-#  - run_this_tag
+#   - skip_this_tag
+#   - and_this_one_too
+#   - skip_this_id
+# tags:
+#   - run_this_tag
 use_default_rules: true
-#verbosity: 1
+# verbosity: 1
 offline: true

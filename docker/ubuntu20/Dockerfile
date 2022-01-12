@@ -316,7 +316,7 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0
     helm plugin install https://github.com/ContainerSolutions/helm-convert --version 0.5.3 && \
     helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0 && \
 #    helm plugin install https://github.com/lrills/helm-unittest --version 0.1.5 && \
-    helm plugin install https://github.com/karuppiah7890/helm-schema-gen --version 0.0.4 \
+    helm plugin install https://github.com/karuppiah7890/helm-schema-gen --version 0.0.4 && \
     helm plugin install https://github.com/datreeio/helm-datree --version 0.14.95
 
 #ENV HELM_CUSTOM_REPO_URL=${HELM_CUSTOM_REPO_URL:-"https://registry-tmp.nabla.mobi/chartrepo/nabla"}
