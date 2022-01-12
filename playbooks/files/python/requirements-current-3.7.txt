@@ -73,7 +73,7 @@ defusedxml==0.6.0
 devscripts==1.0.0
 dictdiffer==0.8.1
 #distro==1.5.0
-django==2.2.11
+django==2.2.25
 django-cors-headers==3.2.1
 django-filter==2.2.0
 django-health-check==3.12.1
