@@ -27,6 +27,7 @@
     + [Python 3.8 graphviz](#python-38-graphviz)
   * [mega-linter](#mega-linter)
   * [Check secret](#check-secret)
+  * [Check cspell](#check-cspell)
   * [Update README.md](#update-readmemd)
     + [Contributing](#contributing)
     + [Authors and license](#authors-and-license)
@@ -227,6 +228,12 @@ npx mega-linter-runner
 
 ```
 npx @secretlint/quick-start "**/*"
+```
+
+## Check cspell
+
+```
+npx cspell "**/*.{txt,js,md}"
 ```
 
 ## Update README.md

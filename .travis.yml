@@ -11,6 +11,7 @@ python:
 
 services:
   - docker
+
 cache:
   bundler:
   directories:
@@ -46,7 +47,7 @@ install:
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
 
-  - pip3 install molecule==3.0.2
+  - pip3 install molecule[docker,lint]==3.5.2
 
   # Update Ansible submodule.
   - git pull && git submodule init
@@ -58,6 +59,9 @@ install:
 script:
   # Check ansible version
   - ansible --version
+
+  - yamllint . -c .yamllint
+  - ansible-lint . -c .ansible-lint
 
   # Add ansible.cfg to pick up roles path.
   #- "{ echo '[defaults]'; echo 'roles_path = ./roles'; } >> ansible.cfg"
@@ -108,6 +112,6 @@ notifications:
     on_start: false
   email:
     recipients:
-      - alban.andrieu@nabla.mobi
+      - alban.andrieu@free.fr
     on_success: [always|never|change] # default: change
     on_failure: [always|never|change] # default: always
