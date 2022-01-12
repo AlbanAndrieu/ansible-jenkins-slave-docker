@@ -17,11 +17,13 @@ ENV http_proxy=${http_proxy:-""}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
+LABEL name="ansible-jenkins-slave" version="2.0.0" \
+      description="Image used by our products to build Java/Javascript and CPP\
+ this image is running on Ubuntu 20.10." \
+      com.example.vendor="ACME Incorporated"
+
 # dockerfile_lint - ignore
-LABEL name="ansible-jenkins-slave" version="2.0.0"
-LABEL description="Image used by our products to build Java/Javascript and CPP\
- this image is running on Ubuntu 20.10."
-LABEL com.example.vendor="ACME Incorporated"
+# TESTS
 
 # No interactive frontend during docker build
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -77,6 +79,7 @@ RUN apt-get -q update &&\
     openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
     net-tools iputils-ping x11-apps libxss1 \
     gnome-keyring gnome-keyring gnupg2 pass \
+    libnss3 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Remove unnecessary getty and udev targets that result in high CPU usage when using
@@ -114,7 +117,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     npm config set depth 0;
 RUN npm install -g npm@6.14.15 && apt-get purge -y npm # && ln -s /usr/local/bin/npm /usr/bin/npm
 RUN npm -v && command -v npm # 6.14.15
-RUN npm install -g bower@1.8.12 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.3 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
+RUN npm install -g bower@1.8.12 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### USER
 
@@ -313,7 +316,8 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0
     helm plugin install https://github.com/ContainerSolutions/helm-convert --version 0.5.3 && \
     helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0 && \
 #    helm plugin install https://github.com/lrills/helm-unittest --version 0.1.5 && \
-    helm plugin install https://github.com/karuppiah7890/helm-schema-gen --version 0.0.4
+    helm plugin install https://github.com/karuppiah7890/helm-schema-gen --version 0.0.4 \
+    helm plugin install https://github.com/datreeio/helm-datree --version 0.14.95
 
 #ENV HELM_CUSTOM_REPO_URL=${HELM_CUSTOM_REPO_URL:-"https://registry-tmp.nabla.mobi/chartrepo/nabla"}
 #RUN helm repo add custom ${HELM_CUSTOM_REPO_URL} --insecure-skip-tls-verify

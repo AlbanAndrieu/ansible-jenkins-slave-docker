@@ -10,7 +10,7 @@ repos:
     # pre-commit-hooks.git from v2.1.0 to v2.4.0
     #    rev: v2.1.0 # ok python3.6  # 18.04.3
     #    rev: v2.2.3 # ok python3.6  # 19.04 but failing on 18.04.3
-    rev: v4.0.1 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
+    rev: v4.1.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -56,15 +56,15 @@ repos:
               molecule/default/tests/.*|
               .*test_default\.py|
           )$
-#      - id: no-commit-to-branch
-#        args: [--branch, develop, --branch, master, --branch, release/*]
+      #      - id: no-commit-to-branch
+      #        args: [--branch, develop, --branch, master, --branch, release/*]
       - id: end-of-file-fixer
       - id: fix-encoding-pragma
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
       - id: file-contents-sorter
   - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.7
+    rev: v1.6.0
     hooks:
       - id: autopep8
   - repo: https://gitlab.com/pycqa/flake8
@@ -85,7 +85,7 @@ repos:
     hooks:
       - id: add-trailing-comma
   - repo: https://github.com/willthames/ansible-lint.git
-    rev: v5.3.1
+    rev: v5.3.2
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
@@ -112,11 +112,11 @@ repos:
               hooks|
           )$
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.1
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
   - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.7
+    rev: v1.6.0
     hooks:
       - id: autopep8
   #-   repo: https://github.com/PyCQA/bandit
@@ -137,12 +137,13 @@ repos:
       - id: dockerfile_lint
         #args: [--json, --verbose, --dockerfile docker/ubuntu20/Dockerfile]
         args: [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
-#  - repo: https://github.com/gitguardian/ggshield
-#    rev: v1.10.7
-#    hooks:
-#      - id: ggshield
-#        language_version: python3
-#        stages: [commit]
+        always_run: true
+  #  - repo: https://github.com/gitguardian/ggshield
+  #    rev: v1.10.7
+  #    hooks:
+  #      - id: ggshield
+  #        language_version: python3
+  #        stages: [commit]
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:

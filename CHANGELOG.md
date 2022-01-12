@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Table of contents
 
+// spell-checker:disable
+
 <!-- toc -->
 
-  * [Size 🌈](#size-%F0%9F%8C%88)
+* [Size 🌈](#size-%F0%9F%8C%88)
 - [[Unreleased]](#unreleased)
 - [[2.0.1] - TODO](#201---todo)
 - [[2.0.0] - 13-12-2021](#200---13-12-2021)
@@ -29,14 +31,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- tocstop -->
 
+// spell-checker:enable
+
 ### Size 🌈
 
+// cSpell:words linuxbrew skaffold chromedriver kubectl
 - .linuxbrew = 761 + 86 + 58 MB
 - .cache/Homebrew = 84 MB + 41 MB + 38 MB
 - node = 60 MB
 - .npm = 38 + 18 + 15 + 15 MB
 - skaffold = 48 MB
-- kubect = 44 MB
+- kubectl = 44 MB
 - java 8 = 131 + 27 MB
 - draft = 14 MB
 - helm 13 MB
@@ -60,6 +65,7 @@ Ubuntu 20.04
 - helm 3.5.4 an plugin version hard coded
 
 ### Remove
+// cSpell:words flashplugin flashplayer
 - adobe-flashplugin (remove flashplayer support)
 
 ## [1.0.18] - TODO
@@ -102,6 +108,7 @@ I strongly advice you to move to python 3.7.5
 ### Added
 - kubernetes 1.17.2
 - helm 2.14.3
+// cSpell:words hadolint dockerfilelint
 - Docker linter : [hadolint](https://github.com/hadolint/hadolint), [dockerfilelint](https://hub.docker.com/r/replicated/dockerfilelint/), [dive](https://github.com/wagoodman/dive)
 - Support python 3.7 on Ubuntu 19
 - Support on Ubuntu 19 and 18 (patch only), but no more Ubuntu 16
@@ -112,6 +119,7 @@ I strongly advice you to move to python 3.7.5
 ### Updated
 - Ubuntu 18.04
 - pip to 20.0.1
+// cSpell:words setuptools
 - python 3.6 fix setuptools==41.0.0 # See <https://github.com/ansible/molecule/issues/2350>
 - python3 default is python 3.7.6
 - pip 2 and 3.7 to 20.0.1 pip 3.6 to 20.0.1
@@ -142,11 +150,12 @@ dive report
 
 ### Remove
 - Python 3.6.9 will no more be supported on Ubuntu 19, Even if you install it by hand. because of [sqlite3](https://github.com/gunthercox/chatterbot-corpus/issues/116)
-- Remove Ubuntu 16 support and belwow
+- Remove Ubuntu 16 support and below
 - Drop support python 3.5. (at all)
 - Drop support oracle JDK. Only open JDK 8 and above
 - Drop support gcc below than 4.8.5
-- Drop support for objective C and Gnustep on docker image (too big)
+// cSpell:words gnustep
+- Drop support for objective C and gnustep on docker image (too big)
 - Drop support for CentOS/RedHat 5 and below and Solaris
 - Drop support for node/npm below 10.15.2/6.13.6
 - Drop support for docker below 19.03.3

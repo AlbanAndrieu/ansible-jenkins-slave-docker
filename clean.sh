@@ -11,7 +11,7 @@ source "${WORKING_DIR}/scripts/step-0-color.sh"
 #docs/
 #dist/bower_components/ dist/fonts/
 
-rm -Rf _build/ build/ .eggs/ .toxs/ dist/ output/pytest-report.xml .coverage output/coverage.xml docs/_build/ docs/_static/* .tox/ .scannerwork/ .pytest_cache/ output/htmlcov/ cprofile out/
+rm -Rf _build/ build/ .eggs/ .toxs/ dist/ output/pytest-report.xml .coverage output/coverage.xml docs/_build/ docs/_static/* .tox/ .scannerwork/ .pytest_cache/ output/htmlcov/ cprofile out/ report/
 
 rm -f checkstyle.xml overview.html ansible-lint.* ./*.log
 

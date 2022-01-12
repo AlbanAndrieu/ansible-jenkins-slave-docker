@@ -1,5 +1,7 @@
 ## [![Nabla](http://albandrieu.com/nabla/index/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu) Jenkins slave Docker image
 
+// spell-checker:disable
+
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Travis CI](https://img.shields.io/travis/AlbanAndrieu/ansible-jenkins-slave-docker.svg?style=flat)](https://travis-ci.org/AlbanAndrieu/ansible-jenkins-slave-docker)
 [![Branch](http://img.shields.io/github/tag/AlbanAndrieu/ansible-jenkins-slave-docker.svg?style=flat-square)](https://github.com/AlbanAndrieu/ansible-jenkins-slave-docker/tree/master)
@@ -33,6 +35,8 @@
   * [Contact](#contact)
 
 <!-- tocstop -->
+
+// cSpell:enable
 
 # Requirements
 
@@ -69,6 +73,7 @@ Run `pre-commit run --all-files`
 Run `SKIP=ansible-lint git commit -am 'Add key'`
 Run `git commit -am 'Add key' --no-verify`
 
+// cSpell:words formating Jenkinsfile
 ### npm-groovy-lint groovy formating for Jenkinsfile
 
 Tested with nodejs 12 and 16 on ubuntu 20 and 21 (not working with nodejs 11 and 16)
