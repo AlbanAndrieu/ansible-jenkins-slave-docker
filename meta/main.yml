@@ -13,8 +13,8 @@ dependencies:
 
 galaxy_info:
   author: Alban Andrieu
-  role_name: ansible_jenkins_slave_docker
-  namespace: AlbanAndrieu
+  role_name: ansible-jenkins-slave-docker
+  namespace: albanandrieu
   description: A role for creating docker image for jenkins slaves
   company: Nabla
   license: GPLv3
@@ -25,3 +25,4 @@ galaxy_info:
         - all
   galaxy_tags:
     - development
+    - jenkins

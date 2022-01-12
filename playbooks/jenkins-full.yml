@@ -100,8 +100,6 @@
 
 #- import_playbook: javascript.yml
 
-#- import_playbook: yarn.yml
-
 #- import_playbook: sonar-runner.yml
 
 # TODO jenkins-slaves.yml contains some python fixes. It must be run first
