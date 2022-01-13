@@ -33,7 +33,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install Node.Js
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2
         with:
           node-version: 12
 
@@ -58,12 +58,13 @@ jobs:
           build-args: |
             ANSIBLE_VAULT_PASS=${{ secrets.ANSIBLE_VAULT_PASS }}
           #            --squash
-          tags: nabla/ansible-jenkins-slave-docker:latest,nabla/ansible-jenkins-slave-docker:${{ github.sha }}
+          #tags: nabla/ansible-jenkins-slave-docker:latest,nabla/ansible-jenkins-slave-docker:${{ github.sha }}
+          tags: nabla/ansible-jenkins-slave-docker:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "nabla/ansible-jenkins-slave-docker:${{ github.sha }}"
+          image-ref: "nabla/ansible-jenkins-slave-docker:latest"
           format: "template"
           template: "@/contrib/sarif.tpl"
           output: "trivy-results.sarif"

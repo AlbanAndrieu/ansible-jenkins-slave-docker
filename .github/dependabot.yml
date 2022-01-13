@@ -5,7 +5,7 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     # Look for `build.gradle` in the `root` directory
-    directory: "/"
+    directory: "/library/"
     # Check for updates once weekly
     schedule:
         interval: "weekly"
@@ -13,6 +13,7 @@ updates:
             # Ignore updates to packages that start 'aws'
             # Wildcards match zero or more arbitrary characters
             - dependency-name: "flask*"
+            - dependency-name: org.apache:maven:*
 
   - package-ecosystem: "github-actions"
     directory: "/"
