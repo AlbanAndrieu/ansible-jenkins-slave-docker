@@ -7,7 +7,7 @@ set -eo pipefail
 
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-export DOCKER_TAG=${DOCKER_TAG:-"2.0.0"}
+export DOCKER_TAG=${DOCKER_TAG:-"2.0.1"}
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"

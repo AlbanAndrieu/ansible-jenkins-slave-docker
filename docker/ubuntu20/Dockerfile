@@ -17,7 +17,7 @@ ENV http_proxy=${http_proxy:-""}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
-LABEL name="ansible-jenkins-slave" version="2.0.0" \
+LABEL name="ansible-jenkins-slave" version="2.0.1" \
       description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
       com.example.vendor="ACME Incorporated"

@@ -11,22 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- toc -->
 
-* [Size 🌈](#size-%F0%9F%8C%88)
+  * [Size 🌈](#size-%F0%9F%8C%88)
 - [[Unreleased]](#unreleased)
-- [[2.0.1] - TODO](#201---todo)
-- [[2.0.0] - 13-12-2021](#200---13-12-2021)
-  * [Updated](#updated)
-  * [Remove](#remove)
-- [[1.0.18] - TODO](#1018---todo)
-- [[1.0.17] - 2021-12-03](#1017---2021-12-03)
+- [[2.0.2] - TODO](#202---todo)
+- [[2.0.1] - 2021-13-01](#201---2021-13-01)
   * [Added](#added)
-- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
-  * [Added](#added-1)
+  * [Updated](#updated)
+- [[2.0.0] - 13-12-2021](#200---13-12-2021)
   * [Updated](#updated-1)
-  * [Added](#added-2)
-- [[1.0.0] - 2020-01-01](#100---2020-01-01)
-  * [Added](#added-3)
+  * [Remove](#remove)
+- [[1.0.19] - TODO](#1019---todo)
+- [[1.0.18] - 2021-13-01](#1018---2021-13-01)
+  * [Added](#added-1)
   * [Updated](#updated-2)
+- [[1.0.17] - 2021-12-03](#1017---2021-12-03)
+  * [Added](#added-2)
+- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
+  * [Added](#added-3)
+  * [Updated](#updated-3)
+  * [Added](#added-4)
+- [[1.0.0] - 2020-01-01](#100---2020-01-01)
+  * [Added](#added-5)
+  * [Updated](#updated-4)
   * [Remove](#remove-1)
 
 <!-- tocstop -->
@@ -51,7 +57,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.1] - TODO
+## [2.0.2] - TODO
+
+## [2.0.1] - 2021-13-01
+
+### Added
+
+- Add github action
+
+### Updated
+
+- Add linter mega-linter, cspell
 
 ## [2.0.0] - 13-12-2021
 
@@ -68,7 +84,17 @@ Ubuntu 20.04
 // cSpell:words flashplugin flashplayer
 - adobe-flashplugin (remove flashplayer support)
 
-## [1.0.18] - TODO
+## [1.0.19] - TODO
+
+## [1.0.18] - 2021-13-01
+
+### Added
+
+- Add github action
+
+### Updated
+
+- Add linter mega-linter, cspell
 
 ## [1.0.17] - 2021-12-03
 
