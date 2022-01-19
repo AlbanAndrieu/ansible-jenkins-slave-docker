@@ -5,7 +5,7 @@
 #FROM ubuntu:20.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
 # focal
-#FROM selenium/standalone-chrome:3.141.59-20210128 as selenium
+#FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

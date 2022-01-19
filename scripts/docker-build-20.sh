@@ -42,8 +42,8 @@ mkdir -p .ssh/
 #wget http://bm-artifacts.misys.global.ad/nexus/content/repositories/fusion-risk/download/certs/id_rsa.pub -O ${WORKING_DIR}/../.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
 #cp -p /home/kgr_mvn/.ssh/id_rsa* ${WORKING_DIR}/../.ssh/ || true
 
-export DOCKER_BUILDKIT=1
-#export DOCKER_BUILDKIT=0
+#export DOCKER_BUILDKIT=1 # See https://github.com/moby/moby/issues/42261
+export DOCKER_BUILDKIT=0
 #export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
 export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
 #export BUILDKIT_STEP_LOG_MAX_SIZE=-1
@@ -73,15 +73,16 @@ echo -e ""
 echo -e "${green} This image is a trusted docker Image. ${happy_smiley} ${NC}"
 echo -e ""
 echo -e "To push it"
-echo -e "    docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password password"
+echo -e "    docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password password ${NC}"
 #echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
 #echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
 #echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_TMP}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker push ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${NC}"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
+echo -e "    docker push ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
 
-echo -e "    docker manifest inspect  ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
+echo -e "    docker manifest inspect  ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
+echo -e "    docker scan --token ${SNYK_TOKEN} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
 
 echo -e ""
 echo -e "To pull it"

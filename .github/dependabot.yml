@@ -8,12 +8,22 @@ updates:
     directory: "/library/"
     # Check for updates once weekly
     schedule:
-        interval: "weekly"
-        ignore:
-            # Ignore updates to packages that start 'aws'
-            # Wildcards match zero or more arbitrary characters
-            - dependency-name: "flask*"
-            - dependency-name: org.apache:maven:*
+      interval: "weekly"
+    allow:
+      # Allow only direct updates for
+      # Django and any packages starting "django"
+      - dependency-name: "django*"
+        dependency-type: "direct"
+      # Allow only production updates for Sphinx
+      - dependency-name: "sphinx"
+        dependency-type: "production"
+    ignore:
+        # For Lodash, ignore all updates
+      - dependency-name: "lodash"
+      - dependency-name: "flask*"
+      - dependency-name: org.apache:maven:*
+    # Allow up to 10 open pull requests for pip dependencies
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "github-actions"
     directory: "/"
