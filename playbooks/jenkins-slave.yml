@@ -59,7 +59,7 @@
     jenkins_home: "/home/jenkins"
     jenkins_group: docker
     jenkins_gid: "2000"
-    jenkins_http_port: 8686
+    jenkins_http_port: 8080
     jenkins_slave_home: /media
     #jenkins_prefix: "/jenkins"
     #jenkins_url: {{ home_url }}:{{ jenkins_http_port }}{{ jenkins_prefix }}
