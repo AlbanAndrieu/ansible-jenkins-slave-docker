@@ -5,7 +5,7 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     # Look for `build.gradle` in the `root` directory
-    directory: "/library/"
+    directory: "/"
     # Check for updates once weekly
     schedule:
       interval: "weekly"
