@@ -18,9 +18,9 @@ ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
 LABEL name="ansible-jenkins-slave" version="2.0.1" \
-      description="Image used by our products to build Java/Javascript and CPP\
+ description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
-      com.example.vendor="ACME Incorporated"
+ com.example.vendor="ACME Incorporated"
 
 # dockerfile_lint - ignore
 # TESTS
@@ -112,12 +112,12 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -qqy docker-ce
 
 # hadolint ignore=DL3008,DL3015
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get update && apt-get install -y nodejs=14* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs=14* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
-RUN npm install -g npm@6.14.15 && apt-get purge -y npm # && ln -s /usr/local/bin/npm /usr/bin/npm
+RUN npm install -g npm@6.14.15 && apt-get purge -y npm
 RUN npm -v && command -v npm # 6.14.15
-RUN npm install -g bower@1.8.12 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
+RUN npm install -g bower@1.8.13 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### USER
 
@@ -302,7 +302,7 @@ RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 
 #RUN chmod go-r $HOME/.kube/config
 
-ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"70.0.3538.102"}
+ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"98.0.4758.102"}
 RUN webdriver-manager update --versions.chrome ${WEBDRIVER_CHROME_VERSION}
 
 # drop back to the regular jenkins user - good practice
