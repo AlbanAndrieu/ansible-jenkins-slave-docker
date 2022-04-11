@@ -107,7 +107,7 @@ pywinrm==0.2.2
 pyxdg==0.26
 PyYAML==3.12
 #reportbug===7.1.7ubuntu1
-reportlab==3.4.0
+reportlab==3.5.55
 requests==2.18.4
 requests-oauthlib==0.8.0
 s3cmd==2.0.1
