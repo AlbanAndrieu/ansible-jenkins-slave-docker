@@ -1,14 +1,13 @@
 #!/usr/bin/env groovy
 @Library(value='jenkins-pipeline-scripts@master', changelog=false) _
 
-String DOCKER_REGISTRY="index.docker.io/v1".trim()
+String DOCKER_REGISTRY_HUB=env.DOCKER_REGISTRY_HUB ?: "index.docker.io".toLowerCase().trim()
 String DOCKER_ORGANISATION="nabla".trim()
 String DOCKER_TAG="1.0.10".trim()
 String DOCKER_TAG_NEXT_UBUNTU_18="1.0.11".trim()
 String DOCKER_NAME="ansible-jenkins-slave-docker".trim()
 
-String DOCKER_REGISTRY_URL="https://${DOCKER_REGISTRY}".trim()
-String DOCKER_REGISTRY_URL="https://${DOCKER_REGISTRY}".trim()
+String DOCKER_REGISTRY_URL="https://${DOCKER_REGISTRY_HUB}".trim()
 String DOCKER_REGISTRY_CREDENTIAL=env.DOCKER_REGISTRY_CREDENTIAL ?: "hub-docker-nabla".trim()
 String DOCKER_IMAGE="${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}".trim()
 
@@ -269,13 +268,13 @@ pipeline {
                             usernameVariable: 'USERNAME',
                             passwordVariable: 'PASSWORD']
                         ]) {
-                          def container = docker.build("${DOCKER_REGISTRY}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_18_UBUNTU_18}", "${docker_build_args} -f docker/ubuntu16/Dockerfile . ")
+                          def container = docker.build("${DOCKER_REGISTRY_HUB}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_18_UBUNTU_18}", "${docker_build_args} -f docker/ubuntu16/Dockerfile . ")
                           container.inside {
                             sh 'echo test'
                             archiveArtifacts artifacts: '*.log, /home/jenkins/npm/cache/_logs/*-debug.log', excludes: null, fingerprint: false, onlyIfSuccessful: false
                           }
 
-                          docker.image("${DOCKER_REGISTRY}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_18}").withRun("-u root --entrypoint='/entrypoint.sh'", "/bin/bash") {c ->
+                          docker.image("${DOCKER_REGISTRY_HUB}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_18}").withRun("-u root --entrypoint='/entrypoint.sh'", "/bin/bash") {c ->
 
                             logs = sh (
                               script: "docker logs ${c.id}",
@@ -438,7 +437,7 @@ pipeline {
 
                     if (isReleaseBranch()) {
                       String DOCKER_IMAGE_BUILD="${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_20}".trim()
-                      String DOCKER_IMAGE_NEXT="${DOCKER_REGISTRY_TMP}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_20}".trim()
+                      String DOCKER_IMAGE_NEXT="${DOCKER_REGISTRY_HUB}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT_UBUNTU_20}".trim()
 
                       try {
                         sh "docker tag ${DOCKER_IMAGE_BUILD} ${DOCKER_IMAGE_NEXT}"
@@ -471,7 +470,7 @@ pipeline {
               echo "Init currentResult: ${currentBuild.currentResult}"
 
               String DOCKER_IMAGE_BUILD="${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT}".trim()
-              String DOCKER_IMAGE_NEXT="${DOCKER_REGISTRY_TMP}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT}".trim()
+              String DOCKER_IMAGE_NEXT="${DOCKER_REGISTRY_HUB}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG_NEXT}".trim()
 
               if (JENKINS_URL ==~ /https:\/\/albandrieu.*\/jenkins\/|https:\/\/todo.*\/jenkins\// ) {
                 echo "JENKINS is supported"
