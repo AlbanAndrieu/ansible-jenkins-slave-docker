@@ -89,35 +89,44 @@ ls -lrta .groovylintrc.json
 
 Run the playbook, like this:
 
-    ansible-playbook -i hosts -c local -v jenkins-slave-docker.yml -vvvv
-    or
-    setup.sh
+```bash
+ansible-playbook playbooks/python-bootstrap.yml -i inventory/hosts --limit localhost -c local --ask-become-pass -vvvv
+ansible-playbook -i inventory/hosts -c local -v jenkins-slave-docker.yml -vvvv
+#or
+setup.sh
+```
 
 Create the docker hub image, like this:
 
-    docker build -f docker/ubuntu18/Dockerfile -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
-    or
-    ./scripts/docker-build.sh
+```bash
+docker build -f docker/ubuntu18/Dockerfile -t "nabla/ansible-jenkins-slave-docker" . --no-cache --tag "latest"
+or
+./scripts/docker-build.sh
+```
 
 Run Jenkins See <https://github.com/jenkinsci/parallel-test-executor-plugin/tree/master/demo>
 
-    docker volume create --name=m2repo
-    sudo chmod a+rw $(docker volume inspect -f '{{.Mountpoint}}' m2repo)
-    docker run --rm -p 127.0.0.1:8080:8080 -v m2repo:/m2repo -v /var/run/docker.sock:/var/run/docker.sock --group-add=$(stat -c %g /var/run/docker.sock) -ti jenkinsci/parallel-test-executor-demo
+```bash
+docker volume create --name=m2repo
+sudo chmod a+rw $(docker volume inspect -f '{{.Mountpoint}}' m2repo)
+docker run --rm -p 127.0.0.1:8080:8080 -v m2repo:/m2repo -v /var/run/docker.sock:/var/run/docker.sock --group-add=$(stat -c %g /var/run/docker.sock) -ti jenkinsci/parallel-test-executor-demo
+```
 
 Use the docker hub image, like this:
 
-    #Pull image
-    docker pull nabla/ansible-jenkins-slave-docker
+```bash
+#Pull image
+docker pull nabla/ansible-jenkins-slave-docker
 
-    #Start container
-    docker run -ti -d -w /sandbox/project-to-build -v /workspace/users/albandri30/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
-    #Build
-    docker exec sandbox /opt/maven/apache-maven-3.5.0/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=/home/jenkins/.m2/.repository -Dmaven.test.failure.ignore=true -s /home/jenkins/.m2/settings.xml -f nabla-servers-bower-sample/pom.xml clean install
+#Start container
+docker run -ti -d -w /sandbox/project-to-build -v /workspace/users/albandri30/:/sandbox/project-to-build:rw --name sandbox nabla/ansible-jenkins-slave-docker:latest cat
+#Build
+docker exec sandbox /opt/maven/apache-maven-3.5.0/bin/mvn -B -Djava.io.tmpdir=./tmp -Dmaven.repo.local=/home/jenkins/.m2/.repository -Dmaven.test.failure.ignore=true -s /home/jenkins/.m2/settings.xml -f nabla-servers-bower-sample/pom.xml clean install
 
-    #Stop & remove container
-    docker stop sandbox
-    docker rm sandbox
+#Stop & remove container
+docker stop sandbox
+docker rm sandbox
+```
 
 When the playbook run completes, you should be able to build and test any NABLA projects, on the using the docker image in Jenkins with [Jenkins Docker plugin][2].
 
@@ -125,7 +134,7 @@ This is a very simple playbook and could serve as a starting point for more comp
 
 ### Linting
 
-```
+```bash
 ansible-lint -v playbooks/*.yml
 ```
 

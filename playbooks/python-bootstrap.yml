@@ -6,7 +6,7 @@
     - name: group hosts by distribution
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-22*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
     - name: group hosts for supported distributions
@@ -19,11 +19,11 @@
       fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
         is not a supported OS for a Tower installation.  Supported
         OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04."
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04/22.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
-- name: Bootstrap python onto server
-  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- name: Bootstrap python 2 onto server
+  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   become: true
 
   pre_tasks:
@@ -49,6 +49,32 @@
       changed_when: output.stdout | length > 0
 
 - name: Bootstrap python onto server
+  hosts: Ubuntu-22*:Ubuntu-21*
+  become: true
+
+  pre_tasks:
+    #- name: Install python 2 if not there
+    #  raw: |
+    #    test -e /usr/bin/python || \
+    #    (apt -y update && apt install -y python2.7-minimal python2-dev)
+    #  register: output
+    #  changed_when: output.stdout | length > 0
+
+    - name: Install python 3 pip if not there
+      raw: |
+        test -e /usr/local/bin/pip || \
+        (apt -y update && apt install -y python3-pip)
+      register: output
+      changed_when: output.stdout | length > 0
+
+    - name: Install sudo if not there
+      become: true
+      raw: |
+        test -e /usr/bin/sudo || apt install -y sudo
+      register: output
+      changed_when: output.stdout | length > 0
+
+- name: Bootstrap python 2 onto server
   hosts: RedHat-8*:RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
   become: true
 

@@ -7,13 +7,19 @@ set -eo pipefail
 
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
 export DOCKER_TAG=${DOCKER_TAG:-"2.0.1"}
+
+if [[ -z $ANSIBLE_VAULT_PASSWORD ]]; then
+  echo "Provide vault ANSIBLE_VAULT_PASSWORD password as environement variable before launching the script. Exit."
+  exit 1
+fi
 
 if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:192.168.132.24 --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:192.168.132.24 --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} --no-cache "
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache --squash"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi

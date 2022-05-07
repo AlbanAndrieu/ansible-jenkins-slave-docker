@@ -115,8 +115,8 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
-RUN npm install -g npm@6.14.15 && apt-get purge -y npm
-RUN npm -v && command -v npm # 6.14.15
+RUN npm install -g npm@8.5.0 && apt-get purge -y npm
+RUN npm -v && command -v npm # 8.5.0
 RUN npm install -g bower@1.8.13 grunt@1.4.1 grunt-cli@1.4.3 webdriver-manager@12.1.7 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### USER
@@ -161,9 +161,9 @@ RUN mkdir -p /etc/ansible
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
-ARG ANSIBLE_VAULT_PASS
-ENV ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS:-"microsoft"}
-RUN echo "${ANSIBLE_VAULT_PASS}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
+ARG ANSIBLE_VAULT_PASSWORD
+ENV ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD:-"microsoft"}
+RUN echo "${ANSIBLE_VAULT_PASSWORD}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
 #COPY ansible.cfg $JENKINS_USER_HOME/
 COPY *.yml $JENKINS_USER_HOME/
 #COPY roles $JENKINS_USER_HOME/

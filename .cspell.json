@@ -26,4 +26,14 @@
     "kubernetes",
     "skaffold"
   ],
+	"languageSettings": [
+		{
+			"languageId": "markdown",
+			"caseSensitive": true
+		},
+		{
+			"languageId": "javascript",
+			"caseSensitive": false
+		}
+	]
 }

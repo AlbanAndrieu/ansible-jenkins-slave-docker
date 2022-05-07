@@ -18,7 +18,7 @@ echo -e "    docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:lat
 docker history --no-trunc ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest 1>docker-history.log 2>docker-history-error.log || true
 echo -e "${magenta} Running dive ${NC}"
 echo -e "    dive ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-CI=true dive "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" -j 1>docker-dive.csv 2>docker-dive-error.log || true
+CI=true dive --ci --json docker-dive-stats.json "${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest" 1>docker-dive.log 2>docker-dive-error.log || true
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -43,7 +43,7 @@ echo -e "${magenta} skopeo login ${DOCKER_REGISTRY} --username $SP_APP_ID --pass
 echo -e "${magenta} skopeo inspect docker://${DOCKER_REGISTRY}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
 # TODO insecure password to be fixed with docker secret https://docs.docker.com/engine/swarm/secrets/
 # See https://docs.ansible.com/ansible/2.8/user_guide/playbooks_vault.html
-echo -e "${magenta} skopeo inspect docker://${DOCKER_REGISTRY}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest | grep ANSIBLE_VAULT_PASS ${NC}"
+echo -e "${magenta} skopeo inspect docker://${DOCKER_REGISTRY}/${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest | grep ANSIBLE_VAULT_PASSWORD ${NC}"
 echo -e ""
 
 export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu20/Dockerfile"}

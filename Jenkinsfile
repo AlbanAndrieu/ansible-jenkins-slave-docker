@@ -33,7 +33,6 @@ pipeline {
     string(name: 'ANSIBLE_INVENTORY', defaultValue: 'inventory/hosts', description: 'Default inventory used to test playbook')
     string(name: 'TARGET_SLAVE', defaultValue: 'albandri', description: 'Default server used to test playbook')
     string(name: 'TARGET_PLAYBOOK', defaultValue: 'cleaning.yml', description: 'Default playbook to override')
-    //string(name: 'ANSIBLE_VAULT_PASS', defaultValue: 'test123', description: 'Default vault password to override')
     booleanParam(name: 'CLEAN_RUN', defaultValue: false, description: 'Clean before run')
     booleanParam(name: 'SKIP_LINT', defaultValue: false, description: 'Skip Linter - requires ansible galaxy roles, so it is time consuming')
     booleanParam(name: 'SKIP_DOCKER', defaultValue: false, description: 'Skip Docker - requires image rebuild from scratch')
@@ -124,7 +123,7 @@ pipeline {
       steps {
         script {
           if (JENKINS_URL ==~ /.*aandrieu.*|.*albandri.*|.*test.*|.*localhost.*/ ) {
-            configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASS')]) {
+            configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASSWORD')]) {
               ansiblePlaybook colorized: true,
                   credentialsId: 'jenkins_unix_slaves',
                   disableHostKeyChecking: true,
@@ -249,13 +248,12 @@ pipeline {
 
                   try {
 
-                    configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASS_FILE')]) {
-                      withCredentials([string(credentialsId: 'fr-ansible-vault-password', variable: 'ANSIBLE_VAULT_PASS')]) {
-                        echo "${ANSIBLE_VAULT_PASS}"
+                    configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASSWORD_FILE')]) {
+                      withCredentials([string(credentialsId: 'fr-ansible-vault-password', variable: 'ANSIBLE_VAULT_PASSWORD')]) {
 
                         sh 'mkdir -p .ssh/ || true'
 
-                        DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS} "
+                        DOCKER_BUILD_ARGS="--pull --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} "
                         DOCKER_BUILD_ARGS+= getDockerProxyOpts(isProxy: true)
 
                         if (isCleanRun() == true) {
@@ -295,7 +293,7 @@ pipeline {
 
                         } // withCredentials
 
-                      } // ANSIBLE_VAULT_PASS
+                      } // ANSIBLE_VAULT_PASSWORD
                     } // vault configFileProvider
 
                   } catch (exc) {
@@ -348,16 +346,15 @@ pipeline {
 
                     try {
 
-                      configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASS_FILE')]) {
+                      configFileProvider([configFile(fileId: 'vault.passwd',  targetLocation: 'vault.passwd', variable: 'ANSIBLE_VAULT_PASSWORD_FILE')]) {
 
-                        withCredentials([string(credentialsId: 'fr-ansible-vault-password', variable: 'ANSIBLE_VAULT_PASS')]) {
-                          echo "${ANSIBLE_VAULT_PASS}"
+                        withCredentials([string(credentialsId: 'fr-ansible-vault-password', variable: 'ANSIBLE_VAULT_PASSWORD')]) {
 
                           sh 'mkdir -p .ssh/ || true'
 
                           DOCKER_TAG_NEXT_UBUNTU_20="1.1.0"
 
-                          DOCKER_BUILD_ARGS=" --pull --build-arg ANSIBLE_VAULT_PASS=${ANSIBLE_VAULT_PASS}"
+                          DOCKER_BUILD_ARGS=" --pull --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD}"
                           DOCKER_BUILD_ARGS+= getDockerProxyOpts(isProxy: true)
 
                           if (isCleanRun() == true) {
@@ -403,7 +400,7 @@ pipeline {
                         //junit "target/jenkins-full-*.xml"
                         //junit "ansible-lint.xml, pylint-junit-result.xml"
 
-                        } // ANSIBLE_VAULT_PASS
+                        } // ANSIBLE_VAULT_PASSWORD
 
                       } // vault configFileProvider
 
