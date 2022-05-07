@@ -76,7 +76,7 @@ defusedxml==0.6.0
 devscripts==1.0.0
 dictdiffer==0.8.1
 #distro==1.5.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 docker>=4.3.1
 docker-compose==1.25.5
 #docker-compose-wait==1.2.1
