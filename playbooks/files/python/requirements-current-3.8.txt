@@ -145,7 +145,7 @@ lazr.uri==1.0.3
 lazy-object-proxy==1.4.3
 lcov-cobertura==1.6
 linecache2==1.0.0
-lxml==4.6.2
+lxml==4.6.5
 Mako==1.1.2
 MarkupSafe==1.1.1
 matplotlib==3.2.1
