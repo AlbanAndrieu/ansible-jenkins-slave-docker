@@ -26,7 +26,7 @@ argcomplete==1.11.1
 asn1crypto==1.3.0
 aspy.yaml==1.3.0
 attrs==19.3.0
-autopep8==1.5
+autopep8>=1.5
 bandit==1.6.2
 bcrypt==3.1.7
 beautifulsoup4==4.8.2
@@ -45,7 +45,7 @@ checkbox-support==0.39.0
 #Click==7.0
 click-completion==0.5.2
 colorama==0.4.3
-conan==1.31.0
+conan>=1.31.0
 coverage >= 4.4.1, < 5
 cpplint==1.4.5
 cryptography==2.8
@@ -69,13 +69,13 @@ docopt==0.6.2
 dynaconf==2.2.3
 ecdsa==0.15
 entrypoints==0.3
-feedparser==5.2.1
+#feedparser==5.2.1
 file-magic==0.4.0
 fire==0.2.1
 flake8==3.7.9
 flake8-polyfill==1.0.2
 frosted==1.4.1
-gcg==0.2.0
+#gcg==0.2.0
 git-pre-commit-hook-utils==0.0.5
 git-url-parse==1.2.2
 #gitpython==3.0.5
@@ -131,7 +131,7 @@ pre-commit-hooks==2.4.0
 ptyprocess==0.6.0
 pyasn1==0.4.8
 #pycodestyle==2.5.0
-pycparser==2.19
+#pycparser==2.19
 pydot==1.4.1
 #pycrypto==2.6.1
 PyDrive==1.3.1 # ubuntu backup
@@ -151,7 +151,7 @@ python-dateutil==2.8.1
 python-debian==0.1.36
 #python-debianbts==3.0.1
 python-gnupg==0.4.5
-python-keyczar==0.716
+#python-keyczar==0.716
 python-owasp-zap-v2.4==0.0.16
 python-xlib==0.26
 pytz==2019.3
@@ -179,7 +179,7 @@ six==1.14.0
 #sphinx==2.3.1
 #SQLAlchemy==1.3.13
 svn==0.3.46
-termcolor==1.1.0
+termcolor>=1.1.0
 #testinfra==4.0.0
 testresources==2.0.1
 texttable==1.6.2
@@ -198,5 +198,5 @@ websocket-client==0.57.0
 XlsxWriter==1.2.7
 xmltodict==0.12.0
 yamllint==1.20.0
-zabbix-api==0.5.4
+#zabbix-api>=0.5.4
 zope.interface==4.7.1
