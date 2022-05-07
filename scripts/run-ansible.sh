@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xve
 
+if [ "$0" = "${BAHS_SOURCE[0]}" ]; then
+  echo "This script has to be sourced and not executed..."
+  exit 1
+fi
+
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # source only if terminal supports color, otherwise use unset color vars

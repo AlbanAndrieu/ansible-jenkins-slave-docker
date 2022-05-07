@@ -33,8 +33,7 @@ if [ -n "${CST_CONFIG}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CST_CONFIG, use the default one ${NC}"
-  export CST_CONFIG="docker/ubuntu18/config.yaml"
-  #export CST_CONFIG="docker/ubuntu20/config.yaml"
+  export CST_CONFIG="docker/ubuntu20/config.yaml"
   #export CST_CONFIG="docker/centos7/config.yaml" # runtime image
   echo -e "${magenta} CST_CONFIG : ${CST_CONFIG} ${NC}"
 fi
@@ -65,8 +64,8 @@ if [ -n "${DOCKER_FILE}" ]; then
 else
   # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_FILE, use the default one ${NC}"
-  export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
-  #export DOCKER_FILE="../docker/ubuntu20/Dockerfile"
+  export DOCKER_FILE="../docker/ubuntu20/Dockerfile"
+  #export DOCKER_FILE="Dockerfile"
   echo -e "${magenta} DOCKER_FILE : ${DOCKER_FILE} ${NC}"
 fi
 

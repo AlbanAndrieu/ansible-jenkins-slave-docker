@@ -111,8 +111,8 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -qqy docker-ce
 ### JAVASCRIPT
 
 # hadolint ignore=DL3008,DL3015
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get update && apt-get install --no-install-recommends -y nodejs=14* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
 RUN npm install -g npm@6.14.15 && apt-get purge -y npm
