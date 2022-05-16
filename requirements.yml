@@ -1,15 +1,18 @@
 ---
 # from galaxy
 # ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
-# ansible-galaxy collection install -r requirements.yml
+# ansible-galaxy collection install -r requirements.yml --force
+# ansible-galaxy collection install ansible.windows
 
 collections:
-  #- name: community.crypto
-  #- name: community.general
+  - name: community.crypto
+    version: ">=2.2.0"
+  - name: community.general
+    version: 4.5.0
   - name: ansible.utils
-  #- name: ansible.netcommon
-  #- name: ansible.posix
-  #- name: rtnp.galaxie_clans
+  - name: ansible.netcommon
+  - name: ansible.posix
+  - name: ansible.windows
 
 roles:
   - src: https://github.com/AlbanAndrieu/ansible-administration.git
@@ -375,9 +378,9 @@ roles:
     name: geerlingguy.sonar-runner
     version: master
 
-  #- src: 'https://github.com/AlbanAndrieu/ansible-role-ssl-certs'
-  #  name: 'ssl-certificate'
+  #- src: https://github.com/jdauphant/ansible-role-ssl-certs.git
   #  version: master
+  #  name: ssl-certificate
   #
   #- src: https://github.com/andrewrothstein/ansible-trust-ca.git
   #  name: ssl-ca-certificate

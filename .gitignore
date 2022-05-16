@@ -9,6 +9,7 @@ docker-dockerfilelint.json
 docker-hadolint.json
 pylint-junit-result.xml
 docker-dive.csv
+.direnv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
