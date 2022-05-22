@@ -1,0 +1,7 @@
+{
+    "url": "https://albandrieu.com/jenkins/job/ansible-jenkins-slave-docker/",
+    "username": "admin",
+    "password": "admin123",
+    "strictTls": false,
+    "jenkins.polling": 2,
+}

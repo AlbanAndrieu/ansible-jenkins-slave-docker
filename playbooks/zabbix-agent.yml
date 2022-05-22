@@ -1,0 +1,66 @@
+---
+- name: Debug
+  hosts: zabbix-agent-paris
+  become: true
+
+  pre_tasks:
+    #- name: 'Include some additional variables'
+    #  #include_vars: group_vars/all/vault.yml
+    #  include_vars:
+    #    dir: "group_vars/all"
+    #    no_log: true
+
+    - name: Show vault pass
+      no_log: true
+      debug:
+        msg: "System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }} - {{ zabbix_api_pass }}"
+
+#  - name: Show all variables
+#    debug:
+#      var: hostvars[inventory_hostname]
+#      verbosity: 4
+
+- name: Install zabbix-agent
+  hosts: zabbix-agent-paris
+  become: true
+
+  roles:
+    - role: dj-wasabi.zabbix-agent
+      name: zabbix-agent-paris
+      zabbix_agent_server: localhost
+      zabbix_agent_serveractive: localhost
+      zabbix_url: https://localhost/zabbix/
+      zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
+      zabbix_create_host: present
+      zabbix_api_create_hosts: true
+      #zabbix_api_create_hostgroup: true
+      zabbix_api_user: "nabla"
+      zabbix_api_pass: "microsoft"
+      zabbix_host_groups:
+        - NABLA Hosts
+      zabbix_link_templates:
+        - Template OS Linux
+        - Template App SSH Service
+
+- name: Install zabbix-agent
+  hosts: zabbix-agent-gdynia
+  user: root
+  become: true
+
+  roles:
+    - role: dj-wasabi.zabbix-agent
+      name: zabbix-agent-gdynia
+      zabbix_agent_server: localhost
+      zabbix_agent_serveractive: localhost
+      zabbix_url: https://localhost/zabbix/
+      zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
+      zabbix_create_host: present
+      zabbix_api_create_hosts: true
+      #zabbix_api_create_hostgroup: true
+      zabbix_api_user: "nabla"
+      zabbix_api_pass: "microsoft"
+      zabbix_host_groups:
+        - NABLA Hosts
+      zabbix_link_templates:
+        - Template OS Linux
+        - Template App SSH Service

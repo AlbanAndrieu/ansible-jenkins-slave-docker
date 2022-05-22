@@ -1,0 +1,6 @@
+[submodule "roles/alban.andrieu.jenkins-slave"]
+	path = roles/alban.andrieu.jenkins-slave
+	url = https://github.com/AlbanAndrieu/ansible-jenkins-slave.git
+[submodule "roles/maven"]
+	path = roles/maven
+	url = https://github.com/AlbanAndrieu/ansible-maven.git

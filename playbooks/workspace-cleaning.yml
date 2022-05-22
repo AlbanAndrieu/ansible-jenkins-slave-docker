@@ -1,0 +1,115 @@
+---
+#ansible-playbook playbooks/workspace-cleaning.yml -i inventory/production --limit albandrieu.com -vvvv
+
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*:Solaris-10-sun4v*:Solaris-11-sun4v*:Solaris-10*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04, or Solaris 10, or Solaris 11."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Tmp cleaning
+  hosts: all
+  #  become: true
+
+  tasks:
+    - name: Tmp cleanup by hand (1)
+      find:
+        paths: /tmp
+        file_type: file
+        age: 2d
+      register: tmp_files_to_delete
+      tags:
+        - clean
+        - vm
+
+    - name: Tmp cleanup by hand (2)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ tmp_files_to_delete.files }}"
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+    - name: Jetty Cache cleanup # noqa 302
+      command: rm -Rf /tmp/jetty*
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+- name: Workspace cleaning
+  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  become: true
+
+  tasks:
+    - name: Clean worskpace # noqa 302 305
+      shell: find {{ item }} -maxdepth 2 -not \( -path '*/.git' -o -path '*/docker-cleaning*' -o -path './repository' -o -path '*/ADMIN_CLEAN_LINUX*' \) -mtime +1 -type d | xargs -I{} bash -c " echo removing dir {}; rm -rf {}"
+      changed_when: false
+      ignore_errors: true
+      with_items:
+        - "/workspace/slave-test/workspace/"
+        - "/workspace/slave-albandrieu/workspace/"
+        - "/workspace/slave-k8s-test/workspace/" # k8s
+      tags:
+        - clean
+        - vm
+
+    - name: Clean workspace by hand (1)
+      find:
+        paths: "{{ item }}"
+        file_type: file
+        age: 2w
+        use_regex: true
+      register: wildcard_files_to_delete
+      with_items:
+        - "/workspace/slave-test/workspace/"
+        - "/workspace/slave-albandrieu/workspace/"
+        - "/workspace/slave-k8s-test/workspace/" # k8s
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+    - name: Clean workspace by hand (debug)
+      debug: msg="Clean workspace by hand {{ item.matched }}"
+      with_items: "{{ wildcard_files_to_delete.results }}"
+      ignore_errors: true
+
+    - name: Clean workspace by hand (2)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ wildcard_files_to_delete.files }}"
+      when: wildcard_files_to_delete.files | length > 0
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm

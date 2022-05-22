@@ -1,0 +1,78 @@
+---
+#ansible-playbook -i hosts -c local -v jenkins-slave.yml -vvvv | tee setup.log
+#ansible-playbook playbooks/jenkins-slave.yml -i  inventory/hosts -vvvv --ask-sudo-pass --sudo
+
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
+        Ubuntu 12.04/12.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Configure all jenkins slaves
+  hosts: jenkins-slaves
+  become: true
+  #  any_errors_fatal: true
+  #  remote_user: root
+
+  roles:
+    - albanandrieu.jenkins_slave
+
+  vars:
+    docker_files_enable: false
+    #docker_files_generated_directory: "./"
+    docker_registry_user: nabla
+    shell_git:
+      # Additional properties: 'shell_git_machine, shell_git_login, shell_git_email, shell_git_password, shell_git_name, shell_git_path, shell_git_ssl'.
+      - {
+          shell_git_machine: "82.231.208.223",
+          shell_git_login: "AlbanAndrieu",
+          shell_git_email: "alban.andrieu@free.fr",
+          shell_git_password: "microsoft",
+          # Optional.
+          shell_git_name: "Andrieu, Alban",
+          shell_git_path: "/usr/bin",
+          shell_git_autocrlf: "input", # For unix, use true for mingw on windows
+          shell_git_longpaths: "true", # For windows
+          shell_git_ssl: false,
+        }
+    home_url: "http://albandrieu.com"
+    nexus_url: "{{ home_url }}:8081"
+    bower_url: "{{ home_url }}:5678"
+    npm_nexus_npm_url: ""
+    #npm_phantomjs_cdnurl: "http://albandrieu.com:7070/download/phantomjs"
+    jenkins_home: "/home/jenkins"
+    jenkins_group: docker
+    jenkins_gid: "2000"
+    jenkins_http_port: 8080
+    jenkins_slave_home: /media
+    #jenkins_prefix: "/jenkins"
+    #jenkins_url: {{ home_url }}:{{ jenkins_http_port }}{{ jenkins_prefix }}
+    jenkins_ssh_authorized_keys_fingerprints: # Set known authorized keys for ssh
+      # Alban Andrieu
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAio3SOQ9yeK6QfKqSFNKyTasuzjStxWevG1Vz1wgJIxPF+KB0XoMAPD081J+Bzj2LCDRSWisNv2L4xv2jbFxW/Pl7NEakoX47eNx3U+Dxaf+szeWBTryYcDUGkduLV7G8Qncm0luIFd+HDIe/Qir1E2f56Qu2uuBNE6Tz5TFt1vc= Alban"
+    jenkins_ssh_fingerprints: # Set known hosts for ssh
+      - "bitbucket.org,131.103.20.167 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw=="
+      - "github.com,204.232.175.90 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
+    maven_repository: "{{ jenkins_home }}/.repository"
+    jenkins_jdk8_enable: yes
+    jenkins_jdk14_enable: false
+    #gcc_version: "4:4.8.2-1ubuntu6"
+    gcc_package_list: []
+    #cppunit_version: "1.13-0"
+    #boost_version: "1.54"

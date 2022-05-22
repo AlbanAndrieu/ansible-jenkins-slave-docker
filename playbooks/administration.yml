@@ -1,0 +1,30 @@
+---
+#- name: Apply nfs configuration to all nodes
+#  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-6*:Ubuntu-12*:Ubuntu-13*:Ubuntu-14*
+#  gather_facts: false
+#  remote_user: root
+#
+#  roles:
+#    - geerlingguy.nfs
+
+- name: Apply administration configuration to all nodes
+  hosts: administration
+  gather_facts: false
+  become: true
+
+  roles:
+    - albanandrieu.administration
+
+  vars:
+    #      automount_enabled: true
+    #      nis_enabled: true
+    nisserver: albandrieu.com
+    mailserver: smtp.gmail.com
+    defaultdomain: albandrieu.com
+    mountpoints:
+      {
+        /nabla/dev: "nabla-nfs:/nabla/dev",
+        /nabla/release: "nabla-nfs:/nabla/release",
+      }
+#Show what is mounted
+#showmount -e fr1svmnas12-nfs

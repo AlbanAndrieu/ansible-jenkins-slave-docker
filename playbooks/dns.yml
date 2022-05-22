@@ -1,0 +1,25 @@
+---
+- name: Apply dns configuration to all nodes
+  hosts: docker
+  gather_facts: false
+  remote_user: root
+
+  roles:
+    - albanandrieu.ansible_dns
+
+  vars:
+    defaultdomain: albandrieu.com
+    search: albandrieu.com
+    dns_nameservers:
+      #- "10.21.200.3" # work dns
+      #- "10.21.200.2" # work dns
+      #- "10.41.200.3" # work dns
+      - "8.8.8.8" # google dns
+      - "8.8.4.4" # google dns
+      #         - "192.168.1.1" # orange dns
+      #         - "192.168.0.254" # freebox dns
+      - "80.10.246.136" # wanadoo dns
+      #         - "212.27.40.240" #free
+      #         - "212.27.40.241" #free
+      - "192.168.1.1" #debian
+      - "192.168.1.2" #debian

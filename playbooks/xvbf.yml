@@ -1,0 +1,9 @@
+---
+- name: Install xvbf
+  hosts: xvbf
+  become: true
+
+  roles:
+    - albanandrieu.xvbf
+#  vars:
+#    xvbf_mirror: "http://albandrieu.com/download/xvbf/"

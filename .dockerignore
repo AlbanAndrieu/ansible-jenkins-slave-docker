@@ -1,0 +1,20 @@
+# comment
+
+.env
+.editorconfig
+.git
+.github
+.cache
+
+hooks/
+
+*.md
+!README.md
+
+
+docs/
+target/
+node_modules/
+scripts/
+docker/
+#roles/

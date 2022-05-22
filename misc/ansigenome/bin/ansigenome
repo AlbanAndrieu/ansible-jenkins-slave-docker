@@ -1,0 +1,41 @@
+#!/bin/bash
+## @author Copyright (C) 2016 Robin Schneider <ypid@riseup.net>
+## @license AGPL-3.0 <https://www.gnu.org/licenses/agpl-3.0.html>
+
+## Wrapper around Ansigenome which enables the correct template for Ansigenome
+## based on the role owner and then runs Ansigenome to (re)generate the README.md.
+## Run from within the role repository.
+
+README_TEMPLATE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../templates/" && pwd )"
+
+if [ ! -d "$README_TEMPLATE_DIR" ]
+then
+    echo "README template directory does not exist."
+    exit 1
+fi
+
+role_full_name="$(basename "$PWD")"
+# role_name="${role_full_name#*.}"
+# shellcheck disable=SC2001
+#role_owner="$(echo "$role_full_name" | sed 's/[.-].\+$//g;')"
+role_owner="$(echo "$role_full_name" | sed 's/.\+[.-]//g;')"
+
+ansigenome_config_file_name="$(cd "$README_TEMPLATE_DIR" && find . -maxdepth 1 -name "${role_owner}-ansigenome.conf" -type f | head --lines 1)"
+
+ansigenome_config_file_path="$README_TEMPLATE_DIR/$ansigenome_config_file_name"
+if [ -n "$ansigenome_config_file_name" ]
+then
+    echo "Using Ansigenome configuration: $ansigenome_config_file_path"
+else
+    echo "Could not find Ansigenome configuration for the role owner '$role_owner'."
+    echo "Exiting ..."
+    exit 1
+fi
+
+ln -sf "$ansigenome_config_file_path" "$HOME/.ansigenome.conf"
+#ansigenome gendoc --format=md --limit "$role_full_name" ..
+#ansigenome gendoc --format=md ./roles
+#ansigenome scan --limit "alban.andrieu.administration, alban.andrieu.awstats, alban.andrieu.cmake, alban.andrieu.common, alban.andrieu.conky, alban.andrieu.cpp, alban.andrieu.css, alban.andrieu.dns, alban.andrieu.dropbox, alban.andrieu.eclipse, alban.andrieu.evasive, alban.andrieu.gcc, alban.andrieu.grive, alban.andrieu.hostname, alban.andrieu.jboss, alban.andrieu.jdiskreport, alban.andrieu.jenkins-slave, alban.andrieu.jenkins-swarm, alban.andrieu.jmeter, alban.andrieu.logstash-settings, alban.andrieu.mon, alban.andrieu.owasp-wte, alban.andrieu.pagespeed, alban.andrieu.phpvirtualbox, alban.andrieu.private-bower, alban.andrieu.scons, alban.andrieu.selenium, alban.andrieu.shell, alban.andrieu.solaris, alban.andrieu.squirrel, alban.andrieu.sublimetext, alban.andrieu.subversion, alban.andrieu.synergy, alban.andrieu.tomcat, alban.andrieu.visualvm, alban.andrieu.web, alban.andrieu.webmin, alban.andrieu.windows, alban.andrieu.workstation, alban.andrieu.xvbf, alban.andrieu.yourkit, alban.andrieu.zap, alban.andrieu.zfs" ./roles
+ansigenome gendoc --format=md --limit "alban.andrieu.administration, alban.andrieu.awstats, alban.andrieu.cmake, alban.andrieu.common, alban.andrieu.conky, alban.andrieu.cpp, alban.andrieu.css, alban.andrieu.dns, alban.andrieu.dropbox, alban.andrieu.eclipse, alban.andrieu.evasive, alban.andrieu.gcc, alban.andrieu.grive, alban.andrieu.hostname, alban.andrieu.jboss, alban.andrieu.jdiskreport, alban.andrieu.jenkins-slave, alban.andrieu.jenkins-swarm, alban.andrieu.jmeter, alban.andrieu.logstash-settings, alban.andrieu.mon, alban.andrieu.owasp-wte, alban.andrieu.pagespeed, alban.andrieu.phpvirtualbox, alban.andrieu.private-bower, alban.andrieu.scons, alban.andrieu.selenium, alban.andrieu.shell, alban.andrieu.solaris, alban.andrieu.squirrel, alban.andrieu.sublimetext, alban.andrieu.subversion, alban.andrieu.synergy, alban.andrieu.tomcat, alban.andrieu.visualvm, alban.andrieu.web, alban.andrieu.webmin, alban.andrieu.windows, alban.andrieu.workstation, alban.andrieu.xvbf, alban.andrieu.yourkit, alban.andrieu.zap, alban.andrieu.zfs" ./roles
+
+echo "Regenerate README.md using Ansigenome for $role_full_name $role_owner"

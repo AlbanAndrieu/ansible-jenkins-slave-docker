@@ -1,0 +1,146 @@
+---
+#see https://blog.trifork.com/2013/04/02/ansible-example-playbook-to-setup-jenkins-slave/
+
+#as root
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv
+#as albandri
+#ansible-playbook jenkins-slave-docker.yml -i hosts -vvvv --ask-become-pass
+# --extra-vars "jenkins_username=aandrieu jenkins_password=tbd"
+#for testing purpose
+#ansible-playbook -i inventory/hosts -c local -v playbooks/jenkins-slave-docker.yml --check --diff --ask-become-pass -vvvv
+
+- name: Assert platform is supported
+  hosts: all
+  remote_user: root
+  gather_facts: true
+
+  tasks:
+    - name: Assert platform is supported
+      assert:
+        that:
+          - ansible_os_family in ['Debian', 'RedHat', 'CentOS', 'Windows', 'Solaris']
+          - ansible_architecture in ['x86_64']
+
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-15*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04/21.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+# USELESS playbook will fail before
+#- hosts: localhost
+#
+#  tasks:
+#    - name: Install Ansible-Galaxy dependencies
+#      shell: ansible-galaxy install -r ../requirements.yml -p ../roles/
+#      #shell: ansible-galaxy install -r ../requirements.yml -p ../roles/ --ignore-errors --force
+#      ignore_errors: true
+
+#- hosts: all
+#  remote_user: root
+#
+#  tasks:
+#    - name: set http_proxy to default
+#      set_fact: http_proxy="http://150.151.144.119:3128"
+#
+#    - name: set https_proxy to default
+#      set_fact: https_proxy="{{ http_proxy }}"
+
+- name: Update cache
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  #  remote_user: root
+  become: true
+
+  tasks:
+    - name: Update
+      apt:
+        update_cache: yes
+      ignore_errors: false
+
+- import_playbook: python-bootstrap.yml
+  tags:
+    - python
+    - vm
+
+- import_playbook: hostname.yml
+  tags:
+    - hostname
+    - vm
+
+- import_playbook: common.yml
+
+- import_playbook: dns.yml
+  tags:
+    - dns
+    - vm
+
+- import_playbook: python.yml
+  tags:
+    - python
+
+#Below ntp role is included in administration role
+- name: Apply ntp configuration
+  hosts: all
+  gather_facts: false
+  remote_user: root
+  become: yes
+  ignore_errors: yes
+
+  roles:
+    - geerlingguy.ntp
+
+  vars:
+    ntp_timezone: Europe/Paris
+
+#- import_playbook: administration.yml automount_enabled=false nis_enabled=false
+
+- import_playbook: java.yml
+
+- import_playbook: maven.yml
+  tags:
+    - maven
+    - vm
+
+#- import_playbook: chrome.yml google_talkplugin_enabled=false
+
+- import_playbook: docker.yml # must be before jenkins-slave
+  tags:
+    - docker
+    - vm
+
+- import_playbook: jenkins-slave.yml
+
+#- import_playbook: nodejs.yml
+
+- import_playbook: cpp.yml
+
+- import_playbook: xvbf.yml
+  tags:
+    - xvbf
+    - vm
+
+#- import_playbook: kubernetes.yml
+#  tags:
+#    - kubernetes
+#    - vm
+
+- import_playbook: cleaning.yml
+  tags:
+    - cleaning
+    - vm

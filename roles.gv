@@ -1,0 +1,36 @@
+digraph roles {
+	osx_command_line_tools [label=osx_command_line_tools]
+	ntp [label=ntp]
+	scons [label=scons]
+	docker [label=docker]
+	hostname [label=hostname]
+	dns [label=dns]
+	python [label=python]
+	common [label=common]
+	cmake [label=cmake]
+	virtualbox [label=virtualbox]
+	repo_epel [label=repo_epel]
+	homebrew [label=homebrew]
+	homebrew -> osx_command_line_tools
+	maven [label=maven]
+	terraform [label=terraform]
+	unarchive_deps [label=unarchive_deps]
+	terraform -> unarchive_deps
+	xvbf [label=xvbf]
+	repo_remi [label=repo_remi]
+	tomcat [label=tomcat]
+	chrome [label=chrome]
+	dj_wasabi_zabbix_agent [label=dj_wasabi_zabbix_agent]
+	selenium [label=selenium]
+	nodejs [label=nodejs]
+	jenkins_slave [label=jenkins_slave]
+	jenkins_slave -> common
+	jenkins_slave -> selenium
+	gcc [label=gcc]
+	cpp [label=cpp]
+	cpp -> cmake
+	cpp -> scons
+	cpp -> gcc
+	administration [label=administration]
+	administration -> common
+}

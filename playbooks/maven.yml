@@ -1,0 +1,13 @@
+---
+#ansible-playbook -i hosts-albandri -c local -v maven.yml -vvvv --ask-become-pass | tee setup.log
+
+- name: Install maven
+  hosts: maven
+  become: true
+  ignore_errors: "{{ ansible_check_mode }}"
+
+  roles:
+    - role: maven
+
+  vars:
+    maven_version: 3.6.3

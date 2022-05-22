@@ -1,0 +1,186 @@
+---
+#ansible-playbook playbooks/boot-cleaning.yml -i inventory/production --limit test.albandrieu.com -vvvv
+
+- hosts: all
+  gather_facts: true
+  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Boot cleaning
+  hosts: Ubuntu-21*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  #  remote_user: root
+  become: true
+
+  tasks:
+    - name: Get kernel
+      command: uname -a
+      changed_when: false
+      register: kernel_result
+
+    - name: Print kernel
+      debug: msg="Kernel are {{ kernel_result }}"
+
+    - name: List the old kernel # noqa 306
+      shell: dpkg --list 'linux-image*'|awk '{ if ($1=="ii") print $2}'|grep -v `uname -r`
+      changed_when: false
+      ignore_errors: true
+
+    - name: Clean apt source git-lfs # noqa 302 305
+      shell: rm -f /etc/apt/sources.list.d/github_git-lfs.list
+      changed_when: false
+      ignore_errors: true
+
+    - name: Update
+      apt:
+        update_cache: yes
+      ignore_errors: true
+
+    - name: Autoremove
+      apt:
+        autoremove: yes
+        purge: yes
+      ignore_errors: true
+
+    #    - name: Clean kernel by hand
+    #shell: rm -rf /boot/*-4.4.0-{59,81,93,104,108,109,112,130,131,138,139}-*
+    #shell: rm -rf /boot/*-4.15.0-{70,72,126,128}-*
+
+    #find .  -regextype posix-egrep  -regex '^.*\-4\.4\.0\-(139|42)\-.*$'
+
+    - name: Clean kernel by hand (1)
+      find:
+        paths: /boot
+        patterns: ['^.*\-4\.15\.0\-(70|72|)\-.*$']
+        file_type: file
+        age: 2w
+        use_regex: true
+      register: wildcard_files_to_delete
+
+    - name: Clean kernel by hand (2)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ wildcard_files_to_delete.files }}"
+
+    - name: Install fix # noqa 303
+      command: apt-get -f install
+      changed_when: false
+    #      ignore_errors: true
+
+    - name: Grub update-grub
+      command: update-grub
+      changed_when: false
+      ignore_errors: true # for docker
+      tags:
+        - clean
+        - vm
+
+    - name: Apt cleanup # noqa 301 306
+      file:
+        path: /var/lib/apt/lists/
+        state: absent
+      ignore_errors: true
+
+    - name: Autoclean
+      apt:
+        autoclean: yes
+
+    #    - name: Cron | Purge kernel images @reboot special time
+    #      cron:
+    #        name: "Purge kernel images"
+    #        special_time: reboot
+    #        job: apt-get -y autoremove ; purge-old-kernels -y --keep 3 -q
+    #        cron_file: "purge_kernel_images"
+    #        user: root
+    #      when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    #      become: true
+
+    #    - name: Reboot a slow machine that might have lots of updates to apply
+    #      reboot:
+    #        reboot_timeout: 3600
+
+    - name: Homebrew cleanup
+      command: brew cleanup
+      changed_when: false
+      become: true
+      become_user: jenkins
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+    - name: Log cleanup
+      command: find /var/log -type f -name "*.gz"  -not \( -path '*/error.log*' -o -path '*/other_vhosts_access.log*' \) -mtime +30 -delete
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+    - name: Memory cleanup
+      command: free -h && sudo sysctl vm.drop_caches=3 && free -h
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - clean
+        - vm
+
+    - name: Tmp cleanup by hand (1)
+      find:
+        paths: /tmp
+        file_type: file
+        age: 2d
+      register: tmp_files_to_delete
+
+    - name: Tmp kernel by hand (2)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ tmp_files_to_delete.files }}"
+
+    #systemctl stop mysql
+    #ls /var/log/mysql/mysql.err
+    #systemctl start mysql
+    #rm -f /var/log/mail.log*
+    #rm -f /var/log/bandwidth
+    #rm -f /var/log/kern.log
+    #rm -f /var/log/syslog*
+    #systemctl stop proftpd
+    #rm /var/log/proftpd/tls.log
+    #rm -Rf /jenkins/.linuxbrew/
+    #rm -Rf /jenkins/.jenkins/cache/
+    #rm -Rf /jenkins/.m2
+
+    #systemctl stop sendmail
+    #rm -Rf /var/spool/mqueue-client/
+    #systemctl start sendmail
+
+    - name: Mqueue cleanup # noqa 301 306
+      file:
+        path: /var/spool/mqueue-client/
+        state: absent
+      ignore_errors: true
+
+    - name: Coredumps cleanup # noqa 301 306
+      file:
+        path: /home/jenkins/coredumps
+        state: absent
+      ignore_errors: true

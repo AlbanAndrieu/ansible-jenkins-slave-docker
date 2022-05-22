@@ -1,0 +1,10 @@
+---
+- name: Install chrome
+  hosts: chrome
+  become: true
+
+  roles:
+    - role: chrome
+      google_talkplugin_enabled: false
+      google_remotedesktop_enabled: true
+      google_agent_pkg_state: latest # Package states: absent, build-dep, fixed, latest, present

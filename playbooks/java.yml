@@ -1,0 +1,89 @@
+---
+#ansible-playbook -i ./inventory/production -v playbooks/java.yml --limit test3.albandrieu.com --ask-become-pass -vvvv | tee setup.log
+
+- hosts: all
+  gather_facts: true
+  gather_subset: hardware
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+
+- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+  gather_facts: false
+  tasks:
+    - name: group hosts for supported distributions
+      group_by: key="supported"
+
+- hosts: "!supported"
+  gather_facts: false
+  tasks:
+    - name: fail for unsupported distribution
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
+        is not a supported OS for a Tower installation.  Supported
+        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
+        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+
+- name: Install java 8 License
+  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*
+  become: true
+  ignore_errors: true
+
+  tasks:
+    - name: jdk8 | Accept Java 8 License
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: jdk9 | Accept Java 9 License
+      debconf: name='oracle-java9-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: jdk10 | Accept Java 10 License
+      debconf: name='oracle-java10-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: jdk11 | Accept Java 11 License
+      debconf: name='oracle-java11-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: jdk12 | Accept Java 12 License
+      debconf: name='oracle-java12-installer' question='shared/accepted-oracle-license-v1-2' value='true' vtype='select'
+# debian | ubuntu | Java 11
+
+#- name: Install java (1)
+#  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  become: true
+#
+#  tasks:
+#    - name: Create /var/cache/oracle-jdk11-installer-local/
+#      file: path=/var/cache/oracle-jdk11-installer-local/ state=directory mode=0755
+#      become: true
+#      become_user: root
+#
+#    - name: Get the JDK jar
+#      get_url: dest=/var/cache/oracle-jdk11-installer-local/jdk-11.0.5_linux-x64_bin.tar.gz url=http://albandrieu.com/download/jdk/jdk-11.0.5_linux-x64_bin.tar.gz mode=0755
+#      become: true
+#      become_user: root
+#
+#- name: Install java (2)
+#  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+#  become: true
+#
+#  roles:
+#    - role: ansiblebit.oracle-java
+#      oracle_java_deb_package: 'oracle-java11-installer-local'
+#      oracle_java_debconf_package_default: 'oracle-java11-set-default-local'
+#      oracle_java_home: "/usr/lib/jvm/java-11-oracle"
+
+# redhat | centos 7 | Java 8
+#- name: Install java
+#  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
+#  become: true
+#
+#  roles:
+#      - role: ansiblebit.oracle-java
+#        oracle_java_dir_source: '/usr/local/src'
+#        oracle_java_download_timeout: 60
+#        oracle_java_rpm_filename: 'jdk-8u201-linux-x64.rpm'
+#        oracle_java_home: '/usr/java/default'
+#        oracle_java_os_supported: yes
+#        oracle_java_rpm_url: 'http://download.oracle.com/otn-pub/java/jdk/8u201-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u201-linux-x64.rpm'
+#        oracle_java_rpm_validate_certs: no
+#        oracle_java_set_as_default: no
+#        oracle_java_version_string: 1.8.0_201
