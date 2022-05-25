@@ -80,10 +80,10 @@
         mode: 0775
         recurse: yes
         group: "docker"
-        owner: "ansible"
+        owner: "jenkins"
       #when: item.stat.exists == false
       with_items:
-        - { path: "ansible" }
+        - { path: "jenkins" }
       become: true
       changed_when: false
       tags:
@@ -94,7 +94,7 @@
         src: "python/{{ item }}"
         dest: "{{ ansible_user_dir }}"
         group: "docker"
-        owner: "ansible"
+        owner: "jenkins"
       with_items:
         - "requirements-current-2.7.txt"
         # - "requirements-current-3.5.txt"
@@ -120,7 +120,7 @@
     python_versions: [2.7]
     # python_ppa: no # TODO for Ubuntu-19
     # python_install: [numpy, pylint, pandas]
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_pip_installed_enabled: false # Do not want latest pip 21.0.1
     python_virtualenvs:
       - path: /opt/ansible/env27
@@ -137,7 +137,7 @@
   vars:
     python_versions: [3, 3.6, 3.7, 3.8]
     # python_install: [numpy, pylint, pandas]
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env38
         python: python3.8
@@ -157,7 +157,7 @@
   vars:
     python_versions: [3, 3.7, 3.8]
     #python_install: [numpy, pylint, pandas]
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env38
         python: python3.8
@@ -177,7 +177,7 @@
 #    python_versions: [3, 3.7, 3.8]
 #    python_ppa: ""
 #    #python_install: [numpy, pylint, pandas]
-#    python_virtualenv_user: ansible
+#    python_virtualenv_user: jenkins
 #    python_virtualenvs:
 #      - path: /opt/ansible/env38
 #        python: python3.8
@@ -197,7 +197,7 @@
     python_yum_enablerepo: epel
     python_pkg_bin: /usr/bin
     python_bin: /usr/bin/python
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env
         python: python2.7
@@ -214,7 +214,7 @@
     python_yum_enablerepo: epel
     python_pkg_bin: /bin
     python_bin: /bin/python
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env27
         python: python2.7
@@ -232,7 +232,7 @@
     python_yum_enablerepo: ius
     python_pkg_bin: /usr/bin
     python_bin: /usr/bin/python
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env35
         python: python3.5
@@ -250,7 +250,7 @@
     python_yum_enablerepo: ius
     python_pkg_bin: /bin
     python_bin: /bin/python
-    python_virtualenv_user: ansible
+    python_virtualenv_user: jenkins
     python_virtualenvs:
       - path: /opt/ansible/env36
         python: python3.6
@@ -437,8 +437,8 @@
     - name: Fix permission on virtualenv (ansible user)
       file:
         path: /opt/ansible/
-        owner: ansible
-        group: docker
+        owner: "jenkins"
+        group: "docker"
         state: directory
         recurse: true
         mode: g+rwx
