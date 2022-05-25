@@ -1,3 +1,4 @@
+---
 # This workflow will build a Docker image
 
 name: Docker CI
@@ -17,12 +18,10 @@ jobs:
     name: Build Docker
     runs-on: ubuntu-18.04
     # See https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-    #runs-on: ubuntu-latest
-    #container:
-    #  image: nabla/ansible-jenkins-slave-docker:1.0.16
+    # runs-on: ubuntu-latest
+    # container:
+    #   image: nabla/ansible-jenkins-slave-docker:1.0.16
     steps:
-      #- name: Install maven
-      #  run: sudo apt -y update && sudo apt -y install maven
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -58,7 +57,7 @@ jobs:
           build-args: |
             ANSIBLE_VAULT_PASS=${{ secrets.ANSIBLE_VAULT_PASS }}
           #            --squash
-          #tags: nabla/ansible-jenkins-slave-docker:latest,nabla/ansible-jenkins-slave-docker:${{ github.sha }}
+          #  tags: nabla/ansible-jenkins-slave-docker:latest,nabla/ansible-jenkins-slave-docker:${{ github.sha }}
           tags: nabla/ansible-jenkins-slave-docker:latest
 
       - name: Run Trivy vulnerability scanner
@@ -68,8 +67,8 @@ jobs:
           format: "template"
           template: "@/contrib/sarif.tpl"
           output: "trivy-results.sarif"
-          # format: 'table'
-          # exit-code: '1'
+          #  format: 'table'
+          #  exit-code: '1'
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"

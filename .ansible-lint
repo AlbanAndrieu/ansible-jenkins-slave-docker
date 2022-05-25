@@ -62,15 +62,15 @@ exclude_paths:
   - ./roles/jermon.ansible-role-cpan/
   - ./roles/anxs.perl/
   - ./k8s/
-#parseable: true
-#quiet: true
-#rulesdir:
-#  - ./rule/directory/
+# parseable: true
+# quiet: true
+# rulesdir:
+#   - ./rule/directory/
 skip_list:
-  - '602' # See https://github.com/ansible/ansible-lint/issues/457
+  - '602'  # See https://github.com/ansible/ansible-lint/issues/457
   - '204'
   - '503'
-  - '208' # File permissions not mentioned
+  - '208'  # File permissions not mentioned
   - filenotfounderror
 #   - skip_this_tag
 #   - and_this_one_too

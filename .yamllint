@@ -19,3 +19,4 @@ rules:
   comments-indentation: disable
 ignore: |
   .tox
+  .cache

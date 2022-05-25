@@ -1,9 +1,9 @@
 ---
-#WARNING run it with -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5"
-#ansible-playbook -i inventory/production -v playbooks/docker-cleaning.yml --limit test3.albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
-
-#sudo docker logout https://docker.albandrieu.com:5000
-#sudo docker login hub.docker.com
+# WARNING run it with -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5"
+# ansible-playbook -i inventory/production -v playbooks/docker-cleaning.yml --limit test3.albandrieu.com -e ansible_python_interpreter="/opt/ansible/env35/bin/python3.5" -vvvv | tee setup.log
+  
+# sudo docker logout https://docker.albandrieu.com:5000
+# sudo docker login hub.docker.com
 
 - hosts: docker-cleaning
   become: true
@@ -23,17 +23,17 @@
         - docker
         - vm
 
-    - name: Log into private registry
-      docker_login:
-        registry: https://hub.docker.com
-        username: "{{ docker_registry_login }}"
-        password: "{{ docker_registry_password }}"
-      #        reauthorize: yes
-      ignore_errors: true
-      tags:
-        - clean
-        - docker
-        - vm
+#    - name: Log into private registry
+#      docker_login:
+#        registry: https://hub.docker.com
+#        username: "{{ docker_registry_login }}"
+#        password: "{{ docker_registry_password }}"
+#      #        reauthorize: yes
+#      ignore_errors: true
+#      tags:
+#        - clean
+#        - docker
+#        - vm
 
 - hosts: docker-cleaning
   become: true

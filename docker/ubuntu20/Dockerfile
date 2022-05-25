@@ -210,6 +210,16 @@ RUN apt-get -q update && apt-get install --no-install-recommends -y curl \
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 
+# GO
+
+ENV GOPATH=$HOME/go
+
+RUN apt-get -q update && apt-get install --no-install-recommends -y golang \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN go version
+
 ### HELM
 
 ENV HELM_VERSION=${HELM_VERSION:-"v3.5.4"}
@@ -246,30 +256,27 @@ RUN curl -L -o /tmp/skaffold ${SKAFFOLD_URL} \
   && rm -rf /tmp/*
 
 ### DRAFT
-ENV DRAFT_VERSION v0.16.0
-ENV DRAFT_FILENAME draft-${DRAFT_VERSION}-linux-amd64.tar.gz
-ENV DRAFT_URL https://azuredraft.blob.core.windows.net/draft/${DRAFT_FILENAME}
 
-# hadolint ignore=DL3020
-#ADD ${DRAFT_URL} /tmp/${DRAFT_FILENAME}
-RUN curl -L -o /tmp/${DRAFT_FILENAME} ${DRAFT_URL} \
-  && tar -zxvf /tmp/${DRAFT_FILENAME} -C /tmp \
-  && chmod +x /tmp/linux-amd64/draft \
-  && mv /tmp/linux-amd64/draft /bin/draft \
-  && draft init \
-  && bash -c "echo \"y\" | draft pack-repo remove github.com/Azure/draft" \
-  && rm -rf /tmp/* \
-  && chmod -R 777 ${JENKINS_USER_HOME}/.draft && ls -lrta ${JENKINS_USER_HOME}/.draft/plugins/  # for .draft/plugins
-# $JENKINS_USER_HOME/.draft/*
+#ENV DRAFT_VERSION v0.16.0
+#ENV DRAFT_FILENAME draft-${DRAFT_VERSION}-linux-amd64.tar.gz
+#ENV DRAFT_URL https://azuredraft.blob.core.windows.net/draft/${DRAFT_FILENAME}
+#
+## hadolint ignore=DL3020
+#RUN curl -L -o /tmp/${DRAFT_FILENAME} ${DRAFT_URL} \
+#  && tar -zxvf /tmp/${DRAFT_FILENAME} -C /tmp \
+#  && chmod +x /tmp/linux-amd64/draft \
+#  && mv /tmp/linux-amd64/draft /bin/draft \
+#  && draft init \
+#  && bash -c "echo \"y\" | draft pack-repo remove github.com/Azure/draft" \
+#  && rm -rf /tmp/* \
+#  && chmod -R 777 ${JENKINS_USER_HOME}/.draft && ls -lrta ${JENKINS_USER_HOME}/.draft/plugins/  # for .draft/plugins
 
 COPY wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
 #VOLUME /var/lib/docker
 
 # place the jenkins slave startup script into the container
-#ADD jenkins-slave-startup.sh /
 COPY entrypoint.sh /
-#RUN chmod +x /jenkins-slave-startup.sh /entrypoint.sh && rm -fr /sbin/initctl && ln -s /jenkins-slave-startup.sh /sbin/initctl
 RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
 
 ARG AGENT_VERSION=${AGENT_VERSION:-"4.3"}
