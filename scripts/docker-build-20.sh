@@ -8,7 +8,7 @@ set -eo pipefail
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
-export DOCKER_TAG=${DOCKER_TAG:-"2.0.1"}
+export DOCKER_TAG=${DOCKER_TAG:-"2.0.2"}
 
 if [[ -z $ANSIBLE_VAULT_PASSWORD ]]; then
   echo "Provide vault ANSIBLE_VAULT_PASSWORD password as environement variable before launching the script. Exit."

@@ -140,6 +140,17 @@ repos:
   #      - id: ggshield
   #        language_version: python3
   #        stages: [commit]
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.8.5
+    hooks:
+      - id: gitleaks
+        args: [--config, gitleaks.toml]
+#      - id: gitleaks-docker
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.15.0
+    hooks:
+      - id: check-github-workflows
+      - id: check-gitlab-ci
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:

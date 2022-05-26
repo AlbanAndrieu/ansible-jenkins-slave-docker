@@ -57,7 +57,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.2] - TODO
+## [2.0.3] - TODO
+
+## [2.0.2] - 2022-26-05
+
+### Added
+
+- Add go language
+
+### Updated
+
+- Nodejs 16 npm 8.5.0
+- Chromedriver to 98.0.4758.102
+
+### Removed
+
+- Draft
 
 ## [2.0.1] - 2021-13-01
 
