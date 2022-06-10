@@ -40,10 +40,10 @@ fi
 
 platform='unknown'
 unamestr=$(uname)
-if [[ "$unamestr" == 'Linux' ]]; then
+if [[ $unamestr == 'Linux' ]]; then
   platform='linux'
   iscsiMsg="$(iscsiadm -m session -P 3 | awk '$NF>1{print $0}')"
-elif [[ "$unamestr" == 'SunOS' ]]; then
+elif [[ $unamestr == 'SunOS' ]]; then
   platform='solaris'
   iscsiMsg="$(iscsiadm list target)"
 fi
@@ -55,10 +55,10 @@ fi
 
 let countLivingConn=0
 let countConfiguredConn=0
-if [[ "$unamestr" == 'Linux' ]]; then
+if [[ $unamestr == 'Linux' ]]; then
   countLivingConn=$(echo "$iscsiMsg" | grep -i "iSCSI Session State: LOGGED_IN" | wc -l)
   countConfiguredConn=$(echo "$iscsiMsg" | grep -i "Current Portal" | wc -l)
-elif [[ "$unamestr" == 'SunOS' ]]; then
+elif [[ $unamestr == 'SunOS' ]]; then
   countLivingConn=$(echo "$iscsiMsg" | egrep -i "Connections: 1" | wc -l)
   countConfiguredConn=$(echo "$iscsiMsg" | egrep -i "Target" | wc -l)
 fi

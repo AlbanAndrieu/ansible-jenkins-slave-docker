@@ -6,12 +6,11 @@
 ## based on the role owner and then runs Ansigenome to (re)generate the README.md.
 ## Run from within the role repository.
 
-README_TEMPLATE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../templates/" && pwd )"
+README_TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../templates/" && pwd)"
 
-if [ ! -d "$README_TEMPLATE_DIR" ]
-then
-    echo "README template directory does not exist."
-    exit 1
+if [ ! -d "$README_TEMPLATE_DIR" ]; then
+  echo "README template directory does not exist."
+  exit 1
 fi
 
 role_full_name="$(basename "$PWD")"
@@ -23,13 +22,12 @@ role_owner="$(echo "$role_full_name" | sed 's/.\+[.-]//g;')"
 ansigenome_config_file_name="$(cd "$README_TEMPLATE_DIR" && find . -maxdepth 1 -name "${role_owner}-ansigenome.conf" -type f | head --lines 1)"
 
 ansigenome_config_file_path="$README_TEMPLATE_DIR/$ansigenome_config_file_name"
-if [ -n "$ansigenome_config_file_name" ]
-then
-    echo "Using Ansigenome configuration: $ansigenome_config_file_path"
+if [ -n "$ansigenome_config_file_name" ]; then
+  echo "Using Ansigenome configuration: $ansigenome_config_file_path"
 else
-    echo "Could not find Ansigenome configuration for the role owner '$role_owner'."
-    echo "Exiting ..."
-    exit 1
+  echo "Could not find Ansigenome configuration for the role owner '$role_owner'."
+  echo "Exiting ..."
+  exit 1
 fi
 
 ln -sf "$ansigenome_config_file_path" "$HOME/.ansigenome.conf"

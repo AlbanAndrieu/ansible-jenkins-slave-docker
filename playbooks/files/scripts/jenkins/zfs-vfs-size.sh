@@ -35,12 +35,12 @@ case "$2" in
   ;;
 
 "total")
-  total=$(($free + $used))
+  total=$((free + used))
   echo $total
   ;;
 
 "pfree")
-  total=$(($free + $used))
+  total=$((free + used))
   # Zabbix need scale 6 for percentage
   pfree=$(echo "scale=6; ($free*100)/$total" | bc)
   echo $pfree

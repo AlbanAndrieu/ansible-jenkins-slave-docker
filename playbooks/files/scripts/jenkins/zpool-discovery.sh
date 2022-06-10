@@ -22,7 +22,7 @@ first=1
 fstype="zpool"
 
 # prepare JASON data
-echo "{\"data\":["
+echo '{"data":['
 
 zpool list -H | while read line; do
   if [ -n "$line" ]; then

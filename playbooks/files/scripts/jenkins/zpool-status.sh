@@ -26,12 +26,12 @@ first=0
 for line in $status; do
   for word in $line; do
     if [[ first -eq 0 ]]; then
-      if [[ "$word" == 'HEALTH' ]]; then
-        let i=$i+1
+      if [[ $word == 'HEALTH' ]]; then
+        let i=i+1
         let first=1
         continue 1
       else
-        let i=$i+1
+        let i=i+1
       fi
     else
       if [[ $i -ne $j ]]; then

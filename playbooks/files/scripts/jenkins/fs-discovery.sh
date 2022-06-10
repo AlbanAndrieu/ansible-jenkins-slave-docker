@@ -20,7 +20,7 @@ fi
 first=1
 
 # prepare JASON data
-echo "{\"data\":["
+echo '{"data":['
 
 cat /proc/mounts | cut -f2,3 -d" " | while read line; do
   if [ -n "$line" ]; then
