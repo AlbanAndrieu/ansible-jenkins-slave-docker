@@ -39,27 +39,21 @@
   become: true
 
   tasks:
-    - name: Remove ubuntu image
-      docker_image:
-        state: absent
-        name: ubuntu:14.04
-        tag: latest
-      ignore_errors: true
-      tags:
-        - clean
-        - docker
-        - vm
-    - name: Remove hello-world image
-      docker_image:
-        state: absent
-        name: hello-world:latest
-        force: yes
-
-    #    - name: Remove test image
-    #      docker_image:
-    #        state: absent
-    #        name: nabla/ansible-jenkins-slave-docker
-    #        tag: test
+    # - name: Remove ubuntu image
+    #   docker_image:
+    #     state: absent
+    #     name: ubuntu:14.04
+    #     tag: latest
+    #   ignore_errors: true
+    #   tags:
+    #     - clean
+    #     - docker
+    #     - vm
+    # - name: Remove hello-world image
+    #   docker_image:
+    #     state: absent
+    #     name: hello-world:latest
+    #     force: yes
 
     # Below might be useless (duplicated) when running full cleaning
     #    - name: Remove unwanted dangling images
@@ -125,11 +119,11 @@
     #        force: yes
     #        tag: 1.0.0
     #
-    - name: Pull ansible-jenkins-slave-docker latest images
-      docker_image:
-        name: hub.docker.com/nabla/ansible-jenkins-slave-docker
-        force: yes
-        tag: latest
+    # - name: Pull ansible-jenkins-slave-docker latest images
+    #   docker_image:
+    #     name: hub.docker.com/nabla/ansible-jenkins-slave-docker
+    #     force: yes
+    #     tag: latest
 
     - name: Check image is fully available
       command: "docker inspect -f . nabla/ansible-jenkins-slave-docker:latest"

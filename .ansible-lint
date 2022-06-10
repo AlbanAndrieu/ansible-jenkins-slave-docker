@@ -62,6 +62,7 @@ exclude_paths:
   - ./roles/jermon.ansible-role-cpan/
   - ./roles/anxs.perl/
   - ./k8s/
+  - ../../../../home/albandrieu/.cache
 # parseable: true
 # quiet: true
 # rulesdir:
