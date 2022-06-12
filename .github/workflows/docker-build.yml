@@ -55,7 +55,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            ANSIBLE_VAULT_PASS=${{ secrets.ANSIBLE_VAULT_PASS }}
+            ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           #            --squash
           #  tags: nabla/ansible-jenkins-slave-docker:latest,nabla/ansible-jenkins-slave-docker:${{ github.sha }}
           tags: nabla/ansible-jenkins-slave-docker:latest

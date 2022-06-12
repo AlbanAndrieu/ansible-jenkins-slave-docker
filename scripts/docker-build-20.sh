@@ -8,7 +8,7 @@ set -eo pipefail
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
-export DOCKER_TAG=${DOCKER_TAG:-"2.0.2"}
+export DOCKER_TAG=${DOCKER_TAG:-"2.0.3"}
 
 if [[ -z $ANSIBLE_VAULT_PASSWORD ]]; then
   echo "Provide vault ANSIBLE_VAULT_PASSWORD password as environement variable before launching the script. Exit."
@@ -24,17 +24,17 @@ else
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
 
-export DOCKER_FILE=${DOCKER_FILE:-"../docker/ubuntu20/Dockerfile"}
+export DOCKER_FILE=${DOCKER_FILE:-"docker/ubuntu20/Dockerfile"}
 export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu20/config.yaml"}
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
 
 echo -e "${green} Validating Docker ${NC}"
-echo -e "${magenta} hadolint ${WORKING_DIR}/${DOCKER_FILE} --format json ${NC}"
-hadolint "${WORKING_DIR}/${DOCKER_FILE}" --format json 1>docker-hadolint.json 2>docker-hadolint-error.log || true
-echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/${DOCKER_FILE} ${NC}"
-dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/${DOCKER_FILE}" 1>docker-dockerfilelint.json 2>docker-dockerfilelint-error.log || true
+echo -e "${magenta} hadolint ${WORKING_DIR}/../${DOCKER_FILE} --format json ${NC}"
+hadolint "${WORKING_DIR}/../${DOCKER_FILE}" --format json 1>docker-hadolint.json 2>docker-hadolint-error.log || true
+echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/../${DOCKER_FILE} ${NC}"
+dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/../${DOCKER_FILE}" 1>docker-dockerfilelint.json 2>docker-dockerfilelint-error.log || true
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-ansible.sh"
@@ -61,10 +61,8 @@ echo -e "${green} Building docker image ${NC}"
 #docker buildx create --use --name larger_log --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=50000000
 #buildx create --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=-1
 
-echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}\" -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" ${WORKING_DIR}/../ ${NC}"
-#time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" ${WORKING_DIR}/../ | tee docker.log
-#  >docker.log 2>&1
-time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/${DOCKER_FILE} -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" ${WORKING_DIR}/../
+echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/../${DOCKER_FILE} -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}\" --tag \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" \"${WORKING_DIR}/..\" ${NC}"
+time docker build ${DOCKER_BUILD_ARGS} -f "${WORKING_DIR}/../${DOCKER_FILE}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" --tag "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" "${WORKING_DIR}/../"
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -81,19 +79,17 @@ echo -e "${green} This image is a trusted docker Image. ${happy_smiley} ${NC}"
 echo -e ""
 echo -e "To push it"
 echo -e "    docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password password ${NC}"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-#echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_TMP}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${NC}"
-echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
-echo -e "    docker push ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${NC}"
+echo -e "    docker tag ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
+echo -e "    docker push ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
+echo -e "    docker push ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${NC}"
 
 echo -e "    docker manifest inspect  ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
 echo -e "    docker scan --token ${SNYK_TOKEN} ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest ${NC}"
 
 echo -e ""
 echo -e "To pull it"
-echo -e "    docker pull ${DOCKER_REGISTRY_ACR}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
+echo -e "    docker pull ${DOCKER_REGISTRY}${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG} ${NC}"
 echo -e ""
 echo -e "To use this docker:"
 echo -e "    docker run -d -P ${DOCKER_ORGANISATION}/${DOCKER_NAME}"
