@@ -91,7 +91,7 @@
       "Ubuntu 22.04 LTS (jammy)": {
         "HOMEBREW_VERSION": "3.5.1",
         "HOMEBREW_PREFIX": "/home/linuxbrew/.linuxbrew",
-        "Homebrew/linuxbrew-core": "4358930f1a24946a6aa14449accc1455a3c3d52f",
+        "Homebrew/linuxbrew-core": "200e91311f8dce15298c8bc9139505b0d0be4f22",
         "GCC": "11.2.0"
       },
       "Ubuntu 20.04.4 LTS (focal)": {

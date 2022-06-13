@@ -309,7 +309,7 @@ whichcraft==0.6.1
 #wrapt==1.12.1
 XlsxWriter==1.2.8
 xmltodict==0.12.0
-XStatic==1.0.2
+#XStatic==1.0.2
 #XStatic-Bootstrap-SCSS==3.4.1.0
 #XStatic-DataTables==1.10.15.1
 #XStatic-jQuery==3.4.1.0
