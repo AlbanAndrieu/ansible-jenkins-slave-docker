@@ -136,8 +136,8 @@ repos:
       - id: htmlhint
         args: [--config, .htmlhintrc]
       - id: htmllint
-      - id: markdown-toc
-        args: [--maxdepth, "3", -i]
+      #- id: markdown-toc
+      #  args: [--maxdepth, "3", -i]
       - id: dockerfile_lint
         #  args: [--json, --verbose, --dockerfile docker/ubuntu20/Dockerfile]
         args: [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
