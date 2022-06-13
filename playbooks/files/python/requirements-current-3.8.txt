@@ -187,7 +187,7 @@ pies==2.6.7
 Pillow==7.1.1
 #pip==21.1.1
 pip-upgrader>=1.4.15
-pipenv>=2022.6.7
+#pipenv>=2022.6.7
 piston-mini-client==0.7.5
 pluggy==0.13.1
 pluginbase==1.0.0

@@ -20,6 +20,8 @@ repos:
           (?x)^(
               .pnp.cjs|
               package-lock.json|
+              Pipfile.lock|
+              poetry.lock
           )$
       - id: check-case-conflict
       - id: check-docstring-first
