@@ -1,7 +1,6 @@
 playbooks/files/python/requirements-current-3.10-draw.txt
 playbooks/files/python/requirements-current-3.8.txt-SAV
 
-.direnv/
 node_modules/
 .project
 .settings/
@@ -9,7 +8,6 @@ docker-dockerfilelint.json
 docker-hadolint.json
 pylint-junit-result.xml
 docker-dive.csv
-.direnv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -102,6 +100,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.direnv/
 
 # Spyder project settings
 .spyderproject

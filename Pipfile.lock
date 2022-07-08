@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9164637fdaefa0405abba6a7153dd86cf6756fc7f604429d33008e5fda063f79"
+            "sha256": "3b6001bfb82766d00e59f69e08bb20b373ef265820687c463b6b9a24d6e2bfa7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -2442,7 +2442,7 @@
                 "sha256:4c586de507202505346f3e32d1363eb9ed6932f0c2f63184dea88983ff4971e2",
                 "sha256:d2bbd99c320a2532ac71ff6a3164867884357da3e3301f0240090c5d2fdac7ec"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.3'",
+            "markers": "python_full_version >= '3.6.3' and python_version < '4'",
             "version": "==12.4.4"
         },
         "rsa": {
@@ -2489,7 +2489,7 @@
                 "sha256:dc6a613d6c74eef5a14a214d433d06291526145431c3b964f5e16529b1842bed",
                 "sha256:de9c6b8a1ba52919ae919f3ae96abb72b994dd0350226e28f3686cb4f142165c"
             ],
-            "markers": "python_version < '3.11' and platform_python_implementation == 'CPython'",
+            "markers": "platform_python_implementation == 'CPython' and python_version < '3.11'",
             "version": "==0.2.6"
         },
         "s3cmd": {
@@ -2557,11 +2557,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:d1746e7fd520e83bbe210d02fff1aa1a425ad671c7a9da7d246ec2401a087198",
-                "sha256:e7d11f3db616cda0751372244c2ba798e8e56a28e096ec4529010b803485f3fe"
+                "sha256:1f5d3a1502812025cdb2e5609b6af2d207332e3f50febe6db10ed3a59b2f155f",
+                "sha256:30b6b0fbacc459c90d27a63e6173facfc8b8c99a48fb24b5044f459ba63cd6cf"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==62.3.3"
+            "version": "==62.3.4"
         },
         "sh": {
             "hashes": [
@@ -3109,13 +3109,6 @@
             ],
             "index": "pypi",
             "version": "==0.12.0"
-        },
-        "xstatic": {
-            "hashes": [
-                "sha256:80b78dfe37bce6dee4343d64c65375a80bcf399b46dd47c0c7d56161568a23a8"
-            ],
-            "index": "pypi",
-            "version": "==1.0.2"
         },
         "yamllint": {
             "hashes": [
