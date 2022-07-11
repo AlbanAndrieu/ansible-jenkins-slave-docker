@@ -10,12 +10,12 @@ repos:
     # pre-commit-hooks.git from v2.1.0 to v2.4.0
     #    rev: v2.1.0 # ok python3.6  # 18.04.3
     #    rev: v2.2.3 # ok python3.6  # 19.04 but failing on 18.04.3
-    rev: v4.3.0  # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
+    rev: v4.3.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-added-large-files
-        args: ["--maxkb=123"]
+        args: [--maxkb=123]
         exclude: >
           (?x)^(
               .pnp.cjs|
@@ -75,7 +75,7 @@ repos:
     hooks:
       - id: autopep8
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2   # Use the sha / tag you want to point at
+    rev: 3.9.2 # Use the sha / tag you want to point at
     hooks:
       - id: flake8
         args: [--max-line-length=120]
@@ -107,8 +107,8 @@ repos:
     rev: v3.5.1-1
     hooks:
       # Choose one of:
-      #- id: shfmt         # native (requires Go to build)
-      - id: shfmt-docker  # Docker image (requires Docker to run)
+      # - id: shfmt         # native (requires Go to build)
+      - id: shfmt-docker # Docker image (requires Docker to run)
   - repo: https://github.com/detailyang/pre-commit-shell
     rev: 1.0.5
     hooks:
@@ -138,8 +138,8 @@ repos:
       - id: htmlhint
         args: [--config, .htmlhintrc]
       - id: htmllint
-      #- id: markdown-toc
-      #  args: [--maxdepth, "3", -i]
+      - id: markdown-toc
+        args: [--maxdepth, "3", -i]
       - id: dockerfile_lint
         #  args: [--json, --verbose, --dockerfile docker/ubuntu20/Dockerfile]
         args: [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
@@ -150,20 +150,20 @@ repos:
   #      - id: ggshield
   #        language_version: python3
   #        stages: [commit]
-#  - repo: https://github.com/bridgecrewio/checkov.git
-#    rev: '2.0.1159'
-#    hooks:
-#    - id: checkov
-#      verbose: true
-#      args: [--soft-fail]
+  #  - repo: https://github.com/bridgecrewio/checkov.git
+  #    rev: '2.0.1159'
+  #    hooks:
+  #    - id: checkov
+  #      verbose: true
+  #      args: [--soft-fail]
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.8.7
     hooks:
-#      - id: gitleaks
-#        args: [--config, gitleaks.toml]
+      #      - id: gitleaks
+      #        args: [--config, gitleaks.toml]
       - id: gitleaks-docker
         entry: zricethezav/gitleaks protect --verbose --redact --staged
-        #entry: zricethezav/gitleaks detect --verbose
+        # entry: zricethezav/gitleaks detect --verbose
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.72.1
     hooks:
@@ -174,9 +174,9 @@ repos:
           - --init-args=-lockfile=readonly
       - id: terraform_tfsec
         args:
-         - --args=--config-file=tfsec.yml
-         - --args=-m HIGH
-         #- --args=--exclude-path=network/example
+          - --args=--config-file=tfsec.yml
+          - --args=-m HIGH
+      # - --args=--exclude-path=network/example
       - id: terraform_providers_lock
         args:
           - --args=-platform=linux_amd64
@@ -185,24 +185,24 @@ repos:
         args:
           - --args=--quiet
           - --args=--skip-path ansible/roles/
-        #  - --args=--skip-check CKV2_AWS_8
+  #  - --args=--skip-check CKV2_AWS_8
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.15.0
     hooks:
       - id: check-github-workflows
-#  - repo: https://github.com/Checkmarx/kics
-#    rev: "v1.5.9"
-#    hooks:
-#      #- id: kics
-#      #  exclude: >
-#      #    (?x)^(
-#      #        .direnv$|
-#      #        .*\.terraform.*$|
-#      #        .*\.tfvars$|
-#      #    )$
-#      - id: kics-scan
-#        verbose: true
-#        args: [--ignore-on-exit, "all", --config, "kics-config.json"]
+  #  - repo: https://github.com/Checkmarx/kics
+  #    rev: "v1.5.9"
+  #    hooks:
+  #      #- id: kics
+  #      #  exclude: >
+  #      #    (?x)^(
+  #      #        .direnv$|
+  #      #        .*\.terraform.*$|
+  #      #        .*\.tfvars$|
+  #      #    )$
+  #      - id: kics-scan
+  #        verbose: true
+  #        args: [--ignore-on-exit, "all", --config, "kics-config.json"]
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:
