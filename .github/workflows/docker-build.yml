@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: "11"
-          distribution: "adopt"
+          distribution: adopt
 
       # Runs a single command using the runners shell
       - name: Install Node.Js
@@ -63,17 +63,18 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "nabla/ansible-jenkins-slave-docker:latest"
-          format: "template"
+          image-ref: nabla/ansible-jenkins-slave-docker:latest
+          format: template
           template: "@/contrib/sarif.tpl"
-          output: "trivy-results.sarif"
+          output: trivy-results.sarif
           #  format: 'table'
           #  exit-code: '1'
           ignore-unfixed: true
-          vuln-type: "os,library"
-          severity: "CRITICAL,HIGH"
+          security-checks: vuln  # vuln,secret
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: trivy-results.sarif
