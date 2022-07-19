@@ -1,13 +1,41 @@
 ---
 # Configuration file for Mega-Linter
-# See all available variables at https://megalinter.github.io/configuration/ and in linters documentation
+# See all available variables at https://oxsecurity.github.io/megalinter/configuration/ and in linters documentation
 
 APPLY_FIXES: all  # all, none, or list of linter keys
 DEFAULT_BRANCH: master  # Usually master or main
 # ENABLE: # If you use ENABLE variable, all other languages/formats/tooling-formats will be disabled by default
 # ENABLE_LINTERS: # If you use ENABLE_LINTERS variable, all other linters will be disabled by default
-# DISABLE:
-# - COPYPASTE # Uncomment to disable checks of abusive copy-pastes
-# - SPELL # Uncomment to disable checks of spelling mistakes
+DISABLE:
+  - CLOUDFORMATION
+  # - COPYPASTE # Uncomment to disable checks of abusive copy-pastes
+  - EDITORCONFIG
+  # - SPELL # Uncomment to disable checks of spelling mistakes
+  - JAVASCRIPT
+  - TEKTON
+DISABLE_LINTERS:
+ - REPOSITORY_DEVSKIM
+IGNORE_GITIGNORED_FILES: true
+FILTER_REGEX_EXCLUDE: '(\.automation/test|\.automation/generated|\.github/workflows|docs/javascripts|docs/overrides|docs/json-schemas|flavors|clj-kondo|TEMPLATES)'
+JSON_JSONLINT_FILTER_REGEX_EXCLUDE: '(\.vscode/)'
+YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml)'
+YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml|mkdocs\.yml)'
+YAML_V8R_FILTER_REGEX_EXCLUDE: '(descriptors|templates/\.mega-linter\.yml|\.codecov\.yml)'
+BASH_FILTER_REGEX_EXCLUDE: "(lib)"
+MARKDOWN_FILTER_REGEX_EXCLUDE: '(license\.md)'
+MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
+SPELL_MISSPELL_FILTER_REGEX_EXCLUDE: '(\.automation/generated|docs/descriptors)'
+DOCKERFILE_HADOLINT_ARGUMENTS: "--ignore DL3003 --ignore DL3007 --ignore DL3013 --ignore DL3016 --ignore DL3018 --ignore DL3028 --ignore DL4001 --ignore DL4006 --ignore SC2015 --ignore SC2016 --ignore SC2039 --ignore SC2086 --ignore SC1091"
+PYTHON_BANDIT_DISABLE_ERRORS: true
 SHOW_ELAPSED_TIME: true
+EMAIL_REPORTER_EMAIL: alban.andrieu@free.fr
 FILEIO_REPORTER: true
+JSON_REPORTER: true
+PLUGINS:
+  - https://raw.githubusercontent.com/nvuillam/mega-linter/master/.automation/test/mega-linter-plugin-test/test.megalinter-descriptor.yml
+PRE_COMMANDS:
+  - command: echo "This is Mega-Linter PRE_COMMAND on own Mega-Linter ! :)"
+    cwd: "root"
+POST_COMMANDS:
+  - command: echo "This is Mega-Linter POST_COMMAND on own Mega-Linter ! :)"
+    cwd: "workspace"

@@ -82,20 +82,21 @@ RUN apt-get -q update &&\
     libnss3 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
+ENV TZ "Europe/Paris"
+RUN echo "${TZ}" > /etc/timezone
+RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
+    && dpkg-reconfigure --frontend noninteractive tzdata
+
 # Remove unnecessary getty and udev targets that result in high CPU usage when using
 # multiple containers with Molecule (https://github.com/ansible/molecule/issues/1104)
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
-ENV TZ "Europe/Paris"
-RUN echo "${TZ}" > /etc/timezone
-RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8
-#RUN dpkg-reconfigure --frontend noninteractive tzdata \
-
 ### PYTHON
 
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==20.3.4 \
-    && pip3 install --proxy=${http_proxy} ansible==4.6.0 ansible-core>=2.11.6 zabbix-api==0.5.4 docker-compose==1.25.5 sphinx==2.3.1 \
+RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
+    && pip3 install --proxy=${http_proxy} ansible-core>=2.13.0 zabbix-api==0.5.4 docker-compose==1.29.2 sphinx==2.3.1 \
     && pip3 --version && python3 --version
 
 ### DOCKER
@@ -132,20 +133,20 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_USER_HOME: ${JENKINS_
 #ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${UID}/bus
 RUN printenv DBUS_SESSION_BUS_ADDRESS
 
-RUN groupmod -g ${GID} docker
+RUN groupmod -g ${GID} ${GROUP}
 #RUN cat /etc/group | grep docker || true
 #RUN id docker
 #RUN getent passwd 2000 || true
 
 # Add user jenkins to the image
-#RUN groupadd -g ${GID} docker && \
-RUN adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} jenkins
+#RUN groupadd -g ${GID} ${GROUP} && \
+RUN adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} ${USER}
 # Set password for the jenkins user (you may want to alter this).
 RUN echo "jenkins:jenkins1234" | chpasswd
-RUN usermod -a -G docker jenkins
+RUN usermod -a -G ${GROUP} ${USER}
 
 # Add the jenkins user to sudoers
-RUN echo "jenkins    ALL=(ALL)    ALL" >> /etc/sudoers
+RUN echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
 
 # hadolint ignore=SC2059
 RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
@@ -199,14 +200,14 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
 #/usr/bin/python3.7 -m pip install --upgrade pip
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==20.3.4 \
-    && pip install --proxy=${http_proxy} ansible==4.6.0 ansible-core>=2.11.6 docker-compose==1.25.5 pre-commit==2.9.0 ansible-lint-junit==0.15 \
+RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
+    && pip install --proxy=${http_proxy} ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
     && pip3 --version && python3 --version
 
 # hadolint ignore=DL3008
-RUN apt-get -q update && apt-get install --no-install-recommends -y curl \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+#RUN apt-get -q update && apt-get install --no-install-recommends -y curl \
+# && apt-get clean \
+# && rm -rf /var/lib/apt/lists/*
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 

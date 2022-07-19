@@ -180,3 +180,5 @@ hs_err_pid*
 .galaxy_install_info
 ansible.key
 vault.passwd
+
+megalinter-reports/
