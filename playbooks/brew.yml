@@ -2,7 +2,7 @@
 - name: Install brew
   hosts: jenkins-slaves
   become: true
-  ignore_errors: yes
+  ignore_errors: true
 
   roles:
     - geerlingguy.homebrew

@@ -13,7 +13,7 @@
     - name: Show vault pass
       no_log: true
       debug:
-        msg: "System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }} - {{ zabbix_api_pass }}"
+        msg: System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }} - {{ zabbix_api_pass }}
 
 #  - name: Show all variables
 #    debug:
@@ -34,8 +34,8 @@
       zabbix_create_host: present
       zabbix_api_create_hosts: true
       #zabbix_api_create_hostgroup: true
-      zabbix_api_user: "nabla"
-      zabbix_api_pass: "microsoft"
+      zabbix_api_user: nabla
+      zabbix_api_pass: microsoft
       zabbix_host_groups:
         - NABLA Hosts
       zabbix_link_templates:
@@ -57,8 +57,8 @@
       zabbix_create_host: present
       zabbix_api_create_hosts: true
       #zabbix_api_create_hostgroup: true
-      zabbix_api_user: "nabla"
-      zabbix_api_pass: "microsoft"
+      zabbix_api_user: nabla
+      zabbix_api_pass: microsoft
       zabbix_host_groups:
         - NABLA Hosts
       zabbix_link_templates:

@@ -27,10 +27,8 @@
   gather_facts: false
   tasks:
     - name: fail for unsupported distribution
-      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-        is not a supported OS for a Tower installation.  Supported
-        OSes include Red Hat Enterprise Linux 6/7/5, CentOS 6/7, or
-        Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04/21.04."
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }} is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise
+        Linux 6/7/5, CentOS 6/7, or Ubuntu 12.04/13.04/14.04/15.04/16.04/17.04/18.04/19.04/20.04/21.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Install gcc
@@ -62,12 +60,10 @@
       gcc_version: "-7"
       gcc_priority: 70
       gcc_package_list: []
-
     - role: albanandrieu.gcc
       gcc_version: "-8"
       gcc_priority: 80
       gcc_package_list: []
-
     - role: albanandrieu.gcc
       gcc_version: "-9"
       gcc_priority: 90
@@ -82,11 +78,11 @@
   vars:
     #ubuntu 16 cppunit_version: "-1.13-0v5"
     #cppunit_version: "-1.14-0=1.14.0-3" # ubuntu 18
-    cppunit_version: "-dev=1.14.0-3" # ubuntu 18
+    cppunit_version: -dev=1.14.0-3 # ubuntu 18
     #cppunit_version: "1.14.0-4" # ubuntu 19
     #ubuntu 16 boost_version: "1.61"
     #boost_version: "1.65.1-dev=1.65.1+dfsg-0ubuntu5" # ubuntu 18
-    boost_version: "-dev=1.65.1.0ubuntu1" # ubuntu 18
+    boost_version: -dev=1.65.1.0ubuntu1 # ubuntu 18
     #boost_version: "1.67.0-13ubuntu1"
     #boost_version: "1.67.0-17ubuntu8" # ubuntu 19
     #apt-get install libboost-system1.67-dev libboost-thread1.67-dev # ubuntu 19
@@ -97,7 +93,6 @@
     #clang_version: "=1:9.0-49~exp1"         # clang 9 on ubuntu 19
     #clang_version: "=1:10.0-50~exp1"        # clang 10 on ubuntu 20
     cpp_package_list: []
-
 - name: Install cpp
   hosts: Ubuntu-20*
 
@@ -105,7 +100,7 @@
     - albanandrieu.cpp
 
   vars:
-    cppunit_version: "-dev=1.15.1-2build1"
-    boost_version: "-dev=1.71.0.0ubuntu2" # ubuntu 20
-    clang_version: "=1:10.0-50~exp1" # clang 10 on ubuntu 20
+    cppunit_version: -dev=1.15.1-2build1
+    boost_version: -dev=1.71.0.0ubuntu2 # ubuntu 20
+    clang_version: =1:10.0-50~exp1 # clang 10 on ubuntu 20
     cpp_package_list: []

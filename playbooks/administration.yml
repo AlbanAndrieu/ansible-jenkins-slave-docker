@@ -21,10 +21,6 @@
     nisserver: albandrieu.com
     mailserver: smtp.gmail.com
     defaultdomain: albandrieu.com
-    mountpoints:
-      {
-        /nabla/dev: "nabla-nfs:/nabla/dev",
-        /nabla/release: "nabla-nfs:/nabla/release",
-      }
+    mountpoints: { /nabla/dev: nabla-nfs:/nabla/dev, /nabla/release: nabla-nfs:/nabla/release }
 #Show what is mounted
 #showmount -e fr1svmnas12-nfs

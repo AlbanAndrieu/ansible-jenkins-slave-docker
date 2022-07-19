@@ -17,20 +17,20 @@
     #      with_items: "{{ all_processes.files }}"
 
     - name: Get running processes # noqa 301
-      shell: "find /proc -maxdepth 1 -user jenkins -type d -mmin +200 -exec basename {} \\; | xargs ps | grep {{ item.process_name_matcher }} | awk '{ print $1 }'"
+      shell: find /proc -maxdepth 1 -user jenkins -type d -mmin +200 -exec basename {} \; | xargs ps | grep {{ item.process_name_matcher }} | awk '{ print $1 }'
       #      shell: "ps -few | grep {{ item.process_name_matcher }} | awk '{print $2}'"
       #      args:
       #        executable: /bin/bash
       register: running_processes
       with_items:
-        - { process_name_matcher: "grunt" }
-        - { process_name_matcher: "google/chrome" }
-        - { process_name_matcher: "chromedriver" }
-        - { process_name_matcher: "selenium" }
-        - { process_name_matcher: "ZAPROXY" }
-        - { process_name_matcher: "jboss-modules" }
-        - { process_name_matcher: "sqlservr" }
-        - { process_name_matcher: "container-structure-test" }
+        - { process_name_matcher: grunt }
+        - { process_name_matcher: google/chrome }
+        - { process_name_matcher: chromedriver }
+        - { process_name_matcher: selenium }
+        - { process_name_matcher: ZAPROXY }
+        - { process_name_matcher: jboss-modules }
+        - { process_name_matcher: sqlservr }
+        - { process_name_matcher: container-structure-test }
       ignore_errors: true
       tags:
         - clean
@@ -41,7 +41,7 @@
     #      with_items: '{{ running_processes.results }}'
 
     - debug:
-        msg: "Show process id {{ item.stdout_lines }}"
+        msg: Show process id {{ item.stdout_lines }}
       with_items: "{{ running_processes.results }}"
       tags:
         - clean
@@ -56,7 +56,7 @@
     #      with_items: "{{ running_processes.results|map(attribute='stdout_lines')|list }}"
 
     - name: Kill running processes # noqa 301 305
-      shell: "kill {{ item }}"
+      shell: kill {{ item }}
       with_items: "{{ running_processes.results|map(attribute='stdout_lines')|list }}"
       ignore_errors: true
       tags:
@@ -65,7 +65,7 @@
 
     - name: Wait for running processes to stop # noqa 301 305
       wait_for:
-        path: "/proc/{{ item }}/status"
+        path: /proc/{{ item }}/status
         state: absent
       with_items: "{{ running_processes.results|map(attribute='stdout_lines')|list }}"
       ignore_errors: true

@@ -18,10 +18,8 @@
   gather_facts: false
   tasks:
     - name: fail for unsupported distribution
-      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-        is not a supported OS for a Tower installation.  Supported
-        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }} is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise
+        Linux 6/7, CentOS 6/7, or Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Boot cleaning
@@ -50,13 +48,13 @@
 
     - name: Update
       apt:
-        update_cache: yes
+        update_cache: true
       ignore_errors: true
 
     - name: Autoremove
       apt:
-        autoremove: yes
-        purge: yes
+        autoremove: true
+        purge: true
       ignore_errors: true
 
     #    - name: Clean kernel by hand
@@ -68,7 +66,7 @@
     - name: Clean kernel by hand (1)
       find:
         paths: /boot
-        patterns: ['^.*\-4\.15\.0\-(70|72|)\-.*$']
+        patterns: [^.*\-4\.15\.0\-(70|72|)\-.*$]
         file_type: file
         age: 2w
         use_regex: true
@@ -101,7 +99,7 @@
 
     - name: Autoclean
       apt:
-        autoclean: yes
+        autoclean: true
 
     #    - name: Cron | Purge kernel images @reboot special time
     #      cron:

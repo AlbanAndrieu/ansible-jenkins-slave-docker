@@ -10,6 +10,8 @@ repos:
     # pre-commit-hooks.git from v2.1.0 to v2.4.0
     #    rev: v2.1.0 # ok python3.6  # 18.04.3
     #    rev: v2.2.3 # ok python3.6  # 19.04 but failing on 18.04.3
+    #    rev: v2.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04
+    #    rev: v3.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
     rev: v4.3.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
     hooks:
       - id: trailing-whitespace
@@ -75,7 +77,7 @@ repos:
     hooks:
       - id: autopep8
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2 # Use the sha / tag you want to point at
+    rev: 3.9.2
     hooks:
       - id: flake8
         args: [--max-line-length=120]

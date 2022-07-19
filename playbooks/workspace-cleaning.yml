@@ -23,10 +23,8 @@
   gather_facts: false
   tasks:
     - name: fail for unsupported distribution
-      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }}
-        is not a supported OS for a Tower installation.  Supported
-        OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or
-        Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04, or Solaris 10, or Solaris 11."
+      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }} is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise
+        Linux 6/7, CentOS 6/7, or Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04/21.04, or Solaris 10, or Solaris 11."
     - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Tmp cleaning
@@ -69,13 +67,14 @@
 
   tasks:
     - name: Clean worskpace # noqa 302 305
-      shell: find {{ item }} -maxdepth 2 -not \( -path '*/.git' -o -path '*/docker-cleaning*' -o -path './repository' -o -path '*/ADMIN_CLEAN_LINUX*' \) -mtime +1 -type d | xargs -I{} bash -c " echo removing dir {}; rm -rf {}"
+      shell: find {{ item }} -maxdepth 2 -not \( -path '*/.git' -o -path '*/docker-cleaning*' -o -path './repository' -o -path '*/ADMIN_CLEAN_LINUX*' \) -mtime +1
+        -type d | xargs -I{} bash -c " echo removing dir {}; rm -rf {}"
       changed_when: false
       ignore_errors: true
       with_items:
-        - "/workspace/slave-test/workspace/"
-        - "/workspace/slave-albandrieu/workspace/"
-        - "/workspace/slave-k8s-test/workspace/" # k8s
+        - /workspace/slave-test/workspace/
+        - /workspace/slave-albandrieu/workspace/
+        - /workspace/slave-k8s-test/workspace/ # k8s
       tags:
         - clean
         - vm
@@ -88,9 +87,9 @@
         use_regex: true
       register: wildcard_files_to_delete
       with_items:
-        - "/workspace/slave-test/workspace/"
-        - "/workspace/slave-albandrieu/workspace/"
-        - "/workspace/slave-k8s-test/workspace/" # k8s
+        - /workspace/slave-test/workspace/
+        - /workspace/slave-albandrieu/workspace/
+        - /workspace/slave-k8s-test/workspace/ # k8s
       changed_when: false
       ignore_errors: true
       tags:

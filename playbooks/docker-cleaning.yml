@@ -10,7 +10,7 @@
 
   tasks:
     - name: Fix docker permission issue on docker.sock
-      command: "setfacl -m user:jenkins:rw /var/run/docker.sock"
+      command: setfacl -m user:jenkins:rw /var/run/docker.sock
       # TODO
       # acl:
       #   path: /var/run/docker.sock
@@ -68,7 +68,7 @@
     #      changed_when: false
 
     - name: Remove container which are running since more than 1 day
-      shell: "docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up [0-9]+ days' | awk '{print $1}')"
+      shell: docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up [0-9]+ days' | awk '{print $1}')
       ignore_errors: true
       changed_when: false
       tags:
@@ -77,7 +77,7 @@
         - vm
 
     - name: Remove container which are running since more than 10 hours
-      shell: "docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up 1[0-9] hours' | awk '{print $1}')"
+      shell: docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up 1[0-9] hours' | awk '{print $1}')
       ignore_errors: true
       changed_when: false
       tags:
@@ -96,7 +96,7 @@
 
     #TODO below is slow, we have to pull all the images again after
     - name: Remove reclaimable images and volumes
-      command: "docker system prune -a -f --filter until=20m"
+      command: docker system prune -a -f --filter until=20m
       changed_when: false
       ignore_errors: true
       tags:
@@ -105,7 +105,7 @@
         - vm
 
     - name: Remove hanging and old nabla docker images
-      shell: "docker rmi $(docker image ls | grep -i nabla | grep -E 'days|weeks|months ago' | grep -v jenkins-slave | awk '{print $3}')"
+      shell: docker rmi $(docker image ls | grep -i nabla | grep -E 'days|weeks|months ago' | grep -v jenkins-slave | awk '{print $3}')
       ignore_errors: true
       changed_when: false
       tags:
@@ -126,7 +126,7 @@
     #     tag: latest
 
     - name: Check image is fully available
-      command: "docker inspect -f . nabla/ansible-jenkins-slave-docker:latest"
+      command: docker inspect -f . nabla/ansible-jenkins-slave-docker:latest
       changed_when: false
 #docker ps -a -s
 #docker images

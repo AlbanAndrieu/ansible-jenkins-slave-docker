@@ -11,8 +11,8 @@
         path: "{{ item.path }}"
         state: absent
       with_items:
-        - "/etc/apt/sources.list.d/google-chrome.list"
-        - "/etc/apt/sources.list.d/microsoft-prod.list" # or /etc/apt/sources.list.d/mssql-release.list
+        - /etc/apt/sources.list.d/google-chrome.list
+        - /etc/apt/sources.list.d/microsoft-prod.list # or /etc/apt/sources.list.d/mssql-release.list
       ignore_errors: true
 #keep /etc/apt/sources.list.d/dl_google_com_linux_chrome_deb.lib
 

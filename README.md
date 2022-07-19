@@ -1,3 +1,4 @@
+<!-- markdown-link-check-disable-next-line -->
 ## [![Nabla](http://albandrieu.com/nabla/index/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu) Jenkins slave Docker image
 
 // spell-checker:disable
@@ -14,8 +15,10 @@
 
 <!-- toc -->
 
+- [Initialize](#initialize)
 - [Requirements](#requirements)
     + [python 3.8](#python-38)
+    + [Install AWS cli](#install-aws-cli)
     + [pre-commit](#pre-commit)
     + [npm-groovy-lint groovy formating for Jenkinsfile](#npm-groovy-lint-groovy-formating-for-jenkinsfile)
 - [Usage](#usage)
@@ -39,9 +42,20 @@
 
 // cSpell:enable
 
+# Initialize
+
+```bash
+direnv allow
+pyenv install 3.10.4
+pyenv local 3.10.4
+python -m pipenv install --dev --ignore-pipfile
+direnv allow
+pre-commit install
+```
+
 # Requirements
 
-- Requires Ansible 2.9.4 or newer
+- Requires Ansible core 2.13.2 or newer
 - Expects Ubuntu
 
 This playbook deploy a very basic jenkins slave with all the required tool needed for a developper or buildmaster or devops to work on NABLA projects.
@@ -60,6 +74,19 @@ Install python 3.8 and virtualenv
 `source /opt/ansible/env38/bin/activate`
 
 `pip install -r requirements-current-3.8.txt`
+
+### Install AWS cli
+
+```bash
+# Since Ubuntu 22
+sudo snap remove aws-cli
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+/usr/local/bin/aws --version
+# aws-cli/2.7.16 Python/3.9.11 Linux/5.15.0-40-generic exe/x86_64.ubuntu.22 prompt/off
+# In ~/.docker/config.json remove credStore
+```
 
 ### pre-commit
 
@@ -135,6 +162,7 @@ This is a very simple playbook and could serve as a starting point for more comp
 ### Linting
 
 ```bash
+ansible-lint --write playbooks/
 ansible-lint -v playbooks/*.yml
 ```
 

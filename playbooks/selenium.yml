@@ -10,4 +10,4 @@
     #selenium_mirror: "http://albandrieu.com/download/selenium/"
     selenium_server_major_version: "2.42"
     selenium_server_minor_version: "2"
-    docker_files_enable: no
+    docker_files_enable: false

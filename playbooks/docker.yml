@@ -35,29 +35,28 @@
 
   vars:
     docker_install_compose: false # using pip instead
-    docker_compose_version: "1.25.0"
+    docker_compose_version: 1.25.0
     docker_edition: ce
-    docker_version:
-      5:19.03.4~3-0~ubuntu-bionic
-      #TODO make sure it does not conflict with jenkins-slave python36.yml and requirements-current-3.6.txt
-      #pip_install_packages:
-      #  - name: docker
-      #    version: "2.7.0"
-      #    virtualenv: /opt/ansible/env35
-      #
-      #  # Or uninstall a package.
-      #  - name: awscli
-      #    state: absent
-      #    virtualenv: /opt/ansible/env35
-      #
-      #  # Or force a reinstall.
-      #  - name: docker-compose
-      #    version: "1.12.0"
-      #    state: forcereinstall
-      #    virtualenv: /opt/ansible/env35
-      #docker_users:
-      #  - docker
-      #  - jenkins
+    docker_version: 5:19.03.4~3-0~ubuntu-bionic
+#TODO make sure it does not conflict with jenkins-slave python36.yml and requirements-current-3.6.txt
+#pip_install_packages:
+#  - name: docker
+#    version: "2.7.0"
+#    virtualenv: /opt/ansible/env35
+#
+#  # Or uninstall a package.
+#  - name: awscli
+#    state: absent
+#    virtualenv: /opt/ansible/env35
+#
+#  # Or force a reinstall.
+#  - name: docker-compose
+#    version: "1.12.0"
+#    state: forcereinstall
+#    virtualenv: /opt/ansible/env35
+#docker_users:
+#  - docker
+#  - jenkins
 
 - name: Install docker
   hosts: Ubuntu-19*
@@ -71,11 +70,11 @@
 
   vars:
     docker_install_compose: false # using pip instead
-    docker_compose_version: "1.25.0"
+    docker_compose_version: 1.25.0
     docker_edition: ce
     #docker_version: 5:19.03.6~3-0~ubuntu-eoan # https://github.com/docker/for-linux/issues/833
     docker_version: 5:19.03.7~3-0~ubuntu-eoan
-    docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
+    docker_package: docker-{{ docker_edition }}={{ docker_version }} # Ubuntu
 
 - name: Install docker
   hosts: Ubuntu-20*
@@ -89,10 +88,10 @@
 
   vars:
     docker_install_compose: false # using pip instead
-    docker_compose_version: "1.29.2"
+    docker_compose_version: 1.29.2
     docker_edition: ce
     docker_version: 5:20.10.7~3-0~ubuntu-focal
-    docker_package: "docker-{{ docker_edition }}={{ docker_version }}" # Ubuntu
+    docker_package: docker-{{ docker_edition }}={{ docker_version }} # Ubuntu
 
 - name: Install docker
   hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
@@ -106,10 +105,10 @@
 
   vars:
     docker_install_compose: false # using pip instead
-    docker_compose_version: "1.25.0"
+    docker_compose_version: 1.25.0
     docker_edition: ce
     docker_version: 19.03.6
-    docker_package: "docker-{{ docker_edition }}-{{ docker_version }}" # CentOS
+    docker_package: docker-{{ docker_edition }}-{{ docker_version }} # CentOS
 
 - hosts: docker
   become: true
@@ -122,21 +121,16 @@
       become: true
       changed_when: false
     - name: docker | Create a docker group
-      group: name=docker
-        state=present
+      group: name=docker state=present
       become: true
     #      ignore_errors: true
 
     - name: docker | Add user(s) to docker group
-      user: name="{{ lookup('env','USER') }}"
-        group=docker
-        state=present
+      user: name="{{ lookup('env','USER') }}" group=docker state=present
       become: true
       ignore_errors: true
 
     - name: docker | Add user(s) to docker group
-      user: name="{{ remote_user|default('jenkins') }}"
-        group=docker
-        state=present
+      user: name="{{ remote_user|default('jenkins') }}" group=docker state=present
       become: true
       ignore_errors: true
