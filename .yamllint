@@ -12,14 +12,21 @@ rules:
   comments:
     min-spaces-from-content: 2
   line-length: disable
+  # document-start: disable
   # truthy: disable
   # NOTE(retr0h): Templates no longer fail this lint rule.
   #               Uncomment if running old Molecule templates.
   truthy:
-    allowed-values: ["true", "false", "on"]
+    allowed-values: ['true', 'false', 'on']
   # https://github.com/adrienverge/yamllint/issues/141
-  comments-indentation: disable
+  # comments-indentation: disable
 ignore: |
+  .direnv/
+  .venv/
+  .git/
   .tox
   .cache
+  roles/
+  .ansible-lint
   .github/
+  .pre-commit-config.yaml
