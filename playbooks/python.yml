@@ -98,9 +98,9 @@
         - requirements-current-3.7.txt
         - requirements-current-3.7-uninstall.txt
         - requirements-current-3.8.txt
-        - requirements-current-3.8-uninstall.txt
+        # - requirements-current-3.8-uninstall.txt
         - requirements-current-3.9.txt
-        - requirements-current-3.9-uninstall.txt
+        # - requirements-current-3.9-uninstall.txt
       tags:
         - venv
         - requirements

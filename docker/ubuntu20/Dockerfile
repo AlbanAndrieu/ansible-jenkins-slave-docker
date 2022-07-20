@@ -178,7 +178,7 @@ RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 #python36,brew are adding 2.7 G to the images
 
 # hadolint ignore=DL3008,DL3015
-RUN ansible-galaxy collection install -r requirements.yml --force && \
+RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" --force && \
  ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors && \
  ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \

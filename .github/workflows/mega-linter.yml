@@ -1,3 +1,4 @@
+# vi: ft=yaml.ansible.jinja2
 ---
 # MegaLinter GitHub Action configuration file
 # More info at https://oxsecurity.github.io/megalinter

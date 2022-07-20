@@ -1,3 +1,4 @@
+# vi: ft=yaml.ansible.jinja2
 ---
 # default_language_version:
 #    python: python3.6  # Ubuntu 18.04.3
