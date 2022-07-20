@@ -7,6 +7,7 @@ vendor/
 .venv/
 .tox/
 *.min.js
+playbooks/files/python/requirements-current-*
 
 # Common test paths
 test/

@@ -1,9 +1,9 @@
-#sudo apt-get install libcups2-dev
-#sudo yum install cups-devel
-#brew install cairo libxml2 libffi
-#pip3 uninstall libxml2-python
-#pip2 install cairocffi==0.8.0
-#pip2 install CairoSVG==2.0.3
+# sudo apt-get install libcups2-dev
+# sudo yum install cups-devel
+# brew install cairo libxml2 libffi
+# pip3 uninstall libxml2-python
+# pip2 install cairocffi==0.8.0 # nosemgrep
+# pip2 install CairoSVG==2.0.3 # nosemgrep
 ansible==2.4.3.0
 ansible-cmdb==1.24
 #ansible-container==0.2.0

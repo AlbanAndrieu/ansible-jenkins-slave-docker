@@ -1,16 +1,16 @@
 # This script is used by run-python.sh in order to install all python requirements
-#sudo apt-get install libcups2-dev linuxbrew-wrapper
-#brew install cairo libxml2 libffi
-#source /opt/ansible/env37/bin/activate
-#pip3 uninstall libxml2-python
-#pip3 install cairocffi==0.8.0
-#pip3 install CairoSVG==2.0.3
-#sudo /opt/ansible/env37/bin/pip3.7 uninstall docker-py; sudo /opt/ansible/env37/bin/pip3.7 uninstall docker; sudo /opt/ansible/env37/bin/pip3.7 uninstall docker-compose;
-#sudo /opt/ansible/env37/bin/pip3.7 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.23.2
-#sudo apt-get install unixodbc-dev #needed for pyodbc
-#sudo apt-get install python3.7-dev #fatal error: Python.h: No such file or directory
-#python 3.7 tested since ubuntu 19.04
-#for pre-commit python3 -m pip install --upgrade pip==20.0.2
+# sudo apt-get install libcups2-dev linuxbrew-wrapper
+# brew install cairo libxml2 libffi
+# source /opt/ansible/env37/bin/activate
+# pip3 uninstall libxml2-python
+# pip3 install cairocffi==0.8.0
+# pip3 install CairoSVG==2.0.3
+# sudo /opt/ansible/env37/bin/pip3.7 uninstall docker-py; sudo /opt/ansible/env37/bin/pip3.7 uninstall docker; sudo /opt/ansible/env37/bin/pip3.7 uninstall docker-compose;
+# sudo /opt/ansible/env37/bin/pip3.7 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.23.2
+# sudo apt-get install unixodbc-dev #needed for pyodbc
+# sudo apt-get install python3.7-dev #fatal error: Python.h: No such file or directory
+# python 3.7 tested since ubuntu 19.04
+# for pre-commit python3 -m pip install --upgrade pip==20.0.2  # nosemgrep
 2to3==1.0
 alabaster==0.7.12
 #alembic==1.3.3

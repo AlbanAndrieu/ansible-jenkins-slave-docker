@@ -10,7 +10,7 @@
 #sudo apt-get install unixodbc-dev #needed for pyodbc
 #sudo apt-get install python3.8-dev #fatal error: Python.h: No such file or directory
 #python 3.8 tested since ubuntu 19.04
-#for pre-commit python3 -m pip install --upgrade pip==20.3.4
+# for pre-commit python3 -m pip install --upgrade pip==20.3.4 # nosemgrep
 2to3==1.0
 alabaster==0.7.12
 #alembic==1.4.2

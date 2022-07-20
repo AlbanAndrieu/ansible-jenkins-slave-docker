@@ -289,14 +289,14 @@ roles:
   #- src: 'https://github.com/AlbanAndrieu/ansible-role-redis'
   #  name: 'geerlingguy.redis'
   #  version: master
-  #
-  - src: https://github.com/geerlingguy/ansible-role-repo-epel.git
-    name: geerlingguy.repo-epel
-    version: master
 
-  - src: https://github.com/geerlingguy/ansible-role-repo-remi.git
-    name: geerlingguy.repo-remi
-    version: master
+  #- src: https://github.com/geerlingguy/ansible-role-repo-epel.git
+  #  name: geerlingguy.repo-epel
+  #  version: master
+
+  #- src: https://github.com/geerlingguy/ansible-role-repo-remi.git
+  #  name: geerlingguy.repo-remi
+  #  version: master
 
   #- src: https://github.com/geerlingguy/ansible-role-pip.git
   #  name: geerlingguy.pip

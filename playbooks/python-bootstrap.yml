@@ -84,16 +84,16 @@
       register: output
       changed_when: output.stdout | length > 0
 
-- name: Add repo configuration to all nodes
-  hosts: RedHat-8*:RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
-  become: true
-
-  roles:
-    - geerlingguy.repo-epel
-
-- name: Add repo configuration to all nodes
-  hosts: RedHat-6*:CentOS-6*
-  become: true
-
-  roles:
-    - geerlingguy.repo-remi
+# - name: Add repo configuration to all nodes
+#   hosts: RedHat-8*:RedHat-7*:RedHat-6*:CentOS-7*:CentOS-6*
+#   become: true
+#
+#   roles:
+#     - geerlingguy.repo-epel
+#
+# - name: Add repo configuration to all nodes
+#   hosts: RedHat-6*:CentOS-6*
+#   become: true
+#
+#   roles:
+#     - geerlingguy.repo-remi

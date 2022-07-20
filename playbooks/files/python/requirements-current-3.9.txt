@@ -1,10 +1,10 @@
 # This script is used by run-python.sh in order to install all python requirements
-#source /opt/ansible/env39/bin/activate
-#sudo /opt/ansible/env39/bin/pip3.9 uninstall docker-py; sudo /opt/ansible/env39/bin/pip3.9 uninstall docker; sudo /opt/ansible/env39/bin/pip3.9 uninstall docker-compose;
-#sudo /opt/ansible/env39/bin/pip3.9 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.23.2
-#sudo apt-get install python3.9-dev #fatal error: Python.h: No such file or directory
-#python 3.9 tested since ubuntu 21.04
-#for pre-commit python3 -m pip install --upgrade pip>=20.0.2
+# source /opt/ansible/env39/bin/activate
+# sudo /opt/ansible/env39/bin/pip3.9 uninstall docker-py; sudo /opt/ansible/env39/bin/pip3.9 uninstall docker; sudo /opt/ansible/env39/bin/pip3.9 uninstall docker-compose;
+# sudo /opt/ansible/env39/bin/pip3.9 install --upgrade --force-reinstall --no-cache-dir docker-compose==1.23.2
+# sudo apt-get install python3.9-dev #fatal error: Python.h: No such file or directory
+# python 3.9 tested since ubuntu 21.04
+# for pre-commit python3 -m pip install --upgrade pip>=20.0.2  # nosemgrep
 2to3==1.0
 alabaster>=0.7.12
 #alembic>=1.4.2
