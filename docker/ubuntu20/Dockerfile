@@ -5,7 +5,6 @@
 #FROM ubuntu:20.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
 # focal
-#FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -179,7 +178,8 @@ RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 #python36,brew are adding 2.7 G to the images
 
 # hadolint ignore=DL3008,DL3015
-RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors && \
+RUN ansible-galaxy collection install -r requirements.yml --force && \
+ ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors && \
  ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
@@ -203,11 +203,6 @@ RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS
 RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
     && pip install --proxy=${http_proxy} ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
     && pip3 --version && python3 --version
-
-# hadolint ignore=DL3008
-#RUN apt-get -q update && apt-get install --no-install-recommends -y curl \
-# && apt-get clean \
-# && rm -rf /var/lib/apt/lists/*
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
 

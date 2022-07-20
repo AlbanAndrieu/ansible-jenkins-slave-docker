@@ -8,7 +8,7 @@ collections:
   - name: community.crypto
     version: ">=2.2.0"
   - name: community.general
-    version: 4.5.0
+    version: ">=4.5.0"
   - name: ansible.utils
   - name: ansible.netcommon
   - name: ansible.posix

@@ -271,4 +271,4 @@ nodeenv = "==1.3.5"
 #lcov-cobertura = "==1.6"
 
 [requires]
-python_version = "3.8" # ">=3.8,<3.10"
+python_version = "3.10"
