@@ -20,8 +20,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: MegaLinter
+  build-mega-linter:
+    if: github.actor != 'dependabot[bot]' && github.actor!= 'dependabot-preview[bot]' # ignore the pull request which comes from user dependabot.
+    name: Mega Linter
     runs-on: ubuntu-latest
     steps:
       # Git Checkout

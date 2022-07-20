@@ -19,7 +19,6 @@ ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
 # dockerfile_lint - ignore
-MAINTAINER Alban Andrieu "https://github.com/AlbanAndrieu"
 LABEL name="ansible-jenkins-slave-docker" version="1.0.18"
 LABEL description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 18.04."
