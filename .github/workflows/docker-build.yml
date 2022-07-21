@@ -71,6 +71,7 @@ jobs:
           #  format: 'table'
           #  exit-code: '1'
           ignore-unfixed: true
+          skip-dirs: .direnv
           skip-files: Gemfile.lock,Pipfile.lock,package-lock.json,requirements.txt,docker/ubuntu16/Dockerfile,docker/ubuntu18/Dockerfile
           security-checks: vuln  # vuln,secret
           vuln-type: os,library

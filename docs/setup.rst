@@ -35,7 +35,7 @@ This will be helpful in case there is problem with any software version.
    # version to the virtualenv (e.g. 3 or 3.6)
    virtualenv -p python3 .venv
    source ./venv/bin/activate
-   pip install -r requirements.txt
+   pip install -dev --ignore-pipfile
 
 *Ansible is only true dependency* for this project.
 However, certain tasks will require other libraries.

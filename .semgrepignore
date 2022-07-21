@@ -1,3 +1,7 @@
+docker/ubuntu16/Dockerfile
+docker/ubuntu18/Dockerfile
+README.md
+
 # Common large paths
 node_modules/
 build/

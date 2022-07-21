@@ -63,7 +63,7 @@ color() {
       codes=("${codes[@]}" "$code")
     fi
   fi
-  local IFS=';'
+  local IFS=';' # nosemgrep: bash.lang.security.ifs-tampering.ifs-tampering
   echo -en '\033['"${codes[*]}"'m'
 }
 wrap_color() {

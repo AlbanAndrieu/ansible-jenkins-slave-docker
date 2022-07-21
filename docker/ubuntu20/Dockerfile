@@ -2,7 +2,7 @@
 
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
-#FROM ubuntu:20.10
+# FROM ubuntu:20.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
 # focal
 FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
@@ -106,7 +106,10 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable"
 # Install Docker from Docker Inc. repositories.
-RUN apt-get update -qq && apt-get install --no-install-recommends -qqy docker-ce=5:20.10.3~3-0~ubuntu-focal docker-ce-cli=5:20.10.3~3-0~ubuntu-focal && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
+  docker-ce=5:20.10.3~3-0~ubuntu-focal \
+  docker-ce-cli=5:20.10.3~3-0~ubuntu-focal \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ### JAVASCRIPT
 
