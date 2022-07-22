@@ -1,15 +1,26 @@
-IMAGE_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
-IMAGE_TAG := $${CI_COMMIT_REF_SLUG:-"latest"}
-IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
+DOCKER_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
+DOCKER_TAG := $${CI_COMMIT_REF_SLUG:-"latest"}
+IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
 
 .DEFAULT_GOAL := build-docker
 
 .PHONY: all
-all: down clean build up test
+all: down clean lint build up dive
+
+.PHONY: rm
+rm: clean
+	@echo "=> Removing image..."
+	docker rmi $(IMAGE)
 
 .PHONY: clean
 clean:
-	@echo "clean"
+	@echo "=> Cleaning image..."
+	scripts/clean.sh
+
+.PHONY: lint
+lint:
+	@echo "=> Validating..."
+	scripts/docker-validate.sh
 
 .PHONY: build-docker
 build-docker:
@@ -38,9 +49,20 @@ down:
 .PHONY: run
 run: down up
 
+.PHONY: debug
+debug:
+	@echo "=> Debuging image..."
+	docker run -it -u 1000:2000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash $(IMAGE)
+
+.PHONY: dive
+dive:
+	@echo "=> Diving image..."
+	CI=true dive --ci --json docker-dive-stats.json  $(IMAGE) 1>docker-dive.log 2>docker-dive-error.log
+
 .PHONY: test
 test:
-	@echo "test"
+	@echo "=> Testing image..."
+	docker-inspect.sh
 
 .PHONY: deploy
 deploy:

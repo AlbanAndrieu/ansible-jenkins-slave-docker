@@ -10,6 +10,8 @@ FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
+ENV JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
+
 ENV http_proxy=${http_proxy:-""}
 #ENV http_proxy=${http_proxy:-"http://127.0.0.1:3128"}
 #ENV http_proxy=${http_proxy:-"http://10.21.185.171:3128"}
@@ -74,8 +76,6 @@ RUN apt-get -q update &&\
     iptables openssh-client supervisor \
     locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
     systemd systemd-cron \
-    python3-setuptools python3 python3-pip python3-dev python3-apt \
-    python-lxml python3-lxml \
     openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
     net-tools iputils-ping x11-apps libxss1 \
     gnome-keyring gnome-keyring gnupg2 pass \
@@ -93,11 +93,11 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
-### PYTHON
+### DOCKER COMPOSE
 
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
-    && pip3 install --proxy=${http_proxy} ansible-core>=2.13.0 zabbix-api==0.5.4 docker-compose==1.29.2 sphinx==2.3.1 \
-    && pip3 --version && python3 --version
+ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
+#RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+#	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
 ### DOCKER
 
@@ -112,18 +112,7 @@ RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
   docker-ce-cli=5:20.10.3~3-0~ubuntu-focal \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-### JAVASCRIPT
-
-# hadolint ignore=DL3008,DL3015
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    npm set progress=false && \
-    npm config set depth 0;
-RUN npm install -g npm@8.5.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 8.5.0
-RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
-
-### USER
+### USER (should follow ### DOCKER)
 
 ARG USER=${USER:-jenkins}
 ARG GROUP=${GROUP:-docker}
@@ -157,6 +146,51 @@ RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
+
+### PYTHON
+
+USER root
+
+# hadolint ignore=DL3008
+RUN apt-get -q update \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+#   python-yaml python-jinja2 python-lxml \
+  python3-setuptools python3 python3-pip python3-dev python3-apt \
+  python3-lxml \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
+#  && ln -sv $(which pip3) /usr/bin/pip3 \
+  && pip3 --version && python3 --version
+
+RUN python3 -m pip install --proxy=${http_proxy} pipenv==2022.7.4 \
+  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core>=2.13.0  zabbix-api==0.5.4 \
+  # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
+  && pip3 --version && python3 --version
+
+USER ${USER}
+
+COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
+RUN cd ${JENKINS_USER_HOME} && pipenv install --dev --system
+
+### JAVASCRIPT
+
+USER root
+
+# hadolint ignore=DL3008,DL3015
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    npm set progress=false && \
+    npm config set depth 0;
+RUN npm install -g npm@8.5.0 && apt-get purge -y npm
+RUN npm -v && command -v npm # 8.5.0
+RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### ANSIBLE
 
@@ -193,7 +227,7 @@ RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" -
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
  -e "python_enabled=false" \
  -e "ansible_python_interpreter=/usr/bin/python3.8" \
- --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs \
+ --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs,clang \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/inventory" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" "$JENKINS_USER_HOME/requirements-*.txt" \
@@ -212,13 +246,62 @@ RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (opti
 
 # GO
 
-ENV GOPATH=$HOME/go
+USER root
 
-RUN apt-get -q update && apt-get install --no-install-recommends -y golang \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+ENV GO_VERSION=${GO_VERSION:-"1.18"}
+ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
+ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 
-RUN go version
+RUN curl -L -o /tmp/${GO_FILENAME} ${GO_URL} \
+  && tar -C /usr/local -xzf /tmp/${GO_FILENAME} \
+  && rm -rf /tmp/*
+
+#USER ${USER}
+
+ENV GOROOT=/usr/local/go
+ENV GOPATH=${JENKINS_USER_HOME}/go
+ENV GO111MODULE=on
+
+RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main
+RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest
+RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest
+RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual studio
+
+ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
+
+# NOMAD
+
+ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.3.2"}
+ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
+ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
+
+USER root
+
+RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
+  && unzip /tmp/${NOMAD_FILENAME} -d /tmp \
+  && chmod +x /tmp/nomad \
+  && mv /tmp/nomad /bin/nomad \
+  && rm -rf /tmp/*
+
+# BUILDAH
+
+# hadolint ignore=DL3008
+RUN . /etc/os-release \
+  && apt-get update \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+  ca-certificates curl gnupg2 && \
+  echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+  curl -fsL "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key" | apt-key add - && \
+  apt-get update \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+  buildah \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# TRIVY
+
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.28.1"}
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
 ### HELM
 
@@ -301,8 +384,9 @@ RUN chown -R jenkins:$(id -gn jenkins) $HOME $HOME/.*
 
 #RUN chmod go-r $HOME/.kube/config
 
-ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"101.0.4951.64"}
-RUN webdriver-manager update --versions.chrome ${WEBDRIVER_CHROME_VERSION}
+ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"103.0.5060.134"}
+#RUN webdriver-manager update --versions.chrome ${WEBDRIVER_CHROME_VERSION}
+RUN webdriver-manager update
 
 # drop back to the regular jenkins user - good practice
 USER jenkins
@@ -350,6 +434,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/modprobe
 COPY wrapdocker.sh /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
 
+# See https://github.com/cruizba/ubuntu-dind/blob/master/startup.sh
 COPY dockerd.conf /etc/supervisor/conf.d/
 COPY logger.sh /opt/bash-utils/logger.sh
 

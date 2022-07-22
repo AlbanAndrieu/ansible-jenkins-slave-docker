@@ -30,18 +30,14 @@ export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu20/config.yaml"}
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
 
-echo -e "${green} Validating Docker ${NC}"
-echo -e "${magenta} hadolint ${WORKING_DIR}/../${DOCKER_FILE} --format json ${NC}"
-hadolint "${WORKING_DIR}/../${DOCKER_FILE}" --format json 1>docker-hadolint.json 2>docker-hadolint-error.log || true
-echo -e "${magenta} dockerfile_lint --json --verbose --dockerfile ${WORKING_DIR}/../${DOCKER_FILE} ${NC}"
-dockerfile_lint --json --verbose --dockerfile "${WORKING_DIR}/../${DOCKER_FILE}" 1>docker-dockerfilelint.json 2>docker-dockerfilelint-error.log || true
+"${WORKING_DIR}/docker-validate.sh"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/run-ansible.sh"
 
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-"${WORKING_DIR}/../clean.sh"
+# "${WORKING_DIR}/clean.sh"
 
 echo -e "${green} Installing key for Docker ${NC}"
 mkdir -p .ssh/
@@ -69,9 +65,9 @@ if [ ${RC} -ne 0 ]; then
   # shellcheck disable=SC2154
   echo -e "${red} ${head_skull} Sorry, build failed. ${NC}"
   exit 1
-else
-  echo -e "${green} The build completed successfully. ${NC}"
-  ${WORKING_DIR}/docker-inspect.sh
+#else
+#  echo -e "${green} The build completed successfully. ${NC}"
+#  ${WORKING_DIR}/docker-inspect.sh
 fi
 
 echo -e ""

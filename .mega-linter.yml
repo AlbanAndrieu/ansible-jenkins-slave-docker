@@ -13,6 +13,7 @@ DISABLE:
   # - SPELL # Uncomment to disable checks of spelling mistakes
   - JAVASCRIPT
   - TEKTON
+  - REPOSITORY_TRIVY
 DISABLE_LINTERS:
  - REPOSITORY_DEVSKIM
 IGNORE_GITIGNORED_FILES: true
