@@ -177,7 +177,9 @@ RUN python3 -m pip install --proxy=${http_proxy} pipenv==2022.7.4 \
 USER ${USER}
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
-RUN cd ${JENKINS_USER_HOME} && pipenv install --dev --system
+RUN cd ${JENKINS_USER_HOME} && pipenv install --system --dev
+
+ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
 
 ### JAVASCRIPT
 
@@ -227,7 +229,7 @@ RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" -
  -e "nis_enabled=false" -e "automount_enabled=false" -e "dns_enabled=false" \
  -e "python_enabled=false" \
  -e "ansible_python_interpreter=/usr/bin/python3.8" \
- --skip-tags=restart,vm,python35,python36,python37,brew,objc,kubernetes,nodejs,clang \
+ --skip-tags=restart,vm,python35,python36,python37,venv,requirements,brew,objc,kubernetes,nodejs,clang \
  --vault-id $JENKINS_USER_HOME/vault.passwd \
  -vvvv \
  && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/inventory" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" "$JENKINS_USER_HOME/requirements-*.txt" \
@@ -267,6 +269,9 @@ RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
 RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest
 RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest
 RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual studio
+
+RUN ls -lrta /home/ubuntu/.cache/go-build/
+RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/
 
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 

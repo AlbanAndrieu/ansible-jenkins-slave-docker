@@ -91,6 +91,7 @@
 - import_playbook: python.yml
   tags:
     - python
+    - vm
 
 #Below ntp role is included in administration role
 - name: Apply ntp configuration
