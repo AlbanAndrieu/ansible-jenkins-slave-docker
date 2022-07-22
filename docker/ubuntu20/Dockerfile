@@ -19,7 +19,7 @@ ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri
 LABEL name="ansible-jenkins-slave" version="2.0.1" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
- com.example.vendor="ACME Incorporated"
+ com.nabla.vendor="NABLA Incorporated"
 
 # dockerfile_lint - ignore
 # TESTS
@@ -71,6 +71,7 @@ RUN apt-get -q update &&\
     # python-pip
     ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
     apt-utils apt-transport-https ca-certificates software-properties-common \
+    iptables openssh-client supervisor \
     locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
     systemd systemd-cron \
     python3-setuptools python3 python3-pip python3-dev python3-apt \
@@ -270,14 +271,6 @@ RUN curl -L -o /tmp/skaffold ${SKAFFOLD_URL} \
 #  && rm -rf /tmp/* \
 #  && chmod -R 777 ${JENKINS_USER_HOME}/.draft && ls -lrta ${JENKINS_USER_HOME}/.draft/plugins/  # for .draft/plugins
 
-COPY wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
-#VOLUME /var/lib/docker
-
-# place the jenkins slave startup script into the container
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh && rm -fr /sbin/initctl && ln -s /entrypoint.sh /sbin/initctl
-
 ARG AGENT_VERSION=${AGENT_VERSION:-"4.3"}
 ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
 
@@ -347,14 +340,41 @@ RUN google-chrome --version
 #.config
 
 # Working dir
-#WORKDIR $JENKINS_USER_HOME
 WORKDIR /tmp
 
-EXPOSE 80
+COPY modprobe.sh /usr/local/bin/modprobe
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/modprobe
+
+# Below for jenkins-slave-startup.sh
+COPY wrapdocker.sh /usr/local/bin/wrapdocker
+RUN chmod +x /usr/local/bin/wrapdocker
+
+COPY dockerd.conf /etc/supervisor/conf.d/
+COPY logger.sh /opt/bash-utils/logger.sh
+
+# place the jenkins slave startup script into the container
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh && rm -fr /sbin/initctl && ln -s /usr/local/bin/entrypoint.sh /sbin/initctl
+
+# https://github.com/docker-library/docker/pull/166
+#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
+#   docker-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-setting DOCKER_TLS_VERIFY and DOCKER_CERT_PATH
+# (For this to work, at least the "client" subdirectory of this path needs to be shared between the client and server containers via a volume, "docker cp", or other means of data sharing.)
+ENV DOCKER_TLS_CERTDIR=/certs
+# also, ensure the directory pre-exists and has wide enough permissions for "dockerd-entrypoint.sh" to create subdirectories, even when run in "rootless" mode
+RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
+# (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
+
+
+VOLUME /var/lib/docker
+
+EXPOSE 2375 2376
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+#ENTRYPOINT ["entrypoint.sh"]
 CMD ["/bin/bash"]
 
 HEALTHCHECK NONE

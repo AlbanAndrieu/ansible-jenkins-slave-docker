@@ -9,4 +9,4 @@ set -ex
 #/usr/sbin/sshd -D
 
 # else default to run whatever the user wanted like "bash" or "sh"
-/entrypoint.sh
+/usr/local/bin/entrypoint.sh
