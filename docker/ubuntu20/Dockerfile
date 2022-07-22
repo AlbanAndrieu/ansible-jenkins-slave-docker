@@ -18,7 +18,7 @@ ENV http_proxy=${http_proxy:-""}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
-LABEL name="ansible-jenkins-slave" version="2.0.1" \
+LABEL name="ansible-jenkins-slave" version="2.0.3" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
  com.nabla.vendor="NABLA Incorporated"
@@ -269,6 +269,8 @@ RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
 RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest
 RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest
 RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual studio
+
+USER root
 
 RUN ls -lrta /home/ubuntu/.cache/go-build/
 RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/

@@ -61,7 +61,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.3] - TODO
+## [2.0.4] - TODO
+
+## [2.0.3] - 2022-22-06
+
+### Added
+
+- Add `python -m pipenv install --dev --ignore-pipfile`
+
+### Updated
+
+- Python packages
+
+### Removed
+
+- Remove `pip install -r requirements.txt`
 
 ## [2.0.2] - 2022-26-05
 
