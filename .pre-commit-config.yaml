@@ -122,6 +122,10 @@ repos:
           (?x)^(
               mvnw|
               hooks|
+              modprobe.sh|
+              wrapdocker.sh|
+              docker-entrypoint.sh|
+              logger.sh|
           )$
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.37.2
