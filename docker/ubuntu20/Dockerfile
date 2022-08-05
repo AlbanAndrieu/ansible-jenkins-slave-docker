@@ -174,6 +174,7 @@ RUN python3 -m pip install --proxy=${http_proxy} pipenv==2022.7.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
 
+# dockerfile_lint - ignore
 USER ${USER}
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
@@ -310,6 +311,11 @@ RUN . /etc/os-release \
 ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.28.1"}
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
+# CODE CLIMATE
+
+RUN curl -L https://github.com/codeclimate/codeclimate/archive/master.tar.gz | tar xvz && \
+  cd codeclimate-* && sudo make install
+
 ### HELM
 
 ENV HELM_VERSION=${HELM_VERSION:-"v3.5.4"}
@@ -395,6 +401,31 @@ ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"103.0.5060.134"}
 #RUN webdriver-manager update --versions.chrome ${WEBDRIVER_CHROME_VERSION}
 RUN webdriver-manager update
 
+COPY modprobe.sh /usr/local/bin/modprobe
+COPY dockerd-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh /usr/local/bin/modprobe
+
+# Below for jenkins-slave-startup.sh
+COPY wrapdocker.sh /usr/local/bin/wrapdocker
+RUN chmod +x /usr/local/bin/wrapdocker
+
+# See https://github.com/cruizba/ubuntu-dind/blob/master/startup.sh
+COPY dockerd.conf /etc/supervisor/conf.d/
+COPY logger.sh /opt/bash-utils/logger.sh
+
+# place the jenkins slave startup script into the container
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh && rm -fr /sbin/initctl && ln -s /usr/local/bin/entrypoint.sh /sbin/initctl
+
+# https://github.com/docker-library/docker/pull/166
+#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
+#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-setting DOCKER_TLS_VERIFY and DOCKER_CERT_PATH
+# (For this to work, at least the "client" subdirectory of this path needs to be shared between the client and server containers via a volume, "docker cp", or other means of data sharing.)
+ENV DOCKER_TLS_CERTDIR=/certs
+# also, ensure the directory pre-exists and has wide enough permissions for "dockerd-entrypoint.sh" to create subdirectories, even when run in "rootless" mode
+RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
+# (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
+
 # drop back to the regular jenkins user - good practice
 USER jenkins
 RUN mkdir ${HOME}/workspace && mkdir -p ${HOME}/.m2/repository
@@ -433,40 +464,13 @@ RUN google-chrome --version
 # Working dir
 WORKDIR /tmp
 
-COPY modprobe.sh /usr/local/bin/modprobe
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/modprobe
-
-# Below for jenkins-slave-startup.sh
-COPY wrapdocker.sh /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
-
-# See https://github.com/cruizba/ubuntu-dind/blob/master/startup.sh
-COPY dockerd.conf /etc/supervisor/conf.d/
-COPY logger.sh /opt/bash-utils/logger.sh
-
-# place the jenkins slave startup script into the container
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh && rm -fr /sbin/initctl && ln -s /usr/local/bin/entrypoint.sh /sbin/initctl
-
-# https://github.com/docker-library/docker/pull/166
-#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
-#   docker-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-setting DOCKER_TLS_VERIFY and DOCKER_CERT_PATH
-# (For this to work, at least the "client" subdirectory of this path needs to be shared between the client and server containers via a volume, "docker cp", or other means of data sharing.)
-ENV DOCKER_TLS_CERTDIR=/certs
-# also, ensure the directory pre-exists and has wide enough permissions for "dockerd-entrypoint.sh" to create subdirectories, even when run in "rootless" mode
-RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
-# (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
-
-
 VOLUME /var/lib/docker
 
 EXPOSE 2375 2376
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-#ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["dockerd-entrypoint.sh"]
 CMD ["/bin/bash"]
 
 HEALTHCHECK NONE

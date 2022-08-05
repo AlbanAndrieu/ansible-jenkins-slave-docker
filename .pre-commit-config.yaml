@@ -120,12 +120,12 @@ repos:
         args: [-x]
         exclude: >
           (?x)^(
-              mvnw|
-              hooks|
-              modprobe.sh|
-              wrapdocker.sh|
-              docker-entrypoint.sh|
-              logger.sh|
+            mvnw|
+            hooks|
+            modprobe.sh|
+            wrapdocker.sh|
+            dockerd-entrypoint.sh|
+            logger.sh|
           )$
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.37.2

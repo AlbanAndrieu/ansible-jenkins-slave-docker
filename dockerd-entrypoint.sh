@@ -14,9 +14,9 @@ fi
 
 _should_tls() {
   [ -n "${DOCKER_TLS_CERTDIR:-}" ] &&
-  [ -s "$DOCKER_TLS_CERTDIR/client/ca.pem" ] &&
-  [ -s "$DOCKER_TLS_CERTDIR/client/cert.pem" ] &&
-  [ -s "$DOCKER_TLS_CERTDIR/client/key.pem" ]
+    [ -s "$DOCKER_TLS_CERTDIR/client/ca.pem" ] &&
+    [ -s "$DOCKER_TLS_CERTDIR/client/cert.pem" ] &&
+    [ -s "$DOCKER_TLS_CERTDIR/client/key.pem" ]
 }
 
 # if we have no DOCKER_HOST but we do have the default Unix socket (standard or rootless), use it explicitly
