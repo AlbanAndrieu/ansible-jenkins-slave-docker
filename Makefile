@@ -10,14 +10,19 @@ ME            = $(shell whoami)
 # Image
 DOCKER_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
 DOCKER_TAG := $${DOCKER_TAG:-"latest"}
-DOCKER_NEXT_TAG := $${CI_COMMIT_REF_SLUG:-"2.0.3"}
+DOCKER_NEXT_TAG := $${CI_COMMIT_REF_SLUG:-"2.0.3""}
 IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
+
+TRIVY_VULN_TYPE = "os,library"
+TRIVY_SECURITY_CHECKS = "vuln,config,secret"
+TRIVY_GLOBAL_SECURITY_CHECKS = --security-checks ${TRIVY_SECURITY_CHECKS} --vuln-type ${TRIVY_VULN_TYPE}
+TRIVY_ARGS = --skip-dirs .direnv --skip-dirs ./node_modules --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile
+CS_SEVERITY_REPORT_THRESHOLD = "HIGH,CRITICAL"
 
 # Executables: local only
 DOCKER        = docker
 
 # Misc
-#.DEFAULT_GOAL = help
 .DEFAULT_GOAL = build-docker
 .PHONY       =  # Not needed here, but you can put your all your targets to be sure
 	            # there is no name conflict between your files and your targets.
@@ -28,18 +33,21 @@ help: ## Outputs this help screen
 
 ## —— All 🎵 ———————————————————————————————————————————————————————————————
 .PHONY: all
-all: down clean lint build up dive
+all: down clean lint build up test
 
-.PHONY: rm
-rm: clean
-	@echo "=> Removing image..."
+## —— Clean Docker 🧹🐳💩 ———————————————————————————————————————————————————————————————
+.PHONY: clean-docker
+clean-docker:
+	@echo "=> Cleaning image..."
 	docker rmi $(IMAGE)
 
+## —— Clean 🧹 ———————————————————————————————————————————————————————————————
 .PHONY: clean
 clean:
 	@echo "=> Cleaning image..."
 	scripts/clean.sh
 
+## —— Lint 💍 ———————————————————————————————————————————————————————————————
 .PHONY: lint
 lint:
 	@echo "=> Validating..."
@@ -52,16 +60,23 @@ build-docker:  ## Build container with docker
 	# docker build -t $(IMAGE) --squash .
 	scripts/docker-build-20.sh
 
+## —— Buildah Docker 🐶🐳 ————————————————————————————————————————————————————————————————
 .PHONY: build-buildah-docker
-build-buildah-docker:
+build-buildah-docker: ## Build container with buildah
 	@echo "=> Building image..."
 	buildah bud -t $(IMAGE) .
 
-.PHONY: build
-build:
+## —— Buildah 🐶 ————————————————————————————————————————————————————————————————
+.PHONY: build-buildah
+build-buildah: ## Build container with buildah
 	@echo "=> Building image..."
 	./build-oci.sh
 
+## —— Build 🚀 —————————————————————————————————————————————————————————————————
+.PHONY: build
+build: build-docker
+
+## —— Up ✅ —————————————————————————————————————————————————————————————————
 .PHONY: up
 up:
 	@echo "up"
@@ -73,33 +88,90 @@ down:
 .PHONY: run
 run: down up
 
-## —— Debug 📜 —————————————————————————————————————————————————————————————————
+## —— Debug 📜🐳 —————————————————————————————————————————————————————————————————
 .PHONY: debug
 debug: ## Enter container
 	@echo "=> Debuging image..."
 	docker run -it -u 1000:2000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash $(IMAGE)
+	# podman run --rm -it --pod stack --user 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro --name nomad $(IMAGE) /bin/bash
 
-## —— Project 🐝 ———————————————————————————————————————————————————————————————
+## —— Project 🐝🐳 ———————————————————————————————————————————————————————————————
 .PHONY: exec
 exec: ## Run container
 	@echo "=> Executing image..."
 	docker run -it -u 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock $(IMAGE)
+  # podman run --rm -dit --pod stack --user 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro --name nomad $(IMAGE)
 
-.PHONY: dive
-dive:
+## —— Tests Dive 🧪🐳 —————————————————————————————————————————————————————————————————
+.PHONY: test-dive
+test-dive: ## Run Dive image tests
 	@echo "=> Diving image..."
 	CI=true dive --ci --json docker-dive-stats.json  $(IMAGE) 1>docker-dive.log 2>docker-dive-error.log
 
-## —— Tests ✅ —————————————————————————————————————————————————————————————————
-.PHONY: test
-test: ## Run all tests
+.PHONY: test-inspect
+test-inspect:
 	@echo "=> Testing image..."
 	docker-inspect.sh
 
-## —— Deploy 💾 ———————————————————————————————————————————————————————————————
-.PHONY: deploy
-deploy: ## Push to registry
+## —— Tests Codeclimate 🧪🤖 —————————————————————————————————————————————————————————————————
+.PHONY: test-codeclimate
+test-codeclimate:
+	@echo "=> Testing Codeclimate image..."
+	codeclimate analyze
+
+## —— Tests Codeclimate 🧪👽 —————————————————————————————————————————————————————————————————
+.PHONY: test-semgrep
+test-codeclimate:
+	@echo "=> Testing Semgrep image..."
+	semgrep --config auto .
+
+## —— Tests 🧪 —————————————————————————————————————————————————————————————————
+.PHONY: test
+test: test-dive test-codeclimate test-semgrep
+
+## —— Tests Sast Docker 👮😈🐳 —————————————————————————————————————————————————————————————————
+.PHONY: sast-docker
+sast-docker:
+	@echo "=> Scanning trivy image..."
+	time trivy image --exit-code 1 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report.md $(IMAGE) 1>docker-trivy.log 2>docker-trivy-error.log
+
+## —— Tests Sast Fs Docker 👮😈🧚🐳 —————————————————————————————————————————————————————————————————
+.PHONY: sast-fs-docker
+sast-fs-docker:
+	@echo "=> Scanning trivy filesystem..."
+	time trivy filesystem --exit-code 2 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report-fs.md . 1>docker-trivy-fs.log 2>docker-trivy-fs-error.log
+
+## —— Tests Sast Buildah 👮😈🐶 —————————————————————————————————————————————————————————————————
+.PHONY: sast-buildah
+sast-buildah:
+	@echo "=> Scanning trivy image..."
+	rm -Rf "./archive/" || true
+	mkdir "./archive/" || true
+	buildah push $(IMAGE) docker-archive:./archive/built-with-buildah.tar:latest
+	time trivy image --exit-code 1 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report.md --input ./archive/built-with-buildah.tar 1>docker-trivy.log 2>docker-trivy-error.log
+
+## —— Tests 👮😈 —————————————————————————————————————————————————————————————————
+.PHONY: sast
+sast: sast-fs-docker ## Run Trivy sast
+
+## —— Deploy Docker 💾🐳 ———————————————————————————————————————————————————————————————
+.PHONY: deploy-docker
+deploy-docker: ## Push to registry
 	@echo "=> Tagging image..."
-	docker tag $(IMAGE) $(IMAGE_NAME):$(IMAGE_NEXT_TAG)
+	docker tag $(IMAGE) $(DOCKER_NAME):$(DOCKER_NEXT_TAG)
 	@echo "=> Pushing image..."
-	@echo "=> TODO => docker push $(IMAGE_NAME):$(IMAGE_NEXT_TAG)"
+	@echo "=> TODO => docker push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
+	@echo "=> TODO => docker push $(DOCKER_NAME):latest"
+
+## —— Deploy Buildah 💾🐶 ———————————————————————————————————————————————————————————————
+.PHONY: deploy-buildah
+deploy-buildah: ## Push to registry
+	@echo "=> Tagging image..."
+	buildah tag $(IMAGE) $(DOCKER_NAME):$(DOCKER_NEXT_TAG)
+	@echo "=> Pushing image..."
+	@echo "=> TODO => buildah push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
+	@echo "=> TODO => buildah push $(DOCKER_NAME):latest"
+
+## —— Deploy 💾👑 ———————————————————————————————————————————————————————————————
+.PHONY: deploy
+deploy: deploy-docker ## Push to registry
