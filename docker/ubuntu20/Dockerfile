@@ -273,8 +273,8 @@ RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual s
 
 USER root
 
-RUN ls -lrta /home/ubuntu/.cache/go-build/
-RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/
+#RUN ls -lrta /home/ubuntu/.cache/go-build/
+#RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/
 
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
@@ -313,8 +313,8 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/
 
 # CODE CLIMATE
 
-RUN curl -L https://github.com/codeclimate/codeclimate/archive/master.tar.gz | tar xvz && \
-  cd codeclimate-* && sudo make install
+#RUN curl -L https://github.com/codeclimate/codeclimate/archive/master.tar.gz | tar xvz && \
+#  cd codeclimate-* && make install
 
 ### HELM
 
