@@ -1,0 +1,148 @@
+---
+stages:
+  - build
+  - test
+  - release
+  - deploy
+
+#workflow:
+#  rules:
+#    - if: $CI_COMMIT_TITLE =~ /-draft$/
+#      when: never
+#    - if: $CI_COMMIT_TAG =~ /^(prod|uat|dev)-/
+#    #- if: $CI_MERGE_REQUEST_IID
+#    #- if: $CI_OPEN_MERGE_REQUESTS
+#    #  when: never
+#    # below avoid 'detached pipeline', see https://stackoverflow.com/questions/68955071/how-to-disable-detached-pipelines-in-gitlab
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#      when: never
+#    - if: '$CI_PIPELINE_SOURCE == "push"'
+
+variables:
+  #APP: ${CI_PROJECT_NAME}
+  OCI_REGISTRY: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}
+  # CODE_QUALITY_DISABLED: "true"
+  SECRET_DETECTION_IMAGE_SUFFIX: '-fips'
+  SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
+
+include:
+  - project: nabla-group/infrastructure/ci-templates
+    ref: main
+    file: '/templates/docker-build.gitlab-ci.yml'
+
+  - project: nabla-group/infrastructure/ci-templates
+    ref: main
+    file: '/templates/deploy-nomad.gitlab-ci.yml'
+
+  #- project: nabla-group/infrastructure/ci-templates
+  #  ref: main
+  #  file: '/templates/semgrep.gitlab-ci.yml'
+
+  - template: Code-Quality.gitlab-ci.yml
+
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+secret_detection:
+  variables:
+    SECRET_DETECTION_HISTORIC_SCAN: "true"
+
+semgrep:
+  image: returntocorp/semgrep
+  stage: test
+  tags:
+    #- nabla-shared-runner
+    - docker
+  script: semgrep ci
+  rules:
+  #- changes:
+  #    - .gitlab-ci.yml
+  - if: $CI_PIPELINE_SOURCE == "web"  # allow triggering a scan manually from the gitlab UI
+
+  # Option 1: Scan changed files in MRs, only report new findings (existing
+  # findings ignored).
+  #- if: $CI_MERGE_REQUEST_IID
+
+  # Option 2: Scan all files on the default branch, report any findings.
+  # - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+  - !reference [.default_rules, rules]
+
+  # Setup inline MR comments:
+  # https://semgrep.dev/docs/semgrep-app/notifications/#enabling-gitlab-merge-request-comments
+
+docker-build:
+  extends: .docker-build
+  tags:
+    - nabla-shared-runner
+    #- docker
+  #services:
+  #  - name: docker:dind
+  #    entrypoint: ["env", "-u", "DOCKER_HOST"]
+  #    command: ["dockerd-entrypoint.sh"]
+  variables:
+    # CONTAINER_SCANNING_GITLAB_CODEQUALITY_TEMPLATE_DISABLE: "true"
+    TRIVY_FILESYTEM_EXIT_ON_FAILURE: 0
+    TRIVY_ARGS: "--skip-dirs .direnv --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/bin/container-structure-test --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile"
+
+docker-test:
+  needs: ["docker-build"]
+  #needs: []
+  stage: test
+  tags:
+    - nabla-shared-runner
+    #- docker
+  #services:
+  #  - name: docker:dind
+  #    entrypoint: ["env", "-u", "DOCKER_HOST"]
+  #    command: ["dockerd-entrypoint.sh"]
+  script:
+    - make test-cst
+    - make test-dive-ci
+  rules:
+    - !reference [.default_rules, rules]
+
+docker-release:
+  extends: .docker-release
+  needs: ["docker-build"]
+  script:
+    - docker images
+    - echo "Releasing image ${APP_IMAGE}:${OCI_IMAGE_TAG} to ${OCI_REGISTRY}/${DOCKER_IMAGE}"
+    - docker tag ${APP_IMAGE}:${OCI_IMAGE_TAG} ${OCI_REGISTRY}/${DOCKER_IMAGE} || true
+    - !reference [.login-gitlab-docker, script]
+    - echo "To => ${OCI_REGISTRY}/${DOCKER_IMAGE}"
+    - |
+      if [ -z $CI_COMMIT_TAG ]; then
+        echo "Never push"
+      else
+        echo "Push by hand"
+        echo "docker push ${OCI_REGISTRY}/${DOCKER_IMAGE}"
+      fi
+
+docker-deploy-latest:
+  stage: deploy
+  resource_group: deploy # avoid simultaneous deploy
+  needs: ["docker-build"]
+  dependencies:
+    - "docker-build"
+  tags:
+    - nabla-shared-runner
+    #- docker
+  variables:
+    # OCI_REGISTRY: registry.gitlab.com
+    OCI_IMAGE_TAG: "latest"
+    OCI_IMAGE: "$APP_IMAGE:$OCI_IMAGE_TAG"
+  script:
+    - echo "Deploy to production registry"
+    - docker images
+    - echo "OCI_IMAGE=$APP_IMAGE:$OCI_IMAGE_TAG" >> build.env && export OCI_IMAGE_TAG=$OCI_IMAGE_TAG && export OCI_IMAGE=$APP_IMAGE:$OCI_IMAGE_TAG
+    - echo "OCI_IMAGE=$OCI_IMAGE"
+    - echo "Releasing image ${APP_IMAGE}:${OCI_IMAGE_TAG} to ${OCI_REGISTRY}/${OCI_IMAGE}"
+    - docker tag ${APP_IMAGE}:${OCI_IMAGE_TAG} ${OCI_REGISTRY}/${OCI_IMAGE} || true
+    - !reference [.login-gitlab-docker, script]
+    - echo "To => ${OCI_REGISTRY}/${OCI_IMAGE}"
+  environment:
+    name: production
+    url: https://gitlab.com/nabla-group/web/templates/ansible-jenkins-slave-docker/container_registry
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual

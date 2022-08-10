@@ -16,14 +16,14 @@ IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
 TRIVY_VULN_TYPE = "os,library"
 TRIVY_SECURITY_CHECKS = "vuln,config,secret"
 TRIVY_GLOBAL_SECURITY_CHECKS = --security-checks ${TRIVY_SECURITY_CHECKS} --vuln-type ${TRIVY_VULN_TYPE}
-TRIVY_ARGS = --skip-dirs .direnv --skip-dirs ./node_modules --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile
+TRIVY_ARGS = --skip-dirs .direnv --skip-dirs ./node_modules --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/bin/container-structure-test --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile
 CS_SEVERITY_REPORT_THRESHOLD = "HIGH,CRITICAL"
 
 # Executables: local only
 DOCKER        = docker
 
 # Misc
-.DEFAULT_GOAL = build-docker
+.DEFAULT_GOAL = build
 .PHONY       =  # Not needed here, but you can put your all your targets to be sure
 	            # there is no name conflict between your files and your targets.
 
@@ -43,7 +43,7 @@ clean-docker:
 
 ## —— Clean 🧹 ———————————————————————————————————————————————————————————————
 .PHONY: clean
-clean:
+clean: clean-docker
 	@echo "=> Cleaning image..."
 	scripts/clean.sh
 
@@ -102,11 +102,23 @@ exec: ## Run container
 	docker run -it -u 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock $(IMAGE)
   # podman run --rm -dit --pod stack --user 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro --name nomad $(IMAGE)
 
-## —— Tests Dive 🧪🐳 —————————————————————————————————————————————————————————————————
+## —— Tests Dive 🧪🐳🚨 —————————————————————————————————————————————————————————————————
 .PHONY: test-dive
 test-dive: ## Run Dive image tests
-	@echo "=> Diving image..."
-	CI=true dive --ci --json docker-dive-stats.json  $(IMAGE) 1>docker-dive.log 2>docker-dive-error.log
+	@echo "=> Testing Dive image..."
+	@echo "CI=true dive --ci --highestUserWastedPercent 0.1 --lowestEfficiency 0.9 --json docker-dive-stats.json $(IMAGE) 1>docker-dive.log 2>docker-dive-error.log"
+	CI=true docker run --rm -it \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v  "$(pwd)":"$(pwd)" \
+      -w "$(pwd)" \
+      -v "$(pwd)/.dive.yaml":"$(pwd)/.dive.yaml" \
+      wagoodman/dive:latest --ci --json docker-dive-stats.json $(IMAGE)
+
+## —— Tests Dive CI 🧪🐳🚨 —————————————————————————————————————————————————————————————————
+.PHONY: test-dive-ci
+test-dive-ci: ## Run Dive image tests for CI
+	@echo "=> Testing Dive image..."
+	CI=true dive --ci --highestUserWastedPercent 0.1 --lowestEfficiency 0.9 --json docker-dive-stats.json $(IMAGE)
 
 .PHONY: test-inspect
 test-inspect:
@@ -119,15 +131,22 @@ test-codeclimate:
 	@echo "=> Testing Codeclimate image..."
 	codeclimate analyze
 
-## —— Tests Codeclimate 🧪👽 —————————————————————————————————————————————————————————————————
+## —— Tests Semgrep 🧪👽 —————————————————————————————————————————————————————————————————
 .PHONY: test-semgrep
-test-codeclimate:
+test-semgrep:
 	@echo "=> Testing Semgrep image..."
 	semgrep --config auto .
 
+## —— Tests CST 🧪🕳️ —————————————————————————————————————————————————————————————————
+.PHONY: test-cst
+test-cst:
+	@echo "=> Testing CST image..."
+	@echo "/usr/local/bin/container-structure-test test --save -v info --image $(IMAGE) --config ./docker/ubuntu20/config.yaml"
+	/usr/local/bin/container-structure-test test --image $(IMAGE) --config ./docker/ubuntu20/config.yaml
+
 ## —— Tests 🧪 —————————————————————————————————————————————————————————————————
 .PHONY: test
-test: test-dive test-codeclimate test-semgrep
+test: test-dive test-codeclimate test-semgrep test-cst
 
 ## —— Tests Sast Docker 👮😈🐳 —————————————————————————————————————————————————————————————————
 .PHONY: sast-docker
@@ -135,7 +154,7 @@ sast-docker:
 	@echo "=> Scanning trivy image..."
 	time trivy image --exit-code 1 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report.md $(IMAGE) 1>docker-trivy.log 2>docker-trivy-error.log
 
-## —— Tests Sast Fs Docker 👮😈🧚🐳 —————————————————————————————————————————————————————————————————
+## —— Tests Sast Fs Docker 👮😈️🐳 —————————————————————————————————————————————————————————————————
 .PHONY: sast-fs-docker
 sast-fs-docker:
 	@echo "=> Scanning trivy filesystem..."

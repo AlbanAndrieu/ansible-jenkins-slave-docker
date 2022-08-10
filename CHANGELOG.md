@@ -220,4 +220,4 @@ dive report
 - Drop support for docker below 19.03.3
 - Drop support for ansible below 2.7.9
 
-`docker run -it -u 1004:999 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash registry.hub.docker.com/nabla/ansible-jenkins-slave:1.0.0`
+`docker run -it -u 1004:999 -w /sandbox/project-to-build -v /workspace/users/albandri30/:/sandbox/project-to-build:rw -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock --entrypoint /bin/bash registry.hub.docker.com/nabla/ansible-jenkins-slave:1.0.0`
