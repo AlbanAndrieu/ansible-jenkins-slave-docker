@@ -79,6 +79,7 @@ ADD https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linu
 #RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 #RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+# checkov:skip=CKV_DOCKER_9:Ensure that APT isn't used
 RUN apt update && apt-get -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
     ca-certificates curl apt-transport-https lsb-release gnupg \
     wget software-properties-common \
@@ -346,7 +347,8 @@ RUN google-chrome --version
 
 RUN rm -f /home/jenkins/alban.andrieu.conky/files/default-themes-extra-1.tar.gz || true
 
-#For github action
+# For github action
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 USER root
 RUN mkdir /github && chown -R jenkins /github && chmod -R 777 /github
 

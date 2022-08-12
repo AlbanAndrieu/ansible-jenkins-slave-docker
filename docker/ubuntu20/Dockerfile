@@ -382,6 +382,7 @@ RUN chmod +x /usr/local/bin/jenkins-agent && \
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
+# checkov:skip=CKV_DOCKER_4:Ensure that COPY is used instead of ADD in Dockerfiles
 ADD https://github.com/roboll/helmfile/releases/download/v0.138.2/helmfile_linux_amd64 /usr/local/bin/helmfile
 #sudo cp helmfile_linux_amd64 /usr/local/bin/helmfile
 RUN chmod +x /usr/local/bin/helmfile
@@ -460,6 +461,11 @@ RUN google-chrome --version
 #RUN chromium-browser --version
 #RUN chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME/.local" && chmod -R 777 "${JENKINS_USER_HOME}/.local"
 #.config
+
+# For github action
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+USER root
+RUN mkdir /github && chown -R jenkins /github && chmod -R 777 /github
 
 # Working dir
 WORKDIR /tmp
