@@ -1,0 +1,4 @@
+libxml2-dev [platform:dpkg]
+libxml2-devel [platform:rpm]
+git [platform:dpkg]
+git [platform:rpm]

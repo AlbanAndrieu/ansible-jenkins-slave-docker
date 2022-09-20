@@ -24,6 +24,7 @@ repos:
               .pnp.cjs|
               package-lock.json|
               Pipfile.lock|
+              yarn.lock|
               poetry.lock
           )$
       - id: check-case-conflict

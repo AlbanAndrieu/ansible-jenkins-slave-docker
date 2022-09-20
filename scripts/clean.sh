@@ -20,7 +20,11 @@ echo -e "${magenta} Cleaning started. ${NC}"
 rm -Rf _build/ build/ .eggs/ .toxs/ dist/ output/pytest-report.xml .coverage output/coverage.xml docs/_build/ docs/_static/* .tox/ .scannerwork/ .pytest_cache/ output/htmlcov/ cprofile out/ report/
 
 rm -f checkstyle.xml docker-dockerfilelint.json overview.html ansible-lint.* ./*.log
-rm -f package-lock.json Pipfile.lock  || true
+rm -f package-lock.json Pipfile.lock || true
+
+# Issue module (ansible.legacy.command) is missing interpreter line
+rm -Rf artifacts/ || true
+rm -Rf collections/ || true
 
 find . -maxdepth 2 -mindepth 2 -regextype posix-egrep -type d -regex '.+/.*egg-info' -exec rm -rf {} \;
 find . -maxdepth 2 -mindepth 2 -regextype posix-egrep -type d -regex '.*__pycache__.*' -exec rm -rf {} \;

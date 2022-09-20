@@ -165,7 +165,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
+RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.2.2 \
 #  && ln -sv $(which pip3) /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
