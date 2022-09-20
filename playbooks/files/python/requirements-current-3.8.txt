@@ -146,7 +146,7 @@ lazy-object-proxy==1.4.3
 lcov-cobertura==1.6
 linecache2==1.0.0
 lxml==4.6.2
-Mako==1.1.2
+Mako==1.2.2
 MarkupSafe==1.1.1
 matplotlib==3.2.1
 mccabe==0.6.1
