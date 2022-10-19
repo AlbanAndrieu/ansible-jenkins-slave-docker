@@ -201,6 +201,34 @@ fileExistenceTests:
     shouldExist: true
     permissions: "Lrwxrwxrwx"
 
+# check default pip (pip3)
+  - name: "pip"
+    path: "/usr/local/bin/pip" # /usr/bin/pip
+    shouldExist: true
+    permissions: "-rwxr-xr-x" # Lrwxrwxrwx
+
+  - name: "pip"
+    path: "/usr/bin/pip"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+# check default python (python3)
+  - name: "python"
+    path: "/usr/bin/python"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+  - name: "check default python version"
+    path: "/usr/bin/python/"
+    shouldExist: false
+
+  # PYTHON pip cache cleaned (to spare disk space)
+
+  - name: "home .cache pip"
+    path: "/home/ubuntu/.cache/pip"
+    shouldExist: false
+  #   permissions: 'drwxrwxrwx'
+
   # NPM cache cleaned (to spare disk space)
 
   - name: "jenkins npm"
@@ -217,6 +245,11 @@ fileExistenceTests:
     shouldExist: true
     permissions: "-rwxr-xr-x"
 
+  - name: "jest"
+    path: "/usr/bin/jest"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
   # - name: 'node 11.12.0'
   #   path: '/usr/local/n/versions/node/11.12.0'
   #   shouldExist: true
@@ -224,35 +257,28 @@ fileExistenceTests:
 
   - name: "docker credentials"
     path: "/home/jenkins/.docker/config.json"
-    shouldExist: true
-    permissions: "-rwxrwxrwx"
-
-  # PYTHON pip cache cleaned (to spare disk space)
-
-  - name: "home .cache pip"
-    path: "/home/jenkins/.cache/pip"
     shouldExist: false
-  #   permissions: 'drwxrwxrwx'
 
   - name: "home .config configstore"
     path: "/home/jenkins/.config/configstore"
-    shouldExist: true
-    permissions: "drwxrwxrwx"
+    shouldExist: false
 
   # - name: 'hadolint'
   #   path: '/home/jenkins/.linuxbrew/bin/hadolint'
   #   shouldExist: true
   #   permissions: '-rwxrwxrwx'
-  #
-  # - name: 'dockerfile_lint'
-  #   path: '/usr/local/bin/dockerfile_lint'
-  #   shouldExist: true
-  #   permissions: 'Lrwxrwxrwx'
 
-  - name: "draft"
-    path: "/bin/draft"
+# TODO /home/ubuntu/.local/bin//ansible-lint
+
+  - name: 'dockerfile_lint'
+    path: '/usr/bin/dockerfile_lint'
     shouldExist: true
-    permissions: "-rwxr-xr-x"
+    permissions: 'Lrwxrwxrwx'
+
+#  - name: "draft"
+#    path: "/bin/draft"
+#    shouldExist: true
+#    permissions: "-rwxr-xr-x"
 
   - name: "tmp"
     path: "/tmp"
@@ -312,7 +338,7 @@ commandTests:
     args: ["${PATH}"]
     expectedOutput:
       [
-        "/opt/ansible/env38/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "/opt/ansible/env38/bin:/home/ubuntu/go/bin:/usr/local/go/bin:/home/ubuntu/.local/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
       ]
 
   # - name: "molecule"
@@ -360,25 +386,30 @@ commandTests:
   #   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
   #   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
 
-  - name: "check node v14 version"
+  - name: "check node v16.17 version"
     command: "node" # /usr/bin/node
     args: ["--version"]
-    expectedOutput: ["v14.18.*"]
+    expectedOutput: ["v16.17.*"]
 
   # - name: "check nodejs v14.16.1 version"
   #   command: "nodejs"
   #   args: ["--version"]
   #   expectedOutput: ["v14.16.*"]
 
-  - name: "check npm 7.11.2 version"
+  - name: "check npm 8.19.2 version"
     command: "npm" # /usr/local/bin/npm
     args: ["--version"]
-    expectedOutput: ["7.11.*"]
+    expectedOutput: ["8.19.*"]
 
-  - name: "check newman 5.2 version"
+  - name: "check newman 5.2.2 version"
     command: "newman" # /usr/local/bin/newman
     args: ["--version"]
     expectedOutput: ["5.2..*"]
+
+  - name: "check jest 28.1.3 version"
+    command: "jest" # /usr/bin/jest
+    args: ["--version"]
+    expectedOutput: ["28.1..*"]
 
   # setup a virtualenv, and verify the correct python binary is run
   # - name: "python in virtualenv"
@@ -387,22 +418,34 @@ commandTests:
   #   args: ["python3.8"]
   #   expectedOutput: ["/opt/ansible/env38/bin/python3.8\n"]
 
+  - name: "check default pip version"
+    command: "pip"
+    args: ["--version"]
+    expectedOutput:
+      ["pip 22.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
+
   - name: "check default python version"
     command: "python"
     args: ["--version"]
     expectedOutput: ["Python 3.8.*"]
 
-  - name: "check python 2.7 version"
-    command: "python2"
-    args: ["--version"]
-    expectedError: ["Python 2.7.*"]
+ # - name: "check python 2.7 version"
+ #   command: "python2"
+ #   args: ["--version"]
+ #   expectedError: ["Python 2.7.*"]
 
-  # - name: "check pip 2 version"
-  #   command: "pip2"
-  #   args: ["--version"]
-  #   expectedOutput: ['pip 20.3.* from /usr/local/lib/python2.7/dist-packages/pip.*.*\n']
+ # - name: "check pip 2 version"
+ #   command: "pip2"
+ #   args: ["--version"]
+ #   expectedOutput: ['pip 20.3.* from /usr/local/lib/python2.7/dist-packages/pip.*.*\n']
 
   - name: "check pip 3 version"
+    command: "pip3"
+    args: ["--version"]
+    expectedOutput:
+      ["pip 22.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
+
+  - name: "check pip 3 env38 version"
     command: "pip3"
     args: ["--version"]
     expectedOutput:
@@ -423,20 +466,15 @@ commandTests:
   #   args: ["--version"]
   #   expectedOutput: ['Python 3.7.*']
 
-  - name: "check python 3.8.5 version"
+  - name: "check python 3.8.10 version"
     command: "python3.8"
     args: ["--version"]
     expectedOutput: ["Python 3.8.*"]
 
-  # - name: "check pip3 19.3.1 version"
-  #   command: "pip3"
-  #   args: ["--version"]
-  #   expectedOutput: ['pip 19.3.* from /usr/local/lib/python3.7/dist-packages/pip (python 3.7)']
-
-  - name: "check ansible core 2.10.15 version"
-    command: "/usr/local/bin/ansible"
+  - name: "check ansible core 2.13.5 version"
+    command: "/home/ubuntu/.local/bin//ansible"  # /usr/local/bin/ansible
     args: ["--version"]
-    expectedOutput: ["ansible.*core 2.11.*"]
+    expectedOutput: ["ansible.*core 2.13.*"]
 
   # setup a virtualenv, and verify the correct python binary is run
   # source /opt/ansible/env38/bin/activate
@@ -450,10 +488,25 @@ commandTests:
     expectedOutput: ["/opt/ansible/env38/bin/ansible-cmdb"]
     #expectedOutput: ['ansible-cmdb.py v1.30.*']
 
-  - name: "check docker20.10 version"
+  - name: "check docker 20.10.3 version"
     command: "docker"
     args: ["--version"]
     expectedOutput: ["Docker version 20.10.*"]
+
+  - name: "check aws 1.25.80 version"
+    command: "aws" # aws-cli/1.25.80
+    args: ["--version"]
+    expectedOutput: ["aws-cli/1.25.*"]
+
+  - name: "check flake8 5.0.4 version"
+    command: "flake8"
+    args: ["--version"]
+    expectedOutput: ["5.0.*"]
+
+  - name: "check pytest 6.2.5 version"
+    command: "pytest"
+    args: ["--version"]
+    expectedError: ["pytest 6.2.*"]
 
   - name: "check helm 3.5 version"
     command: "helm"
@@ -463,13 +516,13 @@ commandTests:
         'version.BuildInfo{Version:\"v3.5..*\", GitTreeState:\"clean\", GoVersion:\"go1.15..*\"}.*',
       ]
 
-  - name: "check draft version"
-    command: "draft"
-    args: ["version"]
-    expectedOutput:
-      [
-        '&version.Version{SemVer:\"v0.16..*\", GitCommit:\".*\", GitTreeState:\"dirty\"}',
-      ]
+#  - name: "check draft version"
+#    command: "draft"
+#    args: ["version"]
+#    expectedOutput:
+#      [
+#        '&version.Version{SemVer:\"v0.16..*\", GitCommit:\".*\", GitTreeState:\"dirty\"}',
+#      ]
 
   # For 32 bits X compile
   # - name: "check mingw32 gcc"

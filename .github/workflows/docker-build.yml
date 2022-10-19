@@ -3,7 +3,7 @@
 
 name: Docker CI
 
-on:
+true:
   push:
     branches: [master, main]
     paths-ignore:
@@ -17,7 +17,8 @@ jobs:
   build-docker:
     if: github.actor != 'dependabot[bot]' && github.actor!= 'dependabot-preview[bot]' # ignore the pull request which comes from user dependabot.
     name: Build Docker
-    runs-on: ubuntu-18.04
+    #runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     # See https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     # runs-on: ubuntu-latest
     # container:
@@ -25,6 +26,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
@@ -44,7 +46,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -73,11 +75,11 @@ jobs:
           ignore-unfixed: true
           skip-dirs: .direnv
           skip-files: Gemfile.lock,Pipfile.lock,package-lock.json,requirements.txt,docker/ubuntu16/Dockerfile,docker/ubuntu18/Dockerfile
-          security-checks: vuln  # vuln,secret
+          security-checks: vuln # vuln,secret
           vuln-type: os,library
           severity: CRITICAL,HIGH
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: trivy-results.sarif

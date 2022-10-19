@@ -1,8 +1,10 @@
 ---
 # from galaxy
+# ansible-galaxy install -r requirements.yml --ignore-errors
 # ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors
 # ansible-galaxy collection install -r requirements.yml --force
 # ansible-galaxy collection install ansible.windows
+# ansible-galaxy collection install devsec.hardening
 
 collections:
   - name: community.crypto
@@ -13,6 +15,7 @@ collections:
   - name: ansible.netcommon
   - name: ansible.posix
   - name: ansible.windows
+  - name: devsec.hardening
 
 roles:
   - src: https://github.com/AlbanAndrieu/ansible-administration.git

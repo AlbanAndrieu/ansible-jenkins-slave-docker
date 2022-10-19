@@ -182,4 +182,6 @@ hs_err_pid*
 ansible.key
 vault.passwd
 
+context/*
+
 megalinter-reports/

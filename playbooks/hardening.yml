@@ -1,0 +1,49 @@
+---
+# ansible-galaxy collection install devsec.hardening
+# ansible-playbook playbooks/hardening.yml --become --ask-become-pass -vvvvv
+
+- name: "sandbox"
+  hosts: localhost
+  gather_facts: yes
+  #become: true
+
+  tasks:
+    - debug:
+        var: ansible_version.full
+    - debug:
+        var: ansible_en.container
+
+- hosts: localhost
+  #become: true
+
+  collections:
+    - devsec.hardening
+
+  roles:
+    - devsec.hardening.os_hardening
+    - devsec.hardening.ssh_hardening
+
+  vars:
+    os_desktop_enable: true
+    os_pam_enabled: false
+    os_securetty_enabled: false
+    sysctl_overwrite:
+      # Enable IPv4 traffic forwarding.
+      net.ipv4.ip_forward: 1
+      # Disable IPv6 traffic forwarding.
+      net.ipv6.conf.all.forwarding: 0
+    sysctl_custom_config:
+      # Mitigation of vulnerability CVE-2021-33909
+      # NOK podman images
+      kernel.unprivileged_userns_clone: 1
+      kernel.unprivileged_bpf_disabled: 0
+    #os_security_suid_sgid_system_whitelist:
+    # - '/usr/bin/ssh-agent'
+    ssh_permit_root_login: true
+    ssh_client_hardening: false
+    ssh_server_hardening: false
+    ssh_allow_agent_forwarding: true
+    ssh_x11_forwarding: true
+    ssh_pam_support: false
+    ssh_client_password_login: true
+    ssh_banner: true

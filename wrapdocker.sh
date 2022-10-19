@@ -9,12 +9,11 @@ CGROUP=/sys/fs/cgroup
 
 mountpoint -q $CGROUP ||
   mount -n -t tmpfs -o uid=0,gid=0,mode=0755 cgroup $CGROUP || {
-    echo "Could not make a tmpfs mount. Did you use --privileged?"
-    exit 1
-  }
+  echo "Could not make a tmpfs mount. Did you use --privileged?"
+  exit 1
+}
 
-if [ -d /sys/kernel/security ] && ! mountpoint -q /sys/kernel/security
-then
+if [ -d /sys/kernel/security ] && ! mountpoint -q /sys/kernel/security; then
   mount -t securityfs none /sys/kernel/security || {
     echo "Could not mount /sys/kernel/security."
     echo "AppArmor detection and --privileged mode might break."
@@ -22,8 +21,7 @@ then
 fi
 
 # Mount the cgroup hierarchies exactly as they are in the parent system.
-for SUBSYS in $(cut -d: -f2 /proc/1/cgroup)
-do
+for SUBSYS in $(cut -d: -f2 /proc/1/cgroup); do
   [ -d $CGROUP/$SUBSYS ] || mkdir $CGROUP/$SUBSYS
   mountpoint -q $CGROUP/$SUBSYS ||
     mount -n -t cgroup -o $SUBSYS cgroup $CGROUP/$SUBSYS
@@ -64,12 +62,11 @@ grep -qw devices /proc/1/cgroup ||
 
 # Now, close extraneous file descriptors.
 pushd /proc/self/fd >/dev/null
-for FD in *
-do
+for FD in *; do
   case "$FD" in
   # Keep stdin/stdout/stderr
-  [012])
-    ;;
+  [012]) ;;
+
   # Nuke everything else
   *)
     eval exec "$FD>&-"
@@ -78,28 +75,24 @@ do
 done
 popd >/dev/null
 
-
 # If a pidfile is still around (for example after a container restart),
 # delete it so that docker can start.
 rm -rf /var/run/docker.pid
 
 # If we were given a PORT environment variable, start as a simple daemon;
 # otherwise, spawn a shell as well
-if [ "$DOCKER_PORT" ]
-then
+if [ "$DOCKER_PORT" ]; then
   exec dockerd -H 0.0.0.0:$DOCKER_PORT -H unix://var/run/docker.sock \
     $DOCKER_DAEMON_ARGS
 else
-  if [ "$LOG" == "file" ]
-  then
+  if [ "$LOG" == "file" ]; then
     dockerd $DOCKER_DAEMON_ARGS &>/var/log/docker.log &
   else
     dockerd $DOCKER_DAEMON_ARGS &
   fi
-  (( timeout = 60 + SECONDS ))
-  until docker info >/dev/null 2>&1
-  do
-    if (( SECONDS >= timeout )); then
+  ((timeout = 60 + SECONDS))
+  until docker info >/dev/null 2>&1; do
+    if ((SECONDS >= timeout)); then
       echo 'Timed out trying to connect to internal docker host.' >&2
       break
     fi

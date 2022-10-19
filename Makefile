@@ -88,6 +88,19 @@ down:
 .PHONY: run
 run: down up
 
+## —— Formating 🧪🔗 ———————————————————————————————————————————————————————————————
+.PHONY: fmt
+fmt: ## Run formating
+	@echo "=> Executing formating..."
+	shfmt -i 2 -ci -w *.sh || true
+	ansible-lint --write ./
+
+## —— Tests Ansible 🧪🔗 —————————————————————————————————————————————————————————————————
+.PHONY: test
+test: ## Run all tests
+	@echo "=> Testing ansible..."
+	ansible-lint ./
+
 ## —— Debug 📜🐳 —————————————————————————————————————————————————————————————————
 .PHONY: debug
 debug: ## Enter container
@@ -129,7 +142,13 @@ test-inspect:
 .PHONY: test-codeclimate
 test-codeclimate:
 	@echo "=> Testing Codeclimate image..."
-	codeclimate analyze
+	docker run \
+  --interactive --tty --rm \
+  --env CODECLIMATE_CODE="$PWD" \
+  --volume "$PWD":/code \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /tmp/cc:/tmp/cc \
+  codeclimate/codeclimate analyze
 
 ## —— Tests Semgrep 🧪👽 —————————————————————————————————————————————————————————————————
 .PHONY: test-semgrep

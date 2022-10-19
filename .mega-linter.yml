@@ -17,16 +17,17 @@ DISABLE_LINTERS:
   - REPOSITORY_DEVSKIM
   - REPOSITORY_TRIVY
 IGNORE_GITIGNORED_FILES: true
-FILTER_REGEX_EXCLUDE: '(\.automation/test|\.automation/generated|\.github/workflows|docs/javascripts|docs/overrides|docs/json-schemas|flavors|clj-kondo|TEMPLATES)'
-JSON_JSONLINT_FILTER_REGEX_EXCLUDE: '(\.vscode/)'
-YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml)'
-YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml|mkdocs\.yml)'
-YAML_V8R_FILTER_REGEX_EXCLUDE: '(descriptors|templates/\.mega-linter\.yml|\.codecov\.yml)'
-BASH_FILTER_REGEX_EXCLUDE: "(lib)"
-MARKDOWN_FILTER_REGEX_EXCLUDE: '(license\.md)'
+FILTER_REGEX_EXCLUDE: (\.automation/test|\.automation/generated|\.github/workflows|docs/javascripts|docs/overrides|docs/json-schemas|flavors|clj-kondo|TEMPLATES)
+JSON_JSONLINT_FILTER_REGEX_EXCLUDE: (\.vscode/)
+YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: (templates/\.mega-linter\.yml)
+YAML_PRETTIER_FILTER_REGEX_EXCLUDE: (templates/\.mega-linter\.yml|mkdocs\.yml)
+YAML_V8R_FILTER_REGEX_EXCLUDE: (descriptors|templates/\.mega-linter\.yml|\.codecov\.yml)
+BASH_FILTER_REGEX_EXCLUDE: (lib)
+MARKDOWN_FILTER_REGEX_EXCLUDE: (license\.md)
 MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
-SPELL_MISSPELL_FILTER_REGEX_EXCLUDE: '(\.automation/generated|docs/descriptors)'
-DOCKERFILE_HADOLINT_ARGUMENTS: "--ignore DL3003 --ignore DL3007 --ignore DL3013 --ignore DL3016 --ignore DL3018 --ignore DL3028 --ignore DL4001 --ignore DL4006 --ignore SC2015 --ignore SC2016 --ignore SC2039 --ignore SC2086 --ignore SC1091"
+SPELL_MISSPELL_FILTER_REGEX_EXCLUDE: (\.automation/generated|docs/descriptors)
+DOCKERFILE_HADOLINT_ARGUMENTS: --ignore DL3003 --ignore DL3007 --ignore DL3013 --ignore DL3016 --ignore DL3018 --ignore DL3028 --ignore DL4001 --ignore DL4006 --ignore
+  SC2015 --ignore SC2016 --ignore SC2039 --ignore SC2086 --ignore SC1091
 PYTHON_BANDIT_DISABLE_ERRORS: true
 SHOW_ELAPSED_TIME: true
 EMAIL_REPORTER_EMAIL: alban.andrieu@free.fr
@@ -36,7 +37,7 @@ PLUGINS:
   - https://raw.githubusercontent.com/nvuillam/mega-linter/master/.automation/test/mega-linter-plugin-test/test.megalinter-descriptor.yml
 PRE_COMMANDS:
   - command: echo "This is Mega-Linter PRE_COMMAND on own Mega-Linter ! :)"
-    cwd: "root"
+    cwd: root
 POST_COMMANDS:
   - command: echo "This is Mega-Linter POST_COMMAND on own Mega-Linter ! :)"
-    cwd: "workspace"
+    cwd: workspace

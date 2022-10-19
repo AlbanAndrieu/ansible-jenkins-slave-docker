@@ -1,33 +1,34 @@
+---
 branch: master
-#check:
-#- CKV_DOCKER_1
+# check:
+# - CKV_DOCKER_1
 compact: true
-#directory:
-#- test-dir
+# directory:
+# - test-dir
 docker-image: nabla/ansible-jenkins-slave-docker
 dockerfile-path: Dockerfile
 download-external-modules: true
 evaluate-variables: true
-#external-checks-dir:
-#- sample-dir
+# external-checks-dir:
+# - sample-dir
 external-modules-download-path: .external_modules
 framework:
-- all
-#skip-download: true
-#quiet: true
+  - all
+# skip-download: true
+# quiet: true
 repo-id: AlbanAndrieu/ansible-jenkins-slave-docker
-#skip-check:
-#- CKV_DOCKER_3
-#- CKV_DOCKER_2
+# skip-check:
+# - CKV_DOCKER_3
+# - CKV_DOCKER_2
 skip-fixes: true
-#skip-framework:
-#- dockerfile
-#- secrets
+# skip-framework:
+# - dockerfile
+# - secrets
 soft-fail: true
-#skip-file:
-# - docker/ubuntu16/Dockerfile
-# - docker/ubuntu18/Dockerfile
+# skip-file:
+#  - docker/ubuntu16/Dockerfile
+#  - docker/ubuntu18/Dockerfile
 skip-path:
- - roles/*
- - docker/ubuntu16/Dockerfile
- - docker/ubuntu18/Dockerfile
+  - roles/*
+  - docker/ubuntu16/Dockerfile
+  - docker/ubuntu18/Dockerfile

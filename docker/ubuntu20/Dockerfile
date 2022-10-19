@@ -65,24 +65,24 @@ RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 # Uninstall unattended-upgrades
 #RUN apt-get purge unattended-upgrades
 
-# Install ansible
 # hadolint ignore=DL3008
-RUN apt-get -q update &&\
-    apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-    git bzip2 zip unzip python-yaml python-jinja2 rsyslog gpg-agent \
-    # python-pip
-    ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
-    apt-utils apt-transport-https ca-certificates software-properties-common \
-    iptables openssh-client supervisor \
-    locales xz-utils ksh wget tzdata sudo curl lsof sshpass \
-    systemd systemd-cron \
-    openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
-    net-tools iputils-ping x11-apps libxss1 \
-    gnome-keyring gnome-keyring gnupg2 pass \
-    libnss3 \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get -q update \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+  git git-lfs rsync curl wget bash jq \
+  bzip2 zip unzip python-yaml python-jinja2 rsyslog gpg-agent \
+  # python-pip
+  ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
+  apt-utils apt-transport-https ca-certificates software-properties-common \
+  iptables openssh-client supervisor \
+  locales xz-utils ksh tzdata sudo lsof sshpass \
+  systemd systemd-cron \
+  openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
+  net-tools iputils-ping x11-apps libxss1 \
+  gnome-keyring gnome-keyring gnupg2 pass \
+  libnss3 \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
+# because of tzdata and the need of noninteractive
 ENV TZ "Europe/Paris"
 RUN echo "${TZ}" > /etc/timezone
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
@@ -100,6 +100,8 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
 #	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
 ### DOCKER
+
+ENV DOCKER_VERSION=20.10.9
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 RUN add-apt-repository \
@@ -154,7 +156,6 @@ USER root
 # hadolint ignore=DL3008
 RUN apt-get -q update \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-#   python-yaml python-jinja2 python-lxml \
   python3-setuptools python3 python3-pip python3-dev python3-apt \
   python3-lxml \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -166,20 +167,28 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.2.2 \
+#RUN ls -lrta /usr/bin/pip
+#RUN ls -lrta /usr/local/bin/pip
+#RUN which pip
+RUN ln -sv $(which python3) /usr/bin/python
+RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.2.2 \
 #  && ln -sv $(which pip3) /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
-RUN python3 -m pip install --proxy=${http_proxy} pipenv==2022.7.4 \
+RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir pipenv==2022.7.4 \
   docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core>=2.13.0  zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
+RUN ln -sv $(which pip3) /usr/bin/pip
+
+#ENV PATH=/usr/local/bin:${PATH}
 
 # dockerfile_lint - ignore
 USER ${USER}
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
 RUN cd ${JENKINS_USER_HOME} && pipenv install --system --dev
+# --system to prevent the creation of a virtualenv at all.
 
 ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
 
@@ -241,9 +250,9 @@ RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" -
 # && rm -Rf $JENKINS_USER_HOME/.local/share \
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
-#/usr/bin/python3.7 -m pip install --upgrade pip
-RUN python3 -m pip install --proxy=${http_proxy} --upgrade pip==22.1.2 \
-    && pip install --proxy=${http_proxy} ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
+#/usr/bin/python3.7 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.1.2 \
+    && pip install --proxy=${http_proxy} --no-cache-dir ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
     && pip3 --version && python3 --version
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
@@ -266,10 +275,10 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=${JENKINS_USER_HOME}/go
 ENV GO111MODULE=on
 
-RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main
-RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
-RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest
-RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest
+RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main # devops
+RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest # devops
+RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest # devops
+RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest # shell formating
 RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual studio
 
 USER root
@@ -309,13 +318,17 @@ RUN . /etc/os-release \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.28.1"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.32.1"}
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
 # CODE CLIMATE
 
 #RUN curl -L https://github.com/codeclimate/codeclimate/archive/master.tar.gz | tar xvz && \
-#  cd codeclimate-* && make install
+#  cd codeclimate-* && sudo make install
+
+# CST
+
+RUN curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
 ### HELM
 
@@ -383,13 +396,17 @@ RUN chmod +x /usr/local/bin/jenkins-agent && \
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir ${JENKINS_USER_HOME}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 
+ENV HELM_FILE_VERSION=${HELM_FILE_VERSION:-"v0.144.0"}
+
 # checkov:skip=CKV_DOCKER_4:Ensure that COPY is used instead of ADD in Dockerfiles
-ADD https://github.com/roboll/helmfile/releases/download/v0.138.2/helmfile_linux_amd64 /usr/local/bin/helmfile
+ADD https://github.com/roboll/helmfile/releases/download/${HELM_FILE_VERSION}/helmfile_linux_amd64 /usr/local/bin/helmfile
 #sudo cp helmfile_linux_amd64 /usr/local/bin/helmfile
 RUN chmod +x /usr/local/bin/helmfile
 
-ADD https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_linux_amd64.deb /tmp/helm-docs_1.5.0_linux_amd64.deb
-RUN dpkg -i /tmp/helm-docs_1.5.0_linux_amd64.deb && rm -rf /tmp/*
+ENV HELM_DOC_VERSION=${HELM_DOC_VERSION:-"1.5.0"}
+
+ADD https://github.com/norwoodj/helm-docs/releases/download/v${HELM_DOC_VERSION}/helm-docs_${HELM_DOC_VERSION}_linux_amd64.deb /tmp/helm-docs_${HELM_DOC_VERSION}_linux_amd64.deb
+RUN dpkg -i /tmp/helm-docs_${HELM_DOC_VERSION}_linux_amd64.deb && rm -rf /tmp/*
 
 ADD https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz /tmp/kubeval-linux-amd64.tar.gz
 RUN tar xf /tmp/kubeval-linux-amd64.tar.gz && cp kubeval /usr/local/bin && rm -rf /tmp/*

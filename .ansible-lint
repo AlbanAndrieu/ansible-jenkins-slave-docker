@@ -37,23 +37,24 @@ exclude_paths:
   - ./roles/anxs.perl/
   - ./k8s/
   - ../../../../home/albandrieu/.cache
+  - ./collections/*
 # parseable: true
 # quiet: true
 # rulesdir:
 #   - ./rule/directory/
 skip_list:
-  - "602"  # See https://github.com/ansible/ansible-lint/issues/457
+  - "602" # See https://github.com/ansible/ansible-lint/issues/457
   - "204"
   - "503"
-  - "208"  # File permissions not mentioned
+  - "208" # File permissions not mentioned
   - filenotfounderror
 #   - skip_this_tag
 #   - and_this_one_too
 #   - skip_this_id
 # tags:
 #   - run_this_tag
-warn_list:  # or 'skip_list' to silence them completely
-  - yaml  # Violations reported by yamllint
+warn_list: # or 'skip_list' to silence them completely
+  - yaml # Violations reported by yamllint
 use_default_rules: true
 # verbosity: 1
 

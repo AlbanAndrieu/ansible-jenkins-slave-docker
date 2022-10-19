@@ -42,11 +42,6 @@ WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 "${WORKING_DIR}/../clean.sh"
 
-echo -e "${green} Installing key for Docker ${NC}"
-mkdir -p .ssh/
-#wget http://bm-artifacts.misys.global.ad/nexus/content/repositories/fusion-risk/download/certs/id_rsa.pub -O ${WORKING_DIR}/../.ssh/id_rsa.pub && chmod 600 ${HOME}/.ssh/id_rsa.pub
-#cp -p /home/kgr_mvn/.ssh/id_rsa* ${WORKING_DIR}/../.ssh/ || true
-
 export DOCKER_BUILDKIT=1
 
 echo -e "${green} Building docker image ${NC}"
