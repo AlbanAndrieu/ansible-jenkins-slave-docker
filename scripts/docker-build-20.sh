@@ -21,7 +21,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:192.168.132.24 --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} --squash"
+  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:192.168.132.24 --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} --secret id=pip.conf,src=pip.conf --squash"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache --squash"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi

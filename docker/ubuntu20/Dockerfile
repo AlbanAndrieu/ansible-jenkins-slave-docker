@@ -165,6 +165,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=off
 
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/bin/pip
@@ -187,7 +188,7 @@ RUN ln -sv $(which pip3) /usr/bin/pip
 USER ${USER}
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
-RUN cd ${JENKINS_USER_HOME} && pipenv install --system --dev
+RUN cd ${JENKINS_USER_HOME} && python -m pipenv install --system --dev --site-packages
 # --system to prevent the creation of a virtualenv at all.
 
 ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}

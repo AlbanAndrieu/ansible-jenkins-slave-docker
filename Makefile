@@ -10,13 +10,13 @@ ME            = $(shell whoami)
 # Image
 DOCKER_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
 DOCKER_TAG := $${DOCKER_TAG:-"latest"}
-DOCKER_NEXT_TAG := $${CI_COMMIT_REF_SLUG:-"2.0.3""}
+DOCKER_NEXT_TAG := $${OCI_IMAGE_TAG:-"2.0.3""}
 IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
 
 TRIVY_VULN_TYPE = "os,library"
 TRIVY_SECURITY_CHECKS = "vuln,config,secret"
 TRIVY_GLOBAL_SECURITY_CHECKS = --security-checks ${TRIVY_SECURITY_CHECKS} --vuln-type ${TRIVY_VULN_TYPE}
-TRIVY_ARGS = --skip-dirs .direnv --skip-dirs ./node_modules --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/bin/container-structure-test --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile
+TRIVY_ARGS = --skip-dirs .direnv --skip-dirs .venv --skip-dirs ./node_modules --skip-dirs /home/ubuntu/go/ --skip-dirs /home/ubuntu/node_modules/ --skip-dirs /home/runner/work/trivy/ --skip-dirs /usr/local/lib/python3.8/dist-packages/ansible/galaxy/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/awscli/ --skip-dirs /home/ubuntu/.local/share/virtualenvs/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/rsa/ --skip-dirs /home/ubuntu/.local/lib/python3.8/site-packages/botocore/data/ --skip-dirs /usr/lib/node_modules/ --skip-files /usr/local/bin/container-structure-test --skip-files /usr/local/go/src/crypto/elliptic/internal/fiat/Dockerfile
 CS_SEVERITY_REPORT_THRESHOLD = "HIGH,CRITICAL"
 
 # Executables: local only
@@ -57,8 +57,15 @@ lint:
 .PHONY: build-docker
 build-docker:  ## Build container with docker
 	@echo "=> Building image..."
-	# docker build -t $(IMAGE) --squash .
+	# docker build -t $(IMAGE) --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} --squash .
 	scripts/docker-build-20.sh
+
+## —— Docker Slim 🐳 ————————————————————————————————————————————————————————————————
+.PHONY: build-docker-slim
+build-docker-slim:  ## Build container with docker-slim
+	@echo "=> Building image..."
+	@echo "docker-slim build --target $(IMAGE) --http-probe=my/sample-app"
+	docker-slim build --continue-after --target $(IMAGE) --http-probe=false
 
 ## —— Buildah Docker 🐶🐳 ————————————————————————————————————————————————————————————————
 .PHONY: build-buildah-docker
@@ -197,6 +204,8 @@ sast: sast-fs-docker ## Run Trivy sast
 deploy-docker: ## Push to registry
 	@echo "=> Tagging image..."
 	docker tag $(IMAGE) $(DOCKER_NAME):$(DOCKER_NEXT_TAG)
+	@echo "=> docker login registry.gitlab.com"
+	@echo "=> aws ecr get-login-password --region \$${AWS_REGION:-"eu-west-3"} | docker login --username AWS --password-stdin \$${OCI_REGISTRY:-\"783876277037.dkr.ecr.eu-west-3.amazonaws.com\"} "
 	@echo "=> Pushing image..."
 	@echo "=> TODO => docker push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
 	@echo "=> TODO => docker push $(DOCKER_NAME):latest"
