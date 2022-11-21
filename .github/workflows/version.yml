@@ -18,4 +18,4 @@ jobs:
           fetch-depth: 00 # fetch the whole repo history
 
       - name: Git Version
-        uses: codacy/git-version@2.5.4
+        uses: codacy/git-version@2.6.0
