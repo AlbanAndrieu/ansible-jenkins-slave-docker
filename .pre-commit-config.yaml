@@ -78,7 +78,7 @@ repos:
     rev: v1.7.0
     hooks:
       - id: autopep8
-  - repo: https://gitlab.com/pycqa/flake8
+  - repo: https://github.com/PyCQA/flake8
     rev: 3.9.2
     hooks:
       - id: flake8
@@ -102,6 +102,7 @@ repos:
               docker/|
               requirements.yml|
               playbooks/group_vars/all/vault.yml|
+              .gitlab-ci.yml|
           )$
   - repo: https://github.com/doublify/pre-commit-hindent.git
     rev: b3680b6ebf9f7cf29b19307f246adef66756feef

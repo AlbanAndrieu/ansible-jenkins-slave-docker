@@ -38,6 +38,7 @@ exclude_paths:
   - ./k8s/
   - ../../../../home/albandrieu/.cache
   - ./collections/*
+  - ./ansible_collections/*
 # parseable: true
 # quiet: true
 # rulesdir:
