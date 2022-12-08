@@ -19,6 +19,20 @@ engines:
   # to turn off an engine, set enabled to `false` or remove it
   rubocop:
     enabled: false
+  semgrep:
+    enabled: false
+  bandit:
+    enabled: false
+  pylint:
+    enabled: false
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - python:
+            python_version: 3
+  bundler-audit:
+    enabled: false
   golint:
     enabled: false
   gofmt:
@@ -26,7 +40,9 @@ engines:
   eslint:
     enabled: true
   csslint:
-    enabled: false
+    enabled: true
+  # coffeelint:
+  #   enabled: true
   fixme:
     enabled: true
     exclude_patterns:
@@ -34,15 +50,10 @@ engines:
   markdownlint:
     enabled: true
     checks:
-      MD002: # "First header should be a h1 header"
+      MD002:  # "First header should be a h1 header"
         enabled: false
   shellcheck:
     enabled: true
-  duplication:
-    enabled: true
-    config:
-      languages:
-        - javascript:
 # Engines can analyze files and report issues on them, but you can separately
 # decide which files will receive ratings based on those issues. This is
 # specified by path patterns under the ratings key.
@@ -66,8 +77,22 @@ engines:
 exclude_patterns:
   - .direnv/**/*
   - .venv/**/*
-  - node_modules/**/*
-  - node_cache/**/*
-  - spec/**/*
-  - public/**
-  - vendor/**
+  - .mypy_cache/
+  - config/
+  - db/
+  - dist/
+  - features/
+  - "**/node_modules/"
+  - "**/node_cache/"
+  - script/
+  - "**/spec/"
+  - "**/test/"
+  - "**/tests/"
+  - Tests/
+  - "**/vendor/"
+  - "**/*_test.go"
+  - "**/*.d.ts"
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/__tests__/"
+  - "**/__mocks__/"

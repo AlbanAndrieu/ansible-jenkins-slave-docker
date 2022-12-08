@@ -13,38 +13,52 @@ repos:
     #    rev: v2.2.3 # ok python3.6  # 19.04 but failing on 18.04.3
     #    rev: v2.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04
     #    rev: v3.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
-    rev: v4.3.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
+    rev: v4.4.0 # ok python3.6 on Ubuntu 18.04 AND python3.7 on Ubuntu 19.04 AND python3.8 on Ubuntu 20.04
     hooks:
       - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-ast
       - id: end-of-file-fixer
       - id: check-added-large-files
-        args: [--maxkb=123]
+        args: ["--maxkb=123"]
         exclude: >
           (?x)^(
               .pnp.cjs|
               package-lock.json|
+              poetry.lock|
               Pipfile.lock|
               yarn.lock|
-              poetry.lock
           )$
+      - id: check-builtin-literals
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-executables-have-shebangs
         exclude: >
           (?x)^(
-              clean.bat|
-              build.bat|
-              mvnw.cmd|
-              .mvn/
+            clean.bat|
+            build.bat|
+            mvnw.cmd|
+            .mvn/|
+            .venv|
+            .direnv|
           )$
+      - id: check-shebang-scripts-are-executable
       - id: check-json
-        exclude: ^.vscode/
-      - id: check-xml
-      - id: check-yaml
         exclude: >
           (?x)^(
-              .gitlab-ci.yml|
-              k8s/.*|
+            ^.vscode/|
+            .devcontainer/devcontainer.json|
+          )$
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: >
+          (?x)^(
+            .gitlab-ci.yml|
+            templates/.*.gitlab-ci.yml|  # because of !reference
+            k8s/.*|
           )$
       - id: check-symlinks
       - id: check-merge-conflict
@@ -52,57 +66,74 @@ repos:
       - id: detect-private-key
         exclude: >
           (?x)^(
-              .ssh/id_rsa|
-              roles/jenkins-master/defaults/main.yml|
-              roles/jenkins-master/README.md|
+            .ssh/id_rsa|
+            roles/jenkins-master/defaults/main.yml|
+            roles/jenkins-master/README.md|
           )$
       - id: double-quote-string-fixer
       - id: name-tests-test
         exclude: >
           (?x)^(
-              molecule/default/tests/.*|
-              .*test_default\.py|
+            molecule/default/tests/.*|
+            .*test_default\.py|
           )$
-      #      - id: no-commit-to-branch
-      #        args: [--branch, develop, --branch, master, --branch, release/*]
+      # - id: no-commit-to-branch
+      #   args: [--branch, main, --branch, master, --branch, release/*]
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
       - id: fix-encoding-pragma
+        args: [--remove]
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
       - id: file-contents-sorter
+      - id: mixed-line-ending
+        args: [--fix=lf]
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.0
+    hooks:
+      - id: autopep8
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        # It is recommended to specify the latest version of Python
+        # supported by your project here, or alternatively use
+        # pre-commit's default_language_version, see
+        # https://pre-commit.com/#top_level-default_language_version
+        language_version: python3.8
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --max-complexity=30]
+  - repo: https://github.com/asottile/reorder_python_imports.git
+    rev: v3.9.0
+    hooks:
+      - id: reorder-python-imports
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
+    hooks:
+      - id: pyupgrade
   - repo: https://github.com/pre-commit/pre-commit.git
     rev: v2.20.0
     hooks:
       - id: validate_manifest
-  - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.7.0
-    hooks:
-      - id: autopep8
-  - repo: https://github.com/PyCQA/flake8
-    rev: 3.9.2
-    hooks:
-      - id: flake8
-        args: [--max-line-length=120]
-  - repo: https://github.com/asottile/reorder_python_imports.git
-    rev: v3.8.5
-    hooks:
-      - id: reorder-python-imports
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v2.3.0
     hooks:
       - id: add-trailing-comma
   - repo: https://github.com/willthames/ansible-lint.git
-    rev: v6.8.2
+    rev: v6.9.1
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
         exclude: >
           (?x)^(
-              .travis.yml|
-              docker/|
-              requirements.yml|
-              playbooks/group_vars/all/vault.yml|
-              .gitlab-ci.yml|
+            .travis.yml|
+            docker/|
+            requirements.yml|
+            playbooks/group_vars/all/vault.yml|
+            .gitlab-ci.yml|
           )$
   - repo: https://github.com/doublify/pre-commit-hindent.git
     rev: b3680b6ebf9f7cf29b19307f246adef66756feef
@@ -111,14 +142,11 @@ repos:
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.5.1-1
     hooks:
-      # Choose one of:
-      # - id: shfmt         # native (requires Go to build)
       - id: shfmt-docker # Docker image (requires Docker to run)
   - repo: https://github.com/detailyang/pre-commit-shell
     rev: 1.0.5
     hooks:
       - id: shell-lint
-        # entry: pre_commit_hooks/shell-lint.sh -x
         args: [-x]
         exclude: >
           (?x)^(
@@ -129,13 +157,16 @@ repos:
             dockerd-entrypoint.sh|
             entrypoint.sh|
             logger.sh|
+            biscuitcutter.sh|
+            hooks|
+            tests/.*
           )$
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.1.0
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
   - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.7.0
+    rev: v2.0.0
     hooks:
       - id: autopep8
   - repo: https://github.com/IamTheFij/ansible-pre-commit
@@ -145,14 +176,15 @@ repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
     rev: v1.1.2
     hooks:
-      - id: htmlhint
-        args: [--config, .htmlhintrc]
       - id: htmllint
-      # - id: markdown-toc
-      #   args: [--maxdepth, "3", -i]
+        args: [--config, .htmlhintrc]
+        files: ^src/
+      - id: markdown-toc
+        args: [--maxdepth, "3", -i]
       - id: dockerfile_lint
         #  args: [--json, --verbose, --dockerfile docker/ubuntu20/Dockerfile]
-        args: [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
+        args:
+          [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
         always_run: true
   #  - repo: https://github.com/gitguardian/ggshield
   #    rev: v1.10.7
@@ -160,22 +192,20 @@ repos:
   #      - id: ggshield
   #        language_version: python3
   #        stages: [commit]
-  - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.1.274
-    hooks:
-      - id: checkov
-        verbose: true
-        args: [--soft-fail]
-  - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.15.0
-    hooks:
-      #      - id: gitleaks
-      #        args: [--config, .gitleaks.toml]
-      - id: gitleaks-docker
-        entry: zricethezav/gitleaks protect --verbose --redact --staged
-        # entry: zricethezav/gitleaks detect --verbose
+  # - repo: https://github.com/bridgecrewio/checkov.git
+  #   rev: 2.2.120
+  #   hooks:
+  #     - id: checkov
+  #       verbose: true
+  #       args: [--soft-fail]
+  # - repo: https://github.com/zricethezav/gitleaks
+  #   rev: v8.15.2
+  #   hooks:
+  #     - id: gitleaks-docker
+  #       entry: zricethezav/gitleaks protect --verbose --redact --staged
+  #       # entry: zricethezav/gitleaks detect --verbose
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.76.0
+    rev: v1.77.0
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
@@ -197,7 +227,7 @@ repos:
           - --args=--skip-path ansible/roles/
   #  - --args=--skip-check CKV2_AWS_8
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.18.3
+    rev: 0.19.2
     hooks:
       - id: check-github-workflows
   #  - repo: https://github.com/Checkmarx/kics
@@ -213,6 +243,28 @@ repos:
   #      - id: kics-scan
   #        verbose: true
   #        args: [--ignore-on-exit, "all", --config, "kics-config.json"]
+  - repo: https://github.com/oxsecurity/megalinter
+    rev: v6.15.0
+    hooks:
+      - id: megalinter-incremental # Faster, less thorough
+        args:
+          - mega-linter-runner
+          - --containername
+          - "megalinter-incremental"
+          - --remove-container
+          - --fix
+          - --env
+          - "'APPLY_FIXES=all'"
+          - --env
+          - "'CLEAR_REPORT_FOLDER=true'"
+          - --env
+          - "'LOG_LEVEL=warning'"
+          - --filesonly
+        stages:
+          - commit
+      # - id: megalinter-full # Slower, more thorough
+      #   stages:
+      #     - push
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:
