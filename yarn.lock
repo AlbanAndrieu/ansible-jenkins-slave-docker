@@ -284,39 +284,39 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@secretlint/config-creator@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/config-creator/-/config-creator-5.2.4.tgz"
+"@secretlint/config-creator@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-creator/-/config-creator-5.3.0.tgz#3bb90bbbd44968f3fe7ccf920fa913912ffdb1eb"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^5.3.0"
 
-"@secretlint/config-loader@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/config-loader/-/config-loader-5.2.4.tgz"
+"@secretlint/config-loader@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-loader/-/config-loader-5.3.0.tgz#01ce769affefcf5a6975e984f6cb0345bd098916"
   dependencies:
-    "@secretlint/profiler" "^5.2.4"
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/profiler" "^5.3.0"
+    "@secretlint/types" "^5.3.0"
     ajv "^8.11.0"
     debug "^4.3.4"
     rc-config-loader "^4.1.0"
     try-resolve "^1.0.1"
 
-"@secretlint/core@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/core/-/core-5.2.4.tgz"
+"@secretlint/core@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/core/-/core-5.3.0.tgz#672ebc4ee8da63126f33aede07a0547bb199432d"
   dependencies:
-    "@secretlint/profiler" "^5.2.4"
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/profiler" "^5.3.0"
+    "@secretlint/types" "^5.3.0"
     debug "^4.3.4"
     structured-source "^3.0.2"
 
-"@secretlint/formatter@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/formatter/-/formatter-5.2.4.tgz"
+"@secretlint/formatter@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/formatter/-/formatter-5.3.0.tgz#8f9fa8f410c75f0bd1386965df0f313e1f8db374"
   dependencies:
-    "@secretlint/types" "^5.2.4"
-    "@textlint/linter-formatter" "^12.2.1"
-    "@textlint/types" "^12.2.1"
+    "@secretlint/types" "^5.3.0"
+    "@textlint/linter-formatter" "^12.2.2"
+    "@textlint/types" "^12.2.2"
     chalk "^4.1.2"
     debug "^4.3.4"
     pluralize "^8.0.0"
@@ -325,21 +325,21 @@
     terminal-link "^2.1.1"
     try-resolve "^1.0.1"
 
-"@secretlint/node@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/node/-/node-5.2.4.tgz"
+"@secretlint/node@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/node/-/node-5.3.0.tgz#22f66bfd50fad844e44abd2d2aa34394d6010a45"
   dependencies:
-    "@secretlint/config-loader" "^5.2.4"
-    "@secretlint/core" "^5.2.4"
-    "@secretlint/formatter" "^5.2.4"
-    "@secretlint/profiler" "^5.2.4"
-    "@secretlint/source-creator" "^5.2.4"
+    "@secretlint/config-loader" "^5.3.0"
+    "@secretlint/core" "^5.3.0"
+    "@secretlint/formatter" "^5.3.0"
+    "@secretlint/profiler" "^5.3.0"
+    "@secretlint/source-creator" "^5.3.0"
     debug "^4.3.4"
     p-map "^4.0.0"
 
-"@secretlint/profiler@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/profiler/-/profiler-5.2.4.tgz"
+"@secretlint/profiler@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-5.3.0.tgz#ac120b493befea933d63009c1b492042522e9263"
 
 "@secretlint/secretlint-rule-aws@^5.2.4":
   version "5.2.4"
@@ -418,45 +418,49 @@
     "@secretlint/types" "^5.2.4"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/source-creator@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/source-creator/-/source-creator-5.2.4.tgz"
+"@secretlint/source-creator@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/source-creator/-/source-creator-5.3.0.tgz#447afffb700eaa9e0e0b4d4160d4d0d9260f8b9a"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^5.3.0"
     istextorbinary "^6.0.0"
 
 "@secretlint/types@^5.2.4":
   version "5.2.4"
   resolved "https://registry.npmjs.org/@secretlint/types/-/types-5.2.4.tgz"
 
-"@textlint/ast-node-types@^12.2.1":
-  version "12.2.1"
-  resolved "https://registry.npmjs.org/@textlint/ast-node-types/-/ast-node-types-12.2.1.tgz"
+"@secretlint/types@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/types/-/types-5.3.0.tgz#51c1ede33a1fcc56f7bd13e22a31999c5041a4b5"
 
-"@textlint/linter-formatter@^12.2.1":
-  version "12.2.1"
-  resolved "https://registry.npmjs.org/@textlint/linter-formatter/-/linter-formatter-12.2.1.tgz"
+"@textlint/ast-node-types@^12.2.2":
+  version "12.2.2"
+  resolved "https://registry.yarnpkg.com/@textlint/ast-node-types/-/ast-node-types-12.2.2.tgz#299c4035d26a2be8fe76bcb66798a8e82a5eb77c"
+
+"@textlint/linter-formatter@^12.2.2":
+  version "12.2.4"
+  resolved "https://registry.yarnpkg.com/@textlint/linter-formatter/-/linter-formatter-12.2.4.tgz#e633c3856c3f67fa45683cbc27131a38d95107a4"
   dependencies:
     "@azu/format-text" "^1.0.1"
     "@azu/style-format" "^1.0.0"
-    "@textlint/module-interop" "^12.2.1"
-    "@textlint/types" "^12.2.1"
+    "@textlint/module-interop" "^12.2.3"
+    "@textlint/types" "^12.2.3"
     chalk "^4.1.2"
     debug "^4.3.4"
     is-file "^1.0.0"
     js-yaml "^3.14.1"
+    lodash "^4.17.21"
     optionator "^0.9.1"
     pluralize "^2.0.0"
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
-    table "^6.8.0"
+    table "^6.8.1"
     text-table "^0.2.0"
     try-resolve "^1.0.1"
-    xml-escape "^1.1.0"
 
-"@textlint/module-interop@^12.2.1":
-  version "12.2.1"
-  resolved "https://registry.npmjs.org/@textlint/module-interop/-/module-interop-12.2.1.tgz"
+"@textlint/module-interop@^12.2.3":
+  version "12.2.3"
+  resolved "https://registry.yarnpkg.com/@textlint/module-interop/-/module-interop-12.2.3.tgz#21afbaf11ab653687110e111eaa71a16cfe60367"
 
 "@textlint/regexp-string-matcher@^2.0.2":
   version "2.0.2"
@@ -467,11 +471,11 @@
     lodash.uniq "^4.5.0"
     lodash.uniqwith "^4.5.0"
 
-"@textlint/types@^12.2.1":
-  version "12.2.1"
-  resolved "https://registry.npmjs.org/@textlint/types/-/types-12.2.1.tgz"
+"@textlint/types@^12.2.2", "@textlint/types@^12.2.3":
+  version "12.2.3"
+  resolved "https://registry.yarnpkg.com/@textlint/types/-/types-12.2.3.tgz#e933a2d5a3da3f2d918549a06c8e0a27a8e559ea"
   dependencies:
-    "@textlint/ast-node-types" "^12.2.1"
+    "@textlint/ast-node-types" "^12.2.2"
 
 "@types/minimist@^1.2.0":
   version "1.2.2"
@@ -1232,6 +1236,15 @@ istextorbinary@^6.0.0:
     binaryextensions "^4.18.0"
     textextensions "^5.14.0"
 
+jest-junit@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/jest-junit/-/jest-junit-14.0.1.tgz#5b357d6f5d333459585d628a24cd48b5bbc92ba2"
+  dependencies:
+    mkdirp "^1.0.4"
+    strip-ansi "^6.0.1"
+    uuid "^8.3.2"
+    xml "^1.0.1"
+
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -1350,6 +1363,10 @@ lodash.uniqwith@^4.5.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/lodash.uniqwith/-/lodash.uniqwith-4.5.0.tgz"
 
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-6.0.0.tgz"
@@ -1457,6 +1474,10 @@ mixin-deep@^1.1.3:
   dependencies:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
+
+mkdirp@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
 
 ms@2.1.2:
   version "2.1.2"
@@ -1734,14 +1755,14 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
 
-secretlint@^5.2.4:
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/secretlint/-/secretlint-5.2.4.tgz"
+secretlint@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/secretlint/-/secretlint-5.3.0.tgz#8dd420b967f3405fe5a6b37de7b081d9c8f719fa"
   dependencies:
-    "@secretlint/config-creator" "^5.2.4"
-    "@secretlint/formatter" "^5.2.4"
-    "@secretlint/node" "^5.2.4"
-    "@secretlint/profiler" "^5.2.4"
+    "@secretlint/config-creator" "^5.3.0"
+    "@secretlint/formatter" "^5.3.0"
+    "@secretlint/node" "^5.3.0"
+    "@secretlint/profiler" "^5.3.0"
     debug "^4.3.4"
     globby "^11.1.0"
     meow "^9.0.0"
@@ -1882,6 +1903,16 @@ table@^6.8.0:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
+table@^6.8.1:
+  version "6.8.1"
+  resolved "https://registry.yarnpkg.com/table/-/table-6.8.1.tgz#ea2b71359fe03b017a5fbc296204471158080bdf"
+  dependencies:
+    ajv "^8.0.1"
+    lodash.truncate "^4.4.2"
+    slice-ansi "^4.0.0"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+
 terminal-link@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmjs.org/terminal-link/-/terminal-link-2.1.1.tgz"
@@ -1984,6 +2015,10 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
 
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
   resolved "https://registry.npmjs.org/validate-npm-package-license/-/validate-npm-package-license-3.0.4.tgz"
@@ -2031,9 +2066,9 @@ xdg-basedir@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-4.0.0.tgz"
 
-xml-escape@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/xml-escape/-/xml-escape-1.1.0.tgz"
+xml@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/xml/-/xml-1.0.1.tgz#78ba72020029c5bc87b8a81a3cfcd74b4a2fc1e5"
 
 xtend@~4.0.1:
   version "4.0.2"
