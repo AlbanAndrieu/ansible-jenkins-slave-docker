@@ -174,8 +174,8 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/local/bin/pip
 #RUN which pip
 RUN ln -sv "$(which python3)" /usr/bin/python
-RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.3 \
-#  && ln -sv $(which pip3) /usr/bin/pip3 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==22.3 \
+#  && ln -sv "$(which pip3)" /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
 
@@ -185,7 +185,7 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
 #RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
 #	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
-RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir pipenv==2022.7.4 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2022.7.4 \
   docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core>=2.13.0  zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
@@ -223,7 +223,7 @@ RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.19.1
 
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible
-RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+RUN printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
 
 ARG ANSIBLE_VAULT_PASSWORD
@@ -265,8 +265,10 @@ RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i 
  && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
 
 #/usr/bin/python3.7 -m pip install --no-cache-dir --upgrade pip
-RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.1.2 \
-    && pip install --proxy=${http_proxy} --no-cache-dir ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
+
+# hadolint ignore=SC2261
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==22.3 \
+    && pip install --proxy="${http_proxy}" --no-cache-dir ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
     && pip3 --version && python3 --version
 
 RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (optional)
