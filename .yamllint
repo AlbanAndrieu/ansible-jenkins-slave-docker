@@ -17,7 +17,7 @@ rules:
   # NOTE(retr0h): Templates no longer fail this lint rule.
   #               Uncomment if running old Molecule templates.
   truthy:
-    allowed-values: ["true", "false", "on"]
+    allowed-values: ['true', 'false', 'on']
 # https://github.com/adrienverge/yamllint/issues/141
 # comments-indentation: disable
 ignore: |
@@ -29,4 +29,6 @@ ignore: |
   roles/
   .ansible-lint
   .github/
+  .gitlab-ci.yml
+  ./node_modules/
   .pre-commit-config.yaml

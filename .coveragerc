@@ -1,0 +1,17 @@
+# .coveragerc to control coverage.py
+[run]
+omit =
+    */site-packages/*
+    */dist-packages/*
+    */distutils/*
+    tests/*
+    .venv/*
+
+[html]
+directory = reports/htmlcov
+
+[xml]
+output = reports/coverage.xml
+
+[json]
+output = reports/coverage.json

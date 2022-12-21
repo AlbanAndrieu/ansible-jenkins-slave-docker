@@ -1,3 +1,29 @@
 [flake8]
-max-line-length = 120
-ignore = F821
+# annotations, bugbear, bugbear(b9), black, mccabe complexity, docstrings, pycodestyle errors, flakes errors, imports, security, pycodestyle warnings
+select = C,E,F,W,B,B950
+#ANN,B,B9,BLK,C,D,E,F,I,S,W
+ignore = W503
+max-complexity = 10
+import-order-style = google
+application-import-names = jm-ubuntu,tests
+per-file-ignores =
+    tests/*:S101
+    noxfile.py:ANN,D
+exclude =
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    old,
+    build,
+    dist,
+    docs,
+    .eggs,
+    .tox,
+    setup.py,
+    versioneer.py,
+    hooks/_version.py,
+    .venv,
+    .direnv,
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+max-line-length = 88
+extend-ignore = E203, E501

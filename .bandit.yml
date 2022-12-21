@@ -1,0 +1,4 @@
+---
+exclude_dirs: ['tests', 'static', 'templates', '.eggs', '.tox', '.venv', '.direnv']
+# tests: ['B201', 'B301']
+skips: ['B101', 'B404', 'B607', 'B603']

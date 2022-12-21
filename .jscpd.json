@@ -5,14 +5,21 @@
     "**/node_modules/**",
     "**/.git/**",
     "**/.rbenv/**",
-    "**/.venv'/**",
+    "**/.venv/**",
+    "**/.direnv/**",
+    "**/*reports/**",
     "**/*cache*/**",
+    "**/*.json",
+    "**/*.yaml",
+    "**/*.yml",
+    "**/*.md",
+    "**/*.html",
+    "**/*.xml",
     "**/.github/**",
     "**/.idea/**",
-    "**/report/**",
+    "**/*.svg",
     "**/target/**",
     "src/test/resources/callstacks/**",
-    "src/test/jenkins/lib/**",
-    "**/*.svg"
+    "src/test/jenkins/lib/**"
   ]
 }

@@ -1,7 +1,7 @@
 ---
 trustedRegistries:
   - docker.io
-  - registry-tmp.misys.global.ad:5000
+  - registry-tmp.albandrieu.com:5000
   - p21d13401013001.azurecr.io
 ignored:
   - DL3007

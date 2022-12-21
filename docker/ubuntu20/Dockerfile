@@ -5,7 +5,8 @@
 # FROM ubuntu:20.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
 # focal
-FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
+#FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
+FROM selenium/standalone-chrome:4.7.1-20221208 as selenium
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -18,7 +19,7 @@ ENV http_proxy=${http_proxy:-""}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
-LABEL name="ansible-jenkins-slave" version="2.0.3" \
+LABEL name="ansible-jenkins-slave" version="2.0.4" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
  com.nabla.vendor="NABLA Incorporated"
@@ -42,6 +43,8 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TERM="xterm-256color"
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 #See https://github.com/actions/virtual-environments/blob/main/images/linux/scripts/base/apt.sh
@@ -57,10 +60,9 @@ USER root
 #RUN echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf.d/proxy.conf
 
 # Enable retry logic for apt up to 10 times
-RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries
-
 # Configure apt to always assume Y
-RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
+RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
+&& echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 # Uninstall unattended-upgrades
 #RUN apt-get purge unattended-upgrades
@@ -79,7 +81,7 @@ RUN apt-get -q update \
   openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
   net-tools iputils-ping x11-apps libxss1 \
   gnome-keyring gnome-keyring gnupg2 pass \
-  libnss3 \
+  libnss3 libffi-dev libgit2-dev \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # because of tzdata and the need of noninteractive
@@ -93,15 +95,22 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
-### DOCKER COMPOSE
+FROM selenium as docker
 
-ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
-#RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
-#	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
+ENV USER=${USER:-jenkins}
+ENV GROUP=${GROUP:-docker}
+ENV UID=${UID:-2000}
+ENV GID=${GID:-2000}
+
+# hadolint ignore=SC2059
+RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
+  printf "\033[1;32mJENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
+  printf "\033[1;32mWITH user: ${USER}\ngroup: ${GROUP} \033[0m\n"
 
 ### DOCKER
 
-ENV DOCKER_VERSION=20.10.9
+# dockerfile_lint - ignore
+ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.3~3-0"}
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 RUN add-apt-repository \
@@ -110,37 +119,28 @@ RUN add-apt-repository \
     stable"
 # Install Docker from Docker Inc. repositories.
 RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
-  docker-ce=5:20.10.3~3-0~ubuntu-focal \
-  docker-ce-cli=5:20.10.3~3-0~ubuntu-focal \
+  docker-ce=5:${DOCKER_VERSION}~ubuntu-focal \
+  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu-focal \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ### USER (should follow ### DOCKER)
 
-ARG USER=${USER:-jenkins}
-ARG GROUP=${GROUP:-docker}
-ARG UID=${UID:-2000}
-ARG GID=${GID:-2000}
-# hadolint ignore=SC2059
-RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
-    printf "\033[1;32mWITH user: $USER\ngroup: $GROUP \033[0m\n"
-
 #ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${UID}/bus
 RUN printenv DBUS_SESSION_BUS_ADDRESS
 
-RUN groupmod -g ${GID} ${GROUP}
+# Add user jenkins to the image
+# Set password for the jenkins user (you may want to alter this).
+# Add the jenkins user to sudoers
+RUN groupmod -g ${GID} ${GROUP} \
 #RUN cat /etc/group | grep docker || true
 #RUN id docker
 #RUN getent passwd 2000 || true
 
-# Add user jenkins to the image
 #RUN groupadd -g ${GID} ${GROUP} && \
-RUN adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} ${USER}
-# Set password for the jenkins user (you may want to alter this).
-RUN echo "jenkins:jenkins1234" | chpasswd
-RUN usermod -a -G ${GROUP} ${USER}
-
-# Add the jenkins user to sudoers
-RUN echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
+&& adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} ${USER} \
+&& echo "jenkins:jenkins1234" | chpasswd \
+&& usermod -a -G ${GROUP} ${USER} \
+&& echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
 
 # hadolint ignore=SC2059
 RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
@@ -151,6 +151,8 @@ RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.
 
 ### PYTHON
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 # hadolint ignore=DL3008
@@ -171,16 +173,25 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/bin/pip
 #RUN ls -lrta /usr/local/bin/pip
 #RUN which pip
-RUN ln -sv $(which python3) /usr/bin/python
-RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.2.2 \
+RUN ln -sv "$(which python3)" /usr/bin/python
+RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir --upgrade pip==22.3 \
 #  && ln -sv $(which pip3) /usr/bin/pip3 \
   && pip3 --version && python3 --version
+
+
+### DOCKER COMPOSE
+
+ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
+#RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+#	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
 RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir pipenv==2022.7.4 \
   docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core>=2.13.0  zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
-RUN ln -sv $(which pip3) /usr/bin/pip
+
+RUN ln -sv "$(which pip3)" /usr/bin/pip \
+  && ln -sv "$(which pip3)" /usr/bin/pip3
 
 #ENV PATH=/usr/local/bin:${PATH}
 
@@ -195,6 +206,8 @@ ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
 
 ### JAVASCRIPT
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 # hadolint ignore=DL3008,DL3015
@@ -230,9 +243,9 @@ RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
 #python36,brew are adding 2.7 G to the images
 
 # hadolint ignore=DL3008,DL3015
-RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" --force && \
- ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors && \
- ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
+RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" --force
+RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors
+RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
 # -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" \
@@ -260,6 +273,8 @@ RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (opti
 
 # GO
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 ENV GO_VERSION=${GO_VERSION:-"1.18"}
@@ -276,12 +291,14 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=${JENKINS_USER_HOME}/go
 ENV GO111MODULE=on
 
-RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main # devops
-RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest # devops
-RUN ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest # devops
-RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest # shell formating
-RUN ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest # visual studio
+RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
+&& ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
+&& ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest \
+&& ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
+&& ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 #RUN ls -lrta /home/ubuntu/.cache/go-build/
@@ -295,6 +312,8 @@ ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.3.2"}
 ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
 ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 
 RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
@@ -421,6 +440,8 @@ ENV WEBDRIVER_CHROME_VERSION=${WEBDRIVER_CHROME_VERSION:-"103.0.5060.134"}
 #RUN webdriver-manager update --versions.chrome ${WEBDRIVER_CHROME_VERSION}
 RUN webdriver-manager update
 
+RUN sed -i -e 's|^\[machine\]|#\[machine\]|g' /usr/share/containers/containers.conf
+
 COPY modprobe.sh /usr/local/bin/modprobe
 COPY dockerd-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh /usr/local/bin/modprobe
@@ -483,6 +504,7 @@ RUN google-chrome --version
 
 # For github action
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
 USER root
 RUN mkdir /github && chown -R jenkins /github && chmod -R 777 /github
 

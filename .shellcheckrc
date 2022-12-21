@@ -1,6 +1,6 @@
 
 # Don't suggest [ -n "$VAR" ] over [ ! -z "$VAR" ]
-disable=SC2236
+disable=SC2250,SC2236,SC2086,SC2250
 
 # Suggest ${VAR} in place of $VAR
 enable=require-variable-braces

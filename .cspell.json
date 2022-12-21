@@ -1,10 +1,14 @@
 {
+  "version": "0.2",
+  "language": "en",
+  "noConfigSearch": true,
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
     "**/vscode-extension/**",
     "**/.git/**",
     ".gitignore",
+    "**/.pnpm-lock.json",
     ".vscode",
     "megalinter",
     "package-lock.json",
@@ -27,18 +31,28 @@
     "roles/**",
     ".github/**",
     ".gitlab/**",
+    ".gitlab-ci.yml",
+    ".flake8",
+    ".envrc",
     "**/examples/**",
     "Dockerfile(-.+)?",
     ".jscpd.json",
     ".mega-linter.yml",
+    ".dive.yaml",
     ".yamllint",
+    ".ansible-lint",
+    ".cspell.json",
+    ".semgrepignore",
+    ".codeclimate.yml",
+    ".checkov.yml",
+    "config.yaml",
+    "Makefile",
+    "package.json",
     "pre-commit",
     ".pre-commit-config.yaml",
     "LICENSE",
     "report"
   ],
-  "language": "en",
-  "noConfigSearch": true,
   "words": [
     "Andrieu",
     "Alban",
@@ -103,17 +117,25 @@
     "skaffold",
     "approle",
     "publically",
+    "venv",
+    "direnv",
+    "semgrep",
+    "pylint",
+    "golint",
+    "gofmt",
+    "buildah",
+    "noxfile",
+    "awscli",
     "awstats"
   ],
   "languageSettings": [
-  {
-    "languageId": "markdown",
-    "caseSensitive": true
-  },
-  {
-    "languageId": "javascript",
-    "caseSensitive": false
-  }
-  ],
-  "version": "0.2"
+    {
+      "languageId": "markdown",
+      "caseSensitive": true
+    },
+    {
+      "languageId": "javascript",
+      "caseSensitive": false
+    }
+  ]
 }

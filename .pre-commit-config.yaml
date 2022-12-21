@@ -23,11 +23,11 @@ repos:
         args: ["--maxkb=123"]
         exclude: >
           (?x)^(
-              .pnp.cjs|
-              package-lock.json|
-              poetry.lock|
-              Pipfile.lock|
-              yarn.lock|
+            .pnp.cjs|
+            package-lock.json|
+            poetry.lock|
+            Pipfile.lock|
+            yarn.lock|
           )$
       - id: check-builtin-literals
       - id: check-case-conflict
@@ -63,6 +63,7 @@ repos:
       - id: check-symlinks
       - id: check-merge-conflict
       - id: debug-statements
+        exclude: ^.cache/
       - id: detect-private-key
         exclude: >
           (?x)^(
@@ -262,9 +263,9 @@ repos:
           - --filesonly
         stages:
           - commit
-      # - id: megalinter-full # Slower, more thorough
-      #   stages:
-      #     - push
+#   - id: megalinter-full  # Slower, more thorough
+#     stages:
+#       - push
   - repo: https://github.com/AlbanAndrieu/nabla-hooks.git
     rev: v1.0.3
     hooks:
