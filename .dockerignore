@@ -1,20 +1,36 @@
 # comment
 
-.env
+.direnv/
+.venv/
+Dockerfile*
+.env*
 .editorconfig
 .git
 .github
 .cache
 
-hooks/
+local/
+.dvc/
+data/
+var/
+tests/
+bin/
+etc/
 
+hooks/
+docs/
 *.md
 !README.md
 
-
-docs/
 target/
 node_modules/
 scripts/
 docker/
 #roles/
+megalinter-report/
+
+__pycache__/
+.vscode/
+.idea/
+.pytest_cache/
+.coverage

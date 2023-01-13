@@ -2,3 +2,4 @@
 brew 'hadolint'
 brew 'dive'
 brew 'gitversion'
+brew "terrascan"

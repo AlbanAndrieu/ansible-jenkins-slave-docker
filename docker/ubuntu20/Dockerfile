@@ -215,8 +215,8 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
-RUN npm install -g npm@8.5.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 8.5.0
+RUN npm install -g npm@9.2.0 && apt-get purge -y npm
+RUN npm -v && command -v npm # 9.2.0
 RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### ANSIBLE
