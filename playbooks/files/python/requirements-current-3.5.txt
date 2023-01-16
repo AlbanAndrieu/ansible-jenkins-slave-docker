@@ -66,7 +66,7 @@ flake8==3.5.0
 flake8-polyfill==1.0.2
 frosted==1.4.1
 git-pre-commit-hook-utils==0.0.5
-GitPython==2.1.8
+GitPython==3.1.30
 gprof2dot==2017.9.19
 guacamole==0.9.2
 html5lib==1.0.1
