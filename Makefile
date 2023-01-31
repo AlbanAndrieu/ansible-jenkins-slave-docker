@@ -207,7 +207,7 @@ deploy-docker: ## Push to registry
 	@echo "=> docker login registry.gitlab.com"
 	@echo "=> aws ecr get-login-password --region \$${AWS_REGION:-"eu-west-3"} | docker login --username AWS --password-stdin \$${OCI_REGISTRY:-\"783876277037.dkr.ecr.eu-west-3.amazonaws.com\"} "
 	@echo "=> Pushing image..."
-	@echo "=> By Hand ✌ => docker push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
+	@echo "=> By Hand 👊 => docker push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
 	@echo "=> By Hand ✌ => docker push $(DOCKER_NAME):latest"
 
 ## —— Deploy Buildah 💾🐶 ———————————————————————————————————————————————————————————————
@@ -216,8 +216,8 @@ deploy-buildah: ## Push to registry
 	@echo "=> Tagging image..."
 	buildah tag $(IMAGE) $(DOCKER_NAME):$(DOCKER_NEXT_TAG)
 	@echo "=> Pushing image..."
-	@echo "=> TODO => buildah push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
-	@echo "=> TODO => buildah push $(DOCKER_NAME):latest"
+	@echo "=> By Hand 👊 => buildah push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
+	@echo "=> By Hand ✌ => buildah push $(DOCKER_NAME):latest"
 
 ## —— Deploy 💾👑 ———————————————————————————————————————————————————————————————
 .PHONY: deploy
