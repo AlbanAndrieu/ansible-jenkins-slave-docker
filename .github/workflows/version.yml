@@ -2,7 +2,7 @@
 # .github/workflows/version.yml
 name: Git Version
 
-true:
+on:
   push:
     branches:
       - master
