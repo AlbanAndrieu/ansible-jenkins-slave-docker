@@ -48,7 +48,7 @@
     "secretlint": "^6.0.2"
   },
   "devDependencies": {
-    "@secretlint/secretlint-rule-preset-recommend": "^5.2.4",
+    "@secretlint/secretlint-rule-preset-recommend": "^6.1.0",
     "cspell": "^6.21.0"
   }
 }
