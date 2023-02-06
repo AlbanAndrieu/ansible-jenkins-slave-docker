@@ -357,81 +357,81 @@
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-6.2.0.tgz#f00ae64e76de9bf664463f692a62ae286cdc165e"
 
-"@secretlint/secretlint-rule-aws@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-aws/-/secretlint-rule-aws-5.2.4.tgz#15b07223ff2221b20b5459223638b8ba3b984021"
+"@secretlint/secretlint-rule-aws@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-aws/-/secretlint-rule-aws-6.2.0.tgz#c5b7ebb0cfbc957e8fbfb32cec6968da02d9fc85"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
     regx "^1.0.4"
 
-"@secretlint/secretlint-rule-basicauth@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-basicauth/-/secretlint-rule-basicauth-5.2.4.tgz#61d4c5327774f408a67cc05763afe14d4dc076d3"
+"@secretlint/secretlint-rule-basicauth@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-basicauth/-/secretlint-rule-basicauth-6.2.0.tgz#85bdddacc89ceff09996ed947a44329ef30f6b04"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/secretlint-rule-filter-comments@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-filter-comments/-/secretlint-rule-filter-comments-5.2.4.tgz#82b7c372f5290609b48e2985eec8b675bcad7513"
+"@secretlint/secretlint-rule-filter-comments@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-filter-comments/-/secretlint-rule-filter-comments-6.2.0.tgz#440b705f490aca76f3f587759c8ee69d353ba393"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
 
-"@secretlint/secretlint-rule-gcp@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-gcp/-/secretlint-rule-gcp-5.2.4.tgz#8ba76a6cc156976fd92c76b03a7fbe7ec38f9940"
+"@secretlint/secretlint-rule-gcp@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-gcp/-/secretlint-rule-gcp-6.2.0.tgz#b6f42e3127a05cee267b6feb649ad92c09943e76"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
     node-forge "^1.3.1"
 
-"@secretlint/secretlint-rule-github@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-github/-/secretlint-rule-github-5.2.4.tgz#e1b0262f757be37b9a3edf00dcb5b29bb40330aa"
+"@secretlint/secretlint-rule-github@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-github/-/secretlint-rule-github-6.2.0.tgz#58a82037c80f29d5563f6385da4903380b801e72"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/secretlint-rule-npm@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-npm/-/secretlint-rule-npm-5.2.4.tgz#f486c3c1c92a29893cdbfb15d85140d0573bae72"
+"@secretlint/secretlint-rule-npm@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-npm/-/secretlint-rule-npm-6.2.0.tgz#f5f5cf1e2f582725af5f23b2ea935c5931932c1b"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/secretlint-rule-preset-recommend@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-preset-recommend/-/secretlint-rule-preset-recommend-5.2.4.tgz#50a4ac2d8d6e42d06834d3e1442a6262fb9385e7"
+"@secretlint/secretlint-rule-preset-recommend@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-preset-recommend/-/secretlint-rule-preset-recommend-6.2.0.tgz#1b68ecaefe34dbe99e577e8719f192b40dd6cdfd"
   dependencies:
-    "@secretlint/secretlint-rule-aws" "^5.2.4"
-    "@secretlint/secretlint-rule-basicauth" "^5.2.4"
-    "@secretlint/secretlint-rule-filter-comments" "^5.2.4"
-    "@secretlint/secretlint-rule-gcp" "^5.2.4"
-    "@secretlint/secretlint-rule-github" "^5.2.4"
-    "@secretlint/secretlint-rule-npm" "^5.2.4"
-    "@secretlint/secretlint-rule-privatekey" "^5.2.4"
-    "@secretlint/secretlint-rule-sendgrid" "^5.2.4"
-    "@secretlint/secretlint-rule-slack" "^5.2.4"
+    "@secretlint/secretlint-rule-aws" "^6.2.0"
+    "@secretlint/secretlint-rule-basicauth" "^6.2.0"
+    "@secretlint/secretlint-rule-filter-comments" "^6.2.0"
+    "@secretlint/secretlint-rule-gcp" "^6.2.0"
+    "@secretlint/secretlint-rule-github" "^6.2.0"
+    "@secretlint/secretlint-rule-npm" "^6.2.0"
+    "@secretlint/secretlint-rule-privatekey" "^6.2.0"
+    "@secretlint/secretlint-rule-sendgrid" "^6.2.0"
+    "@secretlint/secretlint-rule-slack" "^6.2.0"
 
-"@secretlint/secretlint-rule-privatekey@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-privatekey/-/secretlint-rule-privatekey-5.2.4.tgz#414e28be1919c4790e607a6d60fe73d144b650fe"
+"@secretlint/secretlint-rule-privatekey@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-privatekey/-/secretlint-rule-privatekey-6.2.0.tgz#b908444d435e45a1f40231bceb14b031d35d6720"
   dependencies:
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/secretlint-rule-sendgrid@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-sendgrid/-/secretlint-rule-sendgrid-5.2.4.tgz#6b906c751fbede48eaaf2d8f27149003e4e94f0d"
+"@secretlint/secretlint-rule-sendgrid@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-sendgrid/-/secretlint-rule-sendgrid-6.2.0.tgz#3ebc6aab2c9b771135ceb27e51f0f71d19378caf"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/secretlint-rule-slack@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-slack/-/secretlint-rule-slack-5.2.4.tgz#08fb3f253a87ddb2058a849fc5c9ab61c742264f"
+"@secretlint/secretlint-rule-slack@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/secretlint-rule-slack/-/secretlint-rule-slack-6.2.0.tgz#32d079243140eaa8914f590bc103b9bb7ece4a64"
   dependencies:
-    "@secretlint/types" "^5.2.4"
+    "@secretlint/types" "^6.2.0"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
 "@secretlint/source-creator@^6.2.0":
@@ -440,10 +440,6 @@
   dependencies:
     "@secretlint/types" "^6.2.0"
     istextorbinary "^6.0.0"
-
-"@secretlint/types@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.npmjs.org/@secretlint/types/-/types-5.2.4.tgz"
 
 "@secretlint/types@^6.2.0":
   version "6.2.0"
