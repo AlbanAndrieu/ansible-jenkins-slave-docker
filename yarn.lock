@@ -294,39 +294,39 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@secretlint/config-creator@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/config-creator/-/config-creator-6.0.2.tgz#c90861aea42bfac7db595b602c089f31ca19dffb"
+"@secretlint/config-creator@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-creator/-/config-creator-6.2.0.tgz#57def716d6332367bd1e5baeab800df79f7673de"
   dependencies:
-    "@secretlint/types" "^6.0.2"
+    "@secretlint/types" "^6.2.0"
 
-"@secretlint/config-loader@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/config-loader/-/config-loader-6.0.2.tgz#a1e686b01c9a6e9b8401315a7f9e0785c2eea9b3"
+"@secretlint/config-loader@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-loader/-/config-loader-6.2.0.tgz#3d2d8d0be5731273f2133fcb4470038a584a56ea"
   dependencies:
-    "@secretlint/profiler" "^6.0.2"
-    "@secretlint/types" "^6.0.2"
-    ajv "^8.11.2"
+    "@secretlint/profiler" "^6.2.0"
+    "@secretlint/types" "^6.2.0"
+    ajv "^8.12.0"
     debug "^4.3.4"
     rc-config-loader "^4.1.2"
     try-resolve "^1.0.1"
 
-"@secretlint/core@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/core/-/core-6.0.2.tgz#36c3f0125152a3e8704de72bb8c4c73cdfafaaec"
+"@secretlint/core@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/core/-/core-6.2.0.tgz#f37f932a32cdd78f0458b9ec8db267cb5b918841"
   dependencies:
-    "@secretlint/profiler" "^6.0.2"
-    "@secretlint/types" "^6.0.2"
+    "@secretlint/profiler" "^6.2.0"
+    "@secretlint/types" "^6.2.0"
     debug "^4.3.4"
     structured-source "^3.0.2"
 
-"@secretlint/formatter@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/formatter/-/formatter-6.0.2.tgz#f438e364b39603279539c20c2bd212067b14c555"
+"@secretlint/formatter@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/formatter/-/formatter-6.2.0.tgz#708f5397aa841780e9739e7c946ef6a67256d495"
   dependencies:
-    "@secretlint/types" "^6.0.2"
-    "@textlint/linter-formatter" "^12.3.1"
-    "@textlint/types" "^12.3.0"
+    "@secretlint/types" "^6.2.0"
+    "@textlint/linter-formatter" "^12.6.1"
+    "@textlint/types" "^12.6.1"
     chalk "^4.1.2"
     debug "^4.3.4"
     pluralize "^8.0.0"
@@ -335,21 +335,21 @@
     terminal-link "^2.1.1"
     try-resolve "^1.0.1"
 
-"@secretlint/node@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/node/-/node-6.0.2.tgz#05084366c7620b4ee9dfe647e609969466fba616"
+"@secretlint/node@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/node/-/node-6.2.0.tgz#e5df51be9f97cb2d48355810a406d35aee6bf868"
   dependencies:
-    "@secretlint/config-loader" "^6.0.2"
-    "@secretlint/core" "^6.0.2"
-    "@secretlint/formatter" "^6.0.2"
-    "@secretlint/profiler" "^6.0.2"
-    "@secretlint/source-creator" "^6.0.2"
+    "@secretlint/config-loader" "^6.2.0"
+    "@secretlint/core" "^6.2.0"
+    "@secretlint/formatter" "^6.2.0"
+    "@secretlint/profiler" "^6.2.0"
+    "@secretlint/source-creator" "^6.2.0"
     debug "^4.3.4"
     p-map "^4.0.0"
 
-"@secretlint/profiler@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-6.0.2.tgz#0bf226d37f0da9095cbdb25a92c9c1f17923b336"
+"@secretlint/profiler@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-6.2.0.tgz#f00ae64e76de9bf664463f692a62ae286cdc165e"
 
 "@secretlint/secretlint-rule-aws@^5.2.4":
   version "5.2.4"
@@ -428,33 +428,33 @@
     "@secretlint/types" "^5.2.4"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/source-creator@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/source-creator/-/source-creator-6.0.2.tgz#16e0ab3ce9214928eb41680c263500bead1b30f5"
+"@secretlint/source-creator@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/source-creator/-/source-creator-6.2.0.tgz#b6a1f60fea2e39aa538d5e336cfac091588c58d2"
   dependencies:
-    "@secretlint/types" "^6.0.2"
+    "@secretlint/types" "^6.2.0"
     istextorbinary "^6.0.0"
 
 "@secretlint/types@^5.2.4":
   version "5.2.4"
   resolved "https://registry.npmjs.org/@secretlint/types/-/types-5.2.4.tgz"
 
-"@secretlint/types@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@secretlint/types/-/types-6.0.2.tgz#3a2860d7e604a3618d03b83131fe4252eb328d1b"
+"@secretlint/types@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@secretlint/types/-/types-6.2.0.tgz#f8e33e74031f3bd55499d673bfcbfdcc9a72a9d8"
 
-"@textlint/ast-node-types@^12.3.0":
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/@textlint/ast-node-types/-/ast-node-types-12.3.0.tgz#3eb52ca2d7234ad8e015a1fc104ab15945a25e1f"
+"@textlint/ast-node-types@^12.6.1":
+  version "12.6.1"
+  resolved "https://registry.yarnpkg.com/@textlint/ast-node-types/-/ast-node-types-12.6.1.tgz#35ecefe74e701d7f632c083d4fda89cab1b89012"
 
-"@textlint/linter-formatter@^12.3.1":
-  version "12.3.1"
-  resolved "https://registry.yarnpkg.com/@textlint/linter-formatter/-/linter-formatter-12.3.1.tgz#f990ab5ae87545c7b729a804830a85a062ce9f04"
+"@textlint/linter-formatter@^12.6.1":
+  version "12.6.1"
+  resolved "https://registry.yarnpkg.com/@textlint/linter-formatter/-/linter-formatter-12.6.1.tgz#90314ddaa036197c36ccb75cc8fa3fb318895350"
   dependencies:
     "@azu/format-text" "^1.0.1"
     "@azu/style-format" "^1.0.0"
-    "@textlint/module-interop" "^12.3.0"
-    "@textlint/types" "^12.3.0"
+    "@textlint/module-interop" "^12.6.1"
+    "@textlint/types" "^12.6.1"
     chalk "^4.1.2"
     debug "^4.3.4"
     is-file "^1.0.0"
@@ -468,9 +468,9 @@
     text-table "^0.2.0"
     try-resolve "^1.0.1"
 
-"@textlint/module-interop@^12.3.0":
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/@textlint/module-interop/-/module-interop-12.3.0.tgz#5d598ed631676b46d209a11abab2fb11c1f02038"
+"@textlint/module-interop@^12.6.1":
+  version "12.6.1"
+  resolved "https://registry.yarnpkg.com/@textlint/module-interop/-/module-interop-12.6.1.tgz#82adf942281a8880e1ad70b305d8caba87356830"
 
 "@textlint/regexp-string-matcher@^2.0.2":
   version "2.0.2"
@@ -481,11 +481,11 @@
     lodash.uniq "^4.5.0"
     lodash.uniqwith "^4.5.0"
 
-"@textlint/types@^12.3.0":
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/@textlint/types/-/types-12.3.0.tgz#68312fce997c106a4f85fb9ed0fc047d9ccc8113"
+"@textlint/types@^12.6.1":
+  version "12.6.1"
+  resolved "https://registry.yarnpkg.com/@textlint/types/-/types-12.6.1.tgz#d00c5d625287a113c2807587c2c0cdc1c7f182d8"
   dependencies:
-    "@textlint/ast-node-types" "^12.3.0"
+    "@textlint/ast-node-types" "^12.6.1"
 
 "@types/minimist@^1.2.0":
   version "1.2.2"
@@ -511,9 +511,9 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-ajv@^8.11.2:
-  version "8.11.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.2.tgz#aecb20b50607acf2569b6382167b65a96008bb78"
+ajv@^8.12.0:
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -1733,14 +1733,14 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
 
-secretlint@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/secretlint/-/secretlint-6.0.2.tgz#9d062a277c589678066dd12d9432b65fa48effe8"
+secretlint@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/secretlint/-/secretlint-6.2.0.tgz#7ae487817ab09de10befe800552c2238f00952d7"
   dependencies:
-    "@secretlint/config-creator" "^6.0.2"
-    "@secretlint/formatter" "^6.0.2"
-    "@secretlint/node" "^6.0.2"
-    "@secretlint/profiler" "^6.0.2"
+    "@secretlint/config-creator" "^6.2.0"
+    "@secretlint/formatter" "^6.2.0"
+    "@secretlint/node" "^6.2.0"
+    "@secretlint/profiler" "^6.2.0"
     debug "^4.3.4"
     globby "^11.1.0"
     meow "^9.0.0"
