@@ -209,7 +209,7 @@ pyfakefs==4.0.2
 pyflakes==2.2.0
 pygal==2.4.0
 Pygments==2.6.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 #pyodbc==4.0.22
 pylint>=2.12.2
 pylint-junit==0.2.0
