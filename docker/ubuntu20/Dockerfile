@@ -3,10 +3,9 @@
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
 # FROM ubuntu:20.10
-# See https://github.com/SeleniumHQ/docker-selenium/blob/3.141.59-zirconium/Base/Dockerfile
+# See https://github.com/SeleniumHQ/docker-selenium/blob/4.8.3-20230328/Base/Dockerfile
 # focal
-#FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
-FROM selenium/standalone-chrome:4.7.1-20221208 as selenium
+FROM selenium/standalone-chrome:4.8.3-20230328 as selenium
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

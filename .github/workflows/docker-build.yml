@@ -81,7 +81,7 @@ jobs:
           ignore-unfixed: true
           skip-dirs: .direnv
           skip-files: Gemfile.lock,Pipfile.lock,package-lock.json,requirements.txt,docker/ubuntu16/Dockerfile,docker/ubuntu18/Dockerfile
-          timeout: "10m0s"
+          timeout: "20m0s"
           security-checks: vuln  # vuln,secret
           vuln-type: os,library
           severity: CRITICAL,HIGH
