@@ -305,37 +305,37 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@secretlint/config-creator@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/config-creator/-/config-creator-6.2.0.tgz#57def716d6332367bd1e5baeab800df79f7673de"
+"@secretlint/config-creator@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-creator/-/config-creator-6.2.3.tgz#08f564368683bb89c95cbed05e870fbe98667577"
   dependencies:
-    "@secretlint/types" "^6.2.0"
+    "@secretlint/types" "^6.2.3"
 
-"@secretlint/config-loader@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/config-loader/-/config-loader-6.2.0.tgz#3d2d8d0be5731273f2133fcb4470038a584a56ea"
+"@secretlint/config-loader@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/config-loader/-/config-loader-6.2.3.tgz#888f6cb1d4e4520bf8032839b4a2c1461a2af560"
   dependencies:
-    "@secretlint/profiler" "^6.2.0"
-    "@secretlint/types" "^6.2.0"
+    "@secretlint/profiler" "^6.2.3"
+    "@secretlint/types" "^6.2.3"
     ajv "^8.12.0"
     debug "^4.3.4"
     rc-config-loader "^4.1.2"
     try-resolve "^1.0.1"
 
-"@secretlint/core@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/core/-/core-6.2.0.tgz#f37f932a32cdd78f0458b9ec8db267cb5b918841"
+"@secretlint/core@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/core/-/core-6.2.3.tgz#a68319951fac7133049e2bdfe915d262cdfca47a"
   dependencies:
-    "@secretlint/profiler" "^6.2.0"
-    "@secretlint/types" "^6.2.0"
+    "@secretlint/profiler" "^6.2.3"
+    "@secretlint/types" "^6.2.3"
     debug "^4.3.4"
     structured-source "^3.0.2"
 
-"@secretlint/formatter@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/formatter/-/formatter-6.2.0.tgz#708f5397aa841780e9739e7c946ef6a67256d495"
+"@secretlint/formatter@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/formatter/-/formatter-6.2.3.tgz#9543ef0a9b4b3462a8cb2bcc14d8fd948053bac9"
   dependencies:
-    "@secretlint/types" "^6.2.0"
+    "@secretlint/types" "^6.2.3"
     "@textlint/linter-formatter" "^12.6.1"
     "@textlint/types" "^12.6.1"
     chalk "^4.1.2"
@@ -346,21 +346,21 @@
     terminal-link "^2.1.1"
     try-resolve "^1.0.1"
 
-"@secretlint/node@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/node/-/node-6.2.0.tgz#e5df51be9f97cb2d48355810a406d35aee6bf868"
+"@secretlint/node@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/node/-/node-6.2.3.tgz#17cbb4175791e4b4f766a387b9c2e3ebd6c50fe6"
   dependencies:
-    "@secretlint/config-loader" "^6.2.0"
-    "@secretlint/core" "^6.2.0"
-    "@secretlint/formatter" "^6.2.0"
-    "@secretlint/profiler" "^6.2.0"
-    "@secretlint/source-creator" "^6.2.0"
+    "@secretlint/config-loader" "^6.2.3"
+    "@secretlint/core" "^6.2.3"
+    "@secretlint/formatter" "^6.2.3"
+    "@secretlint/profiler" "^6.2.3"
+    "@secretlint/source-creator" "^6.2.3"
     debug "^4.3.4"
     p-map "^4.0.0"
 
-"@secretlint/profiler@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-6.2.0.tgz#f00ae64e76de9bf664463f692a62ae286cdc165e"
+"@secretlint/profiler@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/profiler/-/profiler-6.2.3.tgz#8aca2afd3317809378f1a0842270e29dc010bb51"
 
 "@secretlint/secretlint-rule-aws@^5.2.4":
   version "5.2.4"
@@ -439,20 +439,20 @@
     "@secretlint/types" "^5.2.4"
     "@textlint/regexp-string-matcher" "^2.0.2"
 
-"@secretlint/source-creator@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/source-creator/-/source-creator-6.2.0.tgz#b6a1f60fea2e39aa538d5e336cfac091588c58d2"
+"@secretlint/source-creator@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/source-creator/-/source-creator-6.2.3.tgz#7a1ec7f5c50655ba5687c281d6091e686787d0a7"
   dependencies:
-    "@secretlint/types" "^6.2.0"
+    "@secretlint/types" "^6.2.3"
     istextorbinary "^6.0.0"
 
 "@secretlint/types@^5.2.4":
   version "5.2.4"
   resolved "https://registry.npmjs.org/@secretlint/types/-/types-5.2.4.tgz"
 
-"@secretlint/types@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@secretlint/types/-/types-6.2.0.tgz#f8e33e74031f3bd55499d673bfcbfdcc9a72a9d8"
+"@secretlint/types@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@secretlint/types/-/types-6.2.3.tgz#3f372dfc66f4710c5f3daaad8e71840762dff5dd"
 
 "@textlint/ast-node-types@^12.6.1":
   version "12.6.1"
@@ -1750,14 +1750,14 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
 
-secretlint@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/secretlint/-/secretlint-6.2.0.tgz#7ae487817ab09de10befe800552c2238f00952d7"
+secretlint@^6.2.3:
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/secretlint/-/secretlint-6.2.3.tgz#6298a47e53cfc521301298a4de160622f58388b3"
   dependencies:
-    "@secretlint/config-creator" "^6.2.0"
-    "@secretlint/formatter" "^6.2.0"
-    "@secretlint/node" "^6.2.0"
-    "@secretlint/profiler" "^6.2.0"
+    "@secretlint/config-creator" "^6.2.3"
+    "@secretlint/formatter" "^6.2.3"
+    "@secretlint/node" "^6.2.3"
+    "@secretlint/profiler" "^6.2.3"
     debug "^4.3.4"
     globby "^11.1.0"
     meow "^9.0.0"
