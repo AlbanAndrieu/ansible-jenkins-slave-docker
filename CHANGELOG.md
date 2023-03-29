@@ -13,30 +13,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   * [Size 🌈](#size-%F0%9F%8C%88)
 - [[Unreleased]](#unreleased)
-- [[2.0.3] - TODO](#203---todo)
-- [[2.0.2] - 2022-26-05](#202---2022-26-05)
-  * [Added](#added)
+- [[2.0.5] - TODO](#205---todo)
   * [Updated](#updated)
-  * [Removed](#removed)
-- [[2.0.1] - 2021-13-01](#201---2021-13-01)
-  * [Added](#added-1)
+- [[2.0.4] - 2022-21-12](#204---2022-21-12)
   * [Updated](#updated-1)
-- [[2.0.0] - 13-12-2021](#200---13-12-2021)
+- [[2.0.3] - 2022-22-06](#203---2022-22-06)
+  * [Added](#added)
   * [Updated](#updated-2)
+  * [Removed](#removed)
+- [[2.0.2] - 2022-26-05](#202---2022-26-05)
+  * [Added](#added-1)
+  * [Updated](#updated-3)
+  * [Removed](#removed-1)
+- [[2.0.1] - 2021-13-01](#201---2021-13-01)
+  * [Added](#added-2)
+  * [Updated](#updated-4)
+- [[2.0.0] - 13-12-2021](#200---13-12-2021)
+  * [Updated](#updated-5)
   * [Remove](#remove)
 - [[1.0.19] - TODO](#1019---todo)
 - [[1.0.18] - 2021-13-01](#1018---2021-13-01)
-  * [Added](#added-2)
-  * [Updated](#updated-3)
-- [[1.0.17] - 2021-12-03](#1017---2021-12-03)
   * [Added](#added-3)
-- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
+  * [Updated](#updated-6)
+- [[1.0.17] - 2021-12-03](#1017---2021-12-03)
   * [Added](#added-4)
-  * [Updated](#updated-4)
+- [[1.0.13] - 2020-06-01](#1013---2020-06-01)
   * [Added](#added-5)
-- [[1.0.0] - 2020-01-01](#100---2020-01-01)
+  * [Updated](#updated-7)
   * [Added](#added-6)
-  * [Updated](#updated-5)
+- [[1.0.0] - 2020-01-01](#100---2020-01-01)
+  * [Added](#added-7)
+  * [Updated](#updated-8)
   * [Remove](#remove-1)
 
 <!-- tocstop -->
@@ -61,7 +68,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.4] - TODO
+## [2.0.5] - TODO
+
+### Updated
+
+- Switch local Python to 3.10.7
+
+## [2.0.4] - 2022-21-12
+
+### Updated
+
+- Linter
 
 ## [2.0.3] - 2022-22-06
 

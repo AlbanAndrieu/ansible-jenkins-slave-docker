@@ -1,9 +1,9 @@
 {
   "name": "ansible-jenkins-slave-docker",
   "description": "Docker image",
-  "branchVersion": "^2.0.4",
+  "branchVersion": "^2.0.5",
   "branchPattern": "2.0.*",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "pre-commit": [
     "precommit"
   ],

@@ -19,7 +19,7 @@ ENV http_proxy=${http_proxy:-""}
 ENV https_proxy=${https_proxy:-"${http_proxy}"}
 ENV no_proxy=${no_proxy:-"localhost,127.0.0.1,.albandrieu.com,.azure.io,albandri,albandrieu,10.199.52.11,.github.com,.docker.com,.ubuntu.com"}
 
-LABEL name="ansible-jenkins-slave" version="2.0.4" \
+LABEL name="ansible-jenkins-slave" version="2.0.5" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
  com.nabla.vendor="NABLA Incorporated"
@@ -69,7 +69,7 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 
 # hadolint ignore=DL3008
 RUN apt-get -q update --fix-missing \
-#  && apt-get full-upgrade -y \
+  && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   git git-lfs rsync curl wget bash jq \
   bzip2 zip unzip python-yaml python-jinja2 rsyslog gpg-agent \
