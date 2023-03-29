@@ -61,7 +61,7 @@ letsencrypt==0.4.1
 #LibAppArmor==2.11.0
 #louis==3.0.0
 lxml>=4.2.1
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.0
 mccabe==0.6.1
 ndg-httpsclient==0.4.4

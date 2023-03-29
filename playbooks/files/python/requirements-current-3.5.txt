@@ -84,7 +84,7 @@ launchpadlib==1.10.6
 lazr.restfulclient==0.13.5
 lazr.uri==1.0.3
 lxml>=4.2.1
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.0
 mccabe==0.6.1
 #molecule==2.16.0
