@@ -22,7 +22,7 @@ blinker==1.4
 cached-property==1.4.0
 #cairocffi==0.8.0
 #CairoSVG==2.0.3
-certifi==2018.1.18
+certifi==2022.12.7
 #cffi==1.11.5
 cfgv==1.0.0
 chardet==3.0.4
