@@ -8,7 +8,7 @@
 #FROM selenium/standalone-chrome:3.141.59-20210929 as selenium
 FROM selenium/standalone-chrome:4.7.1-20221208 as selenium
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 ENV JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
@@ -68,7 +68,8 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 #RUN apt-get purge unattended-upgrades
 
 # hadolint ignore=DL3008
-RUN apt-get -q update \
+RUN apt-get -q update --fix-missing \
+#  && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   git git-lfs rsync curl wget bash jq \
   bzip2 zip unzip python-yaml python-jinja2 rsyslog gpg-agent \
@@ -112,6 +113,7 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
 # dockerfile_lint - ignore
 ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.3~3-0"}
 
+# hadolint ignore=DL3006,DL4006
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 RUN add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
@@ -121,6 +123,23 @@ RUN add-apt-repository \
 RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
   docker-ce=5:${DOCKER_VERSION}~ubuntu-focal \
   docker-ce-cli=5:${DOCKER_VERSION}~ubuntu-focal \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# PODMAN
+
+# hadolint ignore=DL3006,DL4006
+RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key \
+  | gpg --dearmor  \
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg] \
+    https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/ /" \
+  | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+
+# RUN sed -i "s/# unqualified-search-registries.*/unqualified-search-registries\ =\ [\"docker.io\"]/" /etc/containers/registries.conf
+
+# hadolint ignore=DL3008
+RUN apt-get -q update \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ### USER (should follow ### DOCKER)
@@ -169,6 +188,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=off
 
+# hadolint ignore=DL3006,DL4006
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/bin/pip
 #RUN ls -lrta /usr/local/bin/pip
@@ -178,7 +198,6 @@ RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip=
 #  && ln -sv "$(which pip3)" /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
-
 ### DOCKER COMPOSE
 
 ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
@@ -186,7 +205,7 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
 #	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
 RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2022.7.4 \
-  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core>=2.13.0  zabbix-api==0.5.4 \
+  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core==2.13.8  zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
 
@@ -299,10 +318,6 @@ RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
 && ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
 && ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest
 
-# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
-# hadolint ignore=DL3002
-USER root
-
 #RUN ls -lrta /home/ubuntu/.cache/go-build/
 #RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/
 
@@ -326,7 +341,7 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 
 # BUILDAH
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008,SC1091,DL3006,DL4006
 RUN . /etc/os-release \
   && apt-get update \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
@@ -341,6 +356,7 @@ RUN . /etc/os-release \
 # TRIVY
 
 ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.32.1"}
+# hadolint ignore=DL3006,DL4006
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
 # CODE CLIMATE
@@ -351,6 +367,11 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/
 # CST
 
 RUN curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+
+# DIVE
+
+# checkov:skip=CKV_DOCKER_9:Ensure that APT isn't used
+RUN curl -LO https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.deb && apt-get install --no-install-recommends -y ./dive_0.9.2_linux_amd64.deb && rm -f dive_0.9.2_linux_amd64.deb && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ### HELM
 
