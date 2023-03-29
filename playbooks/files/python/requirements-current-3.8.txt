@@ -171,7 +171,7 @@ openpyxl==3.0.3
 openshift>=0.11.0
 oslo.i18n==4.0.1
 oslo.serialization==3.1.1
-oslo.utils==4.1.1
+oslo.utils==4.10.1
 packaging==20.9
 padme==1.1.1
 pandas>=1.0.3
