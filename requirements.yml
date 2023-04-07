@@ -16,6 +16,7 @@ collections:
   - name: ansible.posix
   - name: ansible.windows
   - name: devsec.hardening
+  - name: community.docker
 
 roles:
   - src: https://github.com/AlbanAndrieu/ansible-administration.git

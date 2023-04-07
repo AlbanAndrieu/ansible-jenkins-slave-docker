@@ -18,7 +18,7 @@
 #        - vm
 #
 #    - name: Log into private registry
-#      docker_login:
+#      community.docker.docker_login:
 #        registry: https://hub.docker.com
 #        username: "{{ docker_registry_login }}"
 #        password: "{{ docker_registry_password }}"
@@ -146,7 +146,7 @@
 #        - vm
 #
 #    - name: Log into private registry (jenkins user)
-#      docker_login:
+#      community.docker.docker_login:
 #        registry: https://hub.docker.com
 #        username: "{{ docker_registry_login }}"
 #        password: "{{ docker_registry_password }}"
