@@ -25,6 +25,7 @@ repos:
           (?x)^(
             .pnp.cjs|
             package-lock.json|
+            npm-shrinkwrap.json|
             poetry.lock|
             Pipfile.lock|
             yarn.lock|
@@ -101,7 +102,7 @@ repos:
         # supported by your project here, or alternatively use
         # pre-commit's default_language_version, see
         # https://pre-commit.com/#top_level-default_language_version
-        language_version: python3.10
+        language_version: python3.9
   - repo: https://github.com/PyCQA/flake8
     rev: 6.0.0
     hooks:
@@ -187,6 +188,10 @@ repos:
         args:
           [--permissive, --verbose, --dockerfile, ./docker/ubuntu20/Dockerfile]
         always_run: true
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.10.0
+    hooks:
+      - id: hadolint-docker
   #  - repo: https://github.com/gitguardian/ggshield
   #    rev: v1.10.7
   #    hooks:
@@ -248,19 +253,6 @@ repos:
     rev: v6.21.0
     hooks:
       - id: megalinter-incremental # Faster, less thorough
-        args:
-          - mega-linter-runner
-          - --containername
-          - "megalinter-incremental"
-          - --remove-container
-          - --fix
-          - --env
-          - "'APPLY_FIXES=all'"
-          - --env
-          - "'CLEAR_REPORT_FOLDER=true'"
-          - --env
-          - "'LOG_LEVEL=warning'"
-          - --filesonly
         stages:
           - commit
 #   - id: megalinter-full  # Slower, more thorough

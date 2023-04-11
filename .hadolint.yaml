@@ -1,8 +1,9 @@
 ---
 trustedRegistries:
   - docker.io
-  - registry-tmp.albandrieu.com:5000
-  - p21d13401013001.azurecr.io
+  # - registry-tmp.albandrieu.com:5000
+  # - p21d13401013001.azurecr.io
+  - registry.gitlab.com
 ignored:
   - DL3007
   - DL3016
@@ -10,3 +11,15 @@ ignored:
   - SC2086
   - SC2039
   - DL3059
+#  - DL3018
+label-schema:
+  name: text
+  # author: text
+  # contact: email
+  # created: rfc3339
+  version: semver
+  # documentation: url
+  # git-revision: hash
+  # license: spdx
+  # org.website: url
+# strict-labels: true

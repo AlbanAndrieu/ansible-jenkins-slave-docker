@@ -8,6 +8,21 @@ Dockerfile*
 .git
 .github
 .cache
+.gitlab-ci.yml
+
+Dockerfile
+.DS_Store
+
+local/
+.dvc/
+data/
+var
+vendor
+job.nomad
+.gitlab-ci.yml
+tests/
+bin/
+etc/
 
 local/
 .dvc/
@@ -21,13 +36,15 @@ hooks/
 docs/
 *.md
 !README.md
+!CHANGELOG.md
 
 target/
+report/
 node_modules/
 scripts/
 docker/
+megalinter-reports/
 #roles/
-megalinter-report/
 
 __pycache__/
 .vscode/
