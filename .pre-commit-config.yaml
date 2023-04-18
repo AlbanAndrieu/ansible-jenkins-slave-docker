@@ -80,7 +80,7 @@ repos:
             .*test_default\.py|
           )$
       # - id: no-commit-to-branch
-      #   args: [--branch, main, --branch, master, --branch, release/*]
+      #   args: [--branch, develop, --branch, main, --branch, master, --branch, release/*]
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
       - id: fix-encoding-pragma
@@ -94,15 +94,15 @@ repos:
     rev: v2.0.2
     hooks:
       - id: autopep8
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-        # It is recommended to specify the latest version of Python
-        # supported by your project here, or alternatively use
-        # pre-commit's default_language_version, see
-        # https://pre-commit.com/#top_level-default_language_version
-        language_version: python3.10
+  # - repo: https://github.com/psf/black
+  #   rev: 23.7.0
+  #   hooks:
+  #     - id: black
+  #       # It is recommended to specify the latest version of Python
+  #       # supported by your project here, or alternatively use
+  #       # pre-commit's default_language_version, see
+  #       # https://pre-commit.com/#top_level-default_language_version
+  #       language_version: python3.10
   - repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:

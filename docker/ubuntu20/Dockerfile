@@ -167,8 +167,8 @@ RUN groupmod -g ${GID} ${GROUP} \
 #RUN groupadd -g ${GID} ${GROUP} && \
 && adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} ${USER} \
 && echo "jenkins:jenkins1234" | chpasswd \
-&& usermod -a -G ${GROUP} ${USER} \
-&& echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
+&& usermod -a -G ${GROUP} ${USER}
+# && echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
 
 # hadolint ignore=SC2059
 RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
