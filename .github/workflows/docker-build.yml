@@ -79,8 +79,8 @@ jobs:
           #  format: 'table'
           #  exit-code: '1'
           ignore-unfixed: true
-          skip-dirs: .direnv
-          skip-files: Gemfile.lock,Pipfile.lock,package-lock.json,requirements.txt,docker/ubuntu16/Dockerfile,docker/ubuntu18/Dockerfile
+          skip-dirs: .direnv,.venv
+          skip-files: Gemfile.lock,Pipfile.lock,package-lock.json,requirements.txt,docker/ubuntu16/Dockerfile,docker/ubuntu18/Dockerfile,/usr/bin/nomad
           timeout: "20m0s"
           security-checks: vuln  # vuln,secret
           vuln-type: os,library

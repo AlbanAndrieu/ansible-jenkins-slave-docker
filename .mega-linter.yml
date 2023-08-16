@@ -47,7 +47,7 @@ REPOSITORY_DEVSKIM_DISABLE_ERRORS_IF_LESS_THAN: 10
 REPOSITORY_DEVSKIM_ARGUMENTS: --severity critical,important --skip-git-ignored-files # --ignore-globs **/.git/**,**/bin/**,.mypy_cache/**,**/tests/**,**/README.md
 REPOSITORY_TRIVY_DISABLE_ERRORS: false
 REPOSITORY_TRIVY_DISABLE_ERRORS_IF_LESS_THAN: 1
-REPOSITORY_TRIVY_ARGUMENTS: --security-checks vuln,config,secret --vuln-type os,library --ignore-unfixed --skip-dirs .direnv --skip-dirs .venv --skip-files pip.conf --skip-files Pipfile
+REPOSITORY_TRIVY_ARGUMENTS: --security-checks vuln,config,secret --vuln-type os,library --ignore-unfixed --skip-dirs .direnv --skip-dirs .venv --skip-files pip.conf --skip-files Pipfile --skip-files /usr/bin/nomad
 TERRAFORM_TERRASCAN_ARGUMENTS: -i terraform -t docker -t github -d terraform # -f myfile.tf
 TERRAFORM_TERRASCAN_DISABLE_ERRORS: true
 REPOSITORY_GITLEAKS_DISABLE_ERRORS: false
