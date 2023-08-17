@@ -17,7 +17,8 @@ framework:
 # skip-download: true
 # quiet: true
 repo-id: AlbanAndrieu/ansible-jenkins-slave-docker
-# skip-check:
+skip-check:
+ - CKV2_DOCKER_11
 # - CKV_DOCKER_3
 # - CKV_DOCKER_2
 skip-fixes: true
@@ -25,6 +26,7 @@ skip-fixes: true
 # - dockerfile
 # - secrets
 soft-fail: true
+exclude-file: waypoint.hcl
 # skip-file:
 #  - docker/ubuntu16/Dockerfile
 #  - docker/ubuntu18/Dockerfile

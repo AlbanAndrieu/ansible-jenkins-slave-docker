@@ -44,11 +44,16 @@
   "dependencies": {
     "cli": "^1.0.1",
     "jest-junit": "^14.0.1",
-    "markdown-toc": "^1.2.0",
-    "secretlint": "^6.2.0"
+    "markdown-toc": "^1.2.0"
   },
   "devDependencies": {
-    "@secretlint/secretlint-rule-preset-recommend": "^5.2.4",
+    "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
+    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/gitlab": "^9.5.1",
+    "secretlint": "^7.0.3",
+    "semantic-release": "^21.0.7",
     "cspell": "^6.30.2"
   }
 }

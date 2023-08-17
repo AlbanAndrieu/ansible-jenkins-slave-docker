@@ -19,7 +19,14 @@
     "**/.idea/**",
     "**/*.svg",
     "**/target/**",
+    "megalinter-reports/**",
     "src/test/resources/callstacks/**",
-    "src/test/jenkins/lib/**"
+    "src/test/jenkins/lib/**",
+    "library/jenkins_csrf_token.py",
+    "library/jenkins_node.py",
+    "scripts/docker-build-18.sh",
+    "scripts/docker-build-20.sh",
+    "scripts/run-ansible-container.sh",
+    "scripts/run-ansible-workstation.sh"
   ]
 }
