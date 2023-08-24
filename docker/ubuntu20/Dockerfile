@@ -5,7 +5,8 @@
 # FROM ubuntu:20.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/4.8.3-20230328/Base/Dockerfile
 # focal
-FROM selenium/standalone-chrome:4.8.3-20230328 as selenium
+# FROM selenium/standalone-chrome:4.8.3-20230328 as selenium
+FROM selenium/standalone-chrome:4.11.0-20230801 as selenium
 
 LABEL name="ansible-jenkins-slave" version="2.0.5" \
  description="Image used by our products to build Java/Javascript and CPP\
@@ -207,7 +208,7 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
 #RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
 #	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
-RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2022.7.4 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2023.7.23 \
   docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core==2.13.8  zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
@@ -220,10 +221,10 @@ RUN ln -sv "$(which pip3)" /usr/bin/pip \
 # dockerfile_lint - ignore
 USER ${USER}
 
-RUN pip3 install --user --no-cache-dir pipenv==2022.7.4
+RUN pip3 install --user --no-cache-dir pipenv==2023.7.23
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
-RUN cd ${JENKINS_USER_HOME} && python -m pipenv install --system --dev --site-packages
+RUN cd ${JENKINS_USER_HOME} && python -m pipenv install --system --dev # --site-packages
 # --system to prevent the creation of a virtualenv at all.
 
 ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
