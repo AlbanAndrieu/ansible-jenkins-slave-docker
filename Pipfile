@@ -89,7 +89,8 @@ matplotlib = ">=3.2.1"
 #ndg-httpsclient = "==0.5.1"
 #nose = "==1.3.7"
 #ntlm-auth = "==1.4.0"
-numpy = ">=1.19.2"
+# numpy = ">=1.19.2"
+numpy = "~=1.24.4" # Could not find a version that satisfies the requirement numpy==1.25.2
 #oauth = "==1.0.1"
 #oauthlib = "==3.1.0"
 #olefile = "==0.46"
@@ -155,8 +156,8 @@ zipp = ">=3.1.0"
 
 [dev-packages]
 ansible-cmdb = "~=1.31"
-ansible-core = ">=2.13.11" # python 3.8
-# ansible-lint = {extras = ["yamllint"], version = ">=6.13.1"} # 6.8.7
+ansible-core = "~=2.13.11" # python 3.8
+ansible-lint = {extras = ["yamllint"], version = "~=6.13.1"} # 6.8.7
 # ansible-navigator = ">=1.1.0"
 # ansible-runner = ">=2.2.1"
 # ansible-builder = ">=1.1.0"
@@ -186,12 +187,13 @@ pytest-dependency = ">=0.5.1"
 pytest-testinfra = ">=6.4.0"
 #pyyaml = ">=5.4.1"
 pywinrm = ">=0.4.3"
-molecule = ">=3.6.1"
+molecule = "~=4.0.4" # 3.6.1
 molecule-docker = ">=1.1.0"
 nox = "~=2023.4.22"
 # selenium = ">=4.7.2"
 # semver = "~=2.13.0"
 # semgrep = "~=0.122.0"
+selinux = "~=0.2.1"
 semgrep = ">=1.15.0"  # NOK >=0.122.0
 setup-cfg-fmt = "~=2.2.0"
 # yamllint = ">=1.32.0"
@@ -207,7 +209,7 @@ s3transfer = ">=0.3.3"
 #nodeenv = ">=1.7.0"
 
 [requires]
-python_version = "3.8"
+python_version = "^3.8"
 # python_full_version = "3.8.10"
 #python_full_version = "3.10.7"
 
