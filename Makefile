@@ -10,7 +10,7 @@ ME            = $(shell whoami)
 # Image
 DOCKER_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
 DOCKER_TAG := $${DOCKER_TAG:-"latest"}
-DOCKER_NEXT_TAG := $${OCI_IMAGE_TAG:-"2.0.5""}
+DOCKER_NEXT_TAG := $${OCI_IMAGE_TAG:-"2.0.6""}
 IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
 
 TRIVY_VULN_TYPE = "os,library"
