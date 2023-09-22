@@ -46,12 +46,12 @@ DOCKERFILE_HADOLINT_ARGUMENTS:
 REPOSITORY_DEVSKIM_DISABLE_ERRORS: true
 REPOSITORY_DEVSKIM_DISABLE_ERRORS_IF_LESS_THAN: 10
 # See https://github.com/oxsecurity/megalinter/issues/1993
-REPOSITORY_DEVSKIM_ARGUMENTS: --severity critical,important --skip-git-ignored-files # --ignore-globs **/.git/**,**/bin/**,.mypy_cache/**,**/tests/**,**/README.md
+REPOSITORY_DEVSKIM_ARGUMENTS: --severity critical,important --skip-git-ignored-files  # --ignore-globs **/.git/**,**/bin/**,.mypy_cache/**,**/tests/**,**/README.md
 REPOSITORY_TRIVY_DISABLE_ERRORS: false
 REPOSITORY_TRIVY_DISABLE_ERRORS_IF_LESS_THAN: 3
 REPOSITORY_CHECKOV_DISABLE_ERRORS_IF_LESS_THAN: 1
-REPOSITORY_TRIVY_ARGUMENTS: --security-checks vuln,config,secret --vuln-type os,library --ignore-unfixed --skip-dirs .direnv --skip-dirs .venv --skip-files pip.conf --skip-files Pipfile --skip-files /usr/bin/nomad
-TERRAFORM_TERRASCAN_ARGUMENTS: -i terraform -t docker -t github -d terraform # -f myfile.tf
+REPOSITORY_TRIVY_ARGUMENTS: --security-checks vuln,config,secret --vuln-type os,library --ignore-unfixed --skip-dirs .direnv --skip-dirs .venv --skip-dirs megalinter-reports --skip-files pip.conf --skip-files Pipfile --skip-files /usr/bin/nomad
+TERRAFORM_TERRASCAN_ARGUMENTS: -i terraform -t docker -t github -d terraform  # -f myfile.tf
 TERRAFORM_TERRASCAN_DISABLE_ERRORS: true
 REPOSITORY_GITLEAKS_DISABLE_ERRORS: false
 REPOSITORY_GITLEAKS_ARGUMENTS: --no-git --no-banner
@@ -73,7 +73,8 @@ YAML_V8R_FILE_NAMES_REGEX:
     ".checkov.yml",
   ]
 # ADDITIONAL_EXCLUDED_DIRECTORIES: (\.venv/|\.direnv/|\.mypy_cache/)
-EXCLUDED_DIRECTORIES: [".github", ".gitlab-ci", "node_modules", ".venv", ".direnv", ".mypy_cache"]
+EXCLUDED_DIRECTORIES:
+  [".github", ".gitlab-ci", "node_modules", ".venv", ".direnv", ".mypy_cache"]
 SHOW_ELAPSED_TIME: true
 EMAIL_REPORTER_EMAIL: alban.andrieu@free.fr
 JSON_REPORTER: true
@@ -84,7 +85,7 @@ PLUGINS:
   - https://raw.githubusercontent.com/oxsecurity/megalinter/master/.automation/test/mega-linter-plugin-test/test.megalinter-descriptor.yml
 PRE_COMMANDS:
   - command: pip install flake8-cognitive-complexity
-    venv: flake8 # Will be run within flake8 python virtualenv. There is one virtualenv per python-based linter, with the same name
+    venv: flake8  # Will be run within flake8 python virtualenv. There is one virtualenv per python-based linter, with the same name
   # - command: echo "This is Mega-Linter PRE_COMMAND on own Mega-Linter ! :)"
   #   cwd: root
   - command: |-
