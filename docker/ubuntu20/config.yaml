@@ -1,3 +1,4 @@
+---
 schemaVersion: "2.0.0"
 
 globalEnvVars:
@@ -201,7 +202,7 @@ fileExistenceTests:
     shouldExist: true
     permissions: "Lrwxrwxrwx"
 
-# check default pip (pip3)
+  # check default pip (pip3)
   - name: "pip"
     path: "/usr/local/bin/pip" # /usr/bin/pip
     shouldExist: true
@@ -212,7 +213,7 @@ fileExistenceTests:
     shouldExist: true
     permissions: "Lrwxrwxrwx"
 
-# check default python (python3)
+  # check default python (python3)
   - name: "python"
     path: "/usr/bin/python"
     shouldExist: true
@@ -270,8 +271,8 @@ fileExistenceTests:
 
 # TODO /home/ubuntu/.local/bin//ansible-lint
 
-  - name: 'dockerfile_lint'
-    path: '/usr/bin/dockerfile_lint'
+  - name: "dockerfile_lint"
+    path: "/usr/bin/dockerfile_lint"
     shouldExist: true
     permissions: 'Lrwxrwxrwx'
 
@@ -386,20 +387,20 @@ commandTests:
   #   command: "${JAVA_HOME}/bin/keytool -list -keystore ${JAVA_HOME}/jre/lib/security/cacerts -storepass changeit | grep -i uk1vswcert01"
   #   expectedOutput: ["misys, Jun 7, 2019, trustedCertEntry.*"]
 
-  - name: "check node v16.17 version"
+  - name: "check node v16.19 version"
     command: "node" # /usr/bin/node
     args: ["--version"]
-    expectedOutput: ["v16.17.*"]
+    expectedOutput: ["v16.20.*"]
 
   # - name: "check nodejs v14.16.1 version"
   #   command: "nodejs"
   #   args: ["--version"]
   #   expectedOutput: ["v14.16.*"]
 
-  - name: "check npm 8.19.2 version"
+  - name: "check npm 9.5.0 version"
     command: "npm" # /usr/local/bin/npm
     args: ["--version"]
-    expectedOutput: ["8.19.*"]
+    expectedOutput: ["9.5.*"]
 
   - name: "check newman 5.2.2 version"
     command: "newman" # /usr/local/bin/newman
@@ -418,11 +419,11 @@ commandTests:
   #   args: ["python3.8"]
   #   expectedOutput: ["/opt/ansible/env38/bin/python3.8\n"]
 
-  - name: "check default pip version"
+  - name: "check default pip 23.2.1 version"
     command: "pip"
     args: ["--version"]
     expectedOutput:
-      ["pip 22.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
+      ["pip 23.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
 
   - name: "check default python version"
     command: "python"
@@ -439,17 +440,17 @@ commandTests:
  #   args: ["--version"]
  #   expectedOutput: ['pip 20.3.* from /usr/local/lib/python2.7/dist-packages/pip.*.*\n']
 
-  - name: "check pip 3 version"
+  - name: "check pip 3 23.2.1 version"
     command: "pip3"
     args: ["--version"]
     expectedOutput:
-      ["pip 22.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
+      ["pip 23.2.* from /usr/local/lib/python3.8/dist-packages/pip.*.*"]
 
   - name: "check pip 3 env38 version"
     command: "pip3"
     args: ["--version"]
     expectedOutput:
-      ["pip 21.3.* from /opt/ansible/env38/lib/python3.8/site-packages/pip.*.*"]
+      ["pip 23.2.* from /opt/ansible/env38/lib/python3.8/site-packages/pip.*.*"]
 
   - name: "check python 3 version"
     command: "python3"
@@ -493,20 +494,20 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["Docker version 20.10.*"]
 
-  - name: "check aws 1.25.80 version"
-    command: "aws" # aws-cli/1.25.80
+  - name: "check aws 1.27.16 version"
+    command: "aws" # aws-cli/1.27.16
     args: ["--version"]
-    expectedOutput: ["aws-cli/1.25.*"]
+    expectedOutput: ["aws-cli/1.27.*"]
 
-  - name: "check flake8 5.0.4 version"
+  - name: "check flake8 6.0.0 version"
     command: "flake8"
     args: ["--version"]
-    expectedOutput: ["5.0.*"]
+    expectedOutput: ["6.0.*"]
 
-  - name: "check pytest 6.2.5 version"
+  - name: "check pytest 7.2.0 version"
     command: "pytest"
     args: ["--version"]
-    expectedError: ["pytest 6.2.*"]
+    expectedOutput: ["pytest 7.2.*"]
 
   - name: "check helm 3.5 version"
     command: "helm"

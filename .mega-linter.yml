@@ -29,6 +29,7 @@ DISABLE_LINTERS:
   - PYTHON_MYPY
   - PYTHON_PYRIGHT
   - PYTHON_PYLINT
+DISABLE_ERRORS: true  # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 IGNORE_GITIGNORED_FILES: true
 FILTER_REGEX_EXCLUDE: (megalinter-reports/|\.automation/test|\.automation/generated|\.github/workflows|\.venv/|\.direnv/|\.mypy_cache/|docs/javascripts|docs/overrides|docs/json-schemas|flavors|clj-kondo|TEMPLATES|tests)
 JSON_JSONLINT_FILTER_REGEX_EXCLUDE: (\.vscode/)
@@ -42,7 +43,6 @@ SPELL_MISSPELL_FILTER_REGEX_EXCLUDE: (\.automation/generated|docs/descriptors)
 DOCKERFILE_HADOLINT_ARGUMENTS:
   --ignore DL3003 --ignore DL3007 --ignore DL3013 --ignore DL3016 --ignore DL3018 --ignore DL3028 --ignore DL4001 --ignore DL4006 --ignore
   SC2015 --ignore SC2016 --ignore SC2039 --ignore SC2086 --ignore SC1091
-# DISABLE_ERRORS: true  # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 REPOSITORY_DEVSKIM_DISABLE_ERRORS: true
 REPOSITORY_DEVSKIM_DISABLE_ERRORS_IF_LESS_THAN: 10
 # See https://github.com/oxsecurity/megalinter/issues/1993

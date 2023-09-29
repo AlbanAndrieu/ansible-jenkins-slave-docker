@@ -8,7 +8,7 @@
 # FROM selenium/standalone-chrome:4.8.3-20230328 as selenium
 FROM selenium/standalone-chrome:4.11.0-20230801 as selenium
 
-LABEL name="ansible-jenkins-slave" version="2.0.5" \
+LABEL name="ansible-jenkins-slave" version="2.0.7" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
  com.nabla.vendor="NABLA Incorporated"
@@ -71,19 +71,24 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 # build-essential has gcc, needed for python requirements
 
 # hadolint ignore=DL3008
-RUN apt-get -q update  --fix-missing \
+RUN apt-get -q update --fix-missing \
 #  && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   git git-lfs rsync curl wget bash jq \
-  bzip2 zip unzip python-yaml python-jinja2 rsyslog gpg-agent \
+  python-yaml python-jinja2 rsyslog \
   ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
   apt-utils apt-transport-https ca-certificates software-properties-common \
-  iptables openssh-client supervisor \
-  locales xz-utils ksh tzdata sudo lsof sshpass \
+  build-essential locales \
+  bzip2 zip unzip tar gpg-agent \
+#  iptables supervisor \
+  xz-utils ksh tzdata sudo lsof sshpass \
   systemd systemd-cron \
   openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
-  net-tools iputils-ping x11-apps libxss1 \
-  gnome-keyring gnome-keyring gnupg2 pass \
+  net-tools iputils-ping dnsutils inetutils-traceroute \
+  openssh-client ssh-askpass \
+  gnome-keyring gnome-keyring \
+  gnupg2 pass \
+  x11-apps libxss1 \
   libnss3 \
   libffi-dev libgit2-dev \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -198,7 +203,7 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/local/bin/pip
 #RUN which pip
 RUN ln -sv "$(which python3)" /usr/bin/python
-RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==22.3 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==23.2.1 \
 #  && ln -sv "$(which pip3)" /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
@@ -235,15 +240,15 @@ WORKDIR ${JENKINS_USER_HOME}
 # hadolint ignore=DL3002
 USER root
 
-# hadolint ignore=DL3008,DL3015,DL3006
+# hadolint ignore=DL3008,DL3015,DL3006,DL4006
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
 
-RUN npm install -g npm@9.2.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 9.2.0
-RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.19.1 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
+RUN npm install -g npm@9.5.0 && apt-get purge -y npm
+RUN npm -v && command -v npm # 9.5.0
+RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.22.19 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 jest-junit@14.0.1 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### ANSIBLE
 
@@ -293,7 +298,7 @@ RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i 
 #/usr/bin/python3.7 -m pip install --no-cache-dir --upgrade pip
 
 # hadolint ignore=SC2261
-RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==22.3 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==23.2.1 \
     && pip install --proxy="${http_proxy}" --no-cache-dir ansible-core>=2.13.0 docker-compose==1.29.2 pre-commit==2.20.0 ansible-lint-junit>=0.15 \
     && pip3 --version && python3 --version
 
@@ -332,7 +337,7 @@ ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
 # NOMAD
 
-ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.3.2"}
+ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.6.2"}
 ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
 ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
 
@@ -362,7 +367,7 @@ RUN . /etc/os-release \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.32.1"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.44.1"}
 # hadolint ignore=DL3006,DL4006
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
@@ -373,7 +378,8 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/
 
 # CST
 
-RUN curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+# RUN curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+RUN curl -LO https://storage.googleapis.com/container-structure-test/v1.16.0/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
 # DIVE
 

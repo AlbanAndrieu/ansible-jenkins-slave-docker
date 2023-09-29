@@ -1,16 +1,16 @@
 {
   "name": "ansible-jenkins-slave-docker",
   "description": "Docker image",
-  "branchVersion": "^2.0.5",
+  "branchVersion": "^2.0.7",
   "branchPattern": "2.0.*",
-  "version": "2.0.5",
+  "version": "2.0.7",
   "pre-commit": [
     "precommit"
   ],
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=14.19.0 || >=16.0.0",
-    "npm": ">=6.14.16 || >=8.5.5",
+    "node": ">=16.15.0",
+    "npm": ">=8.5.5",
     "node-gyp": ">=3.0.3",
     "grunt": ">=1.5.3"
   },
@@ -44,16 +44,21 @@
   "dependencies": {
     "cli": "^1.0.1",
     "jest-junit": "^14.0.1",
-    "markdown-toc": "^1.2.0"
+    "markdown-toc": "^1.2.0",
+    "secretlint": "^7.0.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
     "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
-    "@semantic-release/changelog": "^6.0.2",
-    "@semantic-release/exec": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/gitlab": "^9.5.1",
-    "secretlint": "^7.0.3",
-    "semantic-release": "^21.0.7",
-    "cspell": "^6.30.2"
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.30.5",
+    "cspell": "^6.4.0",
+    "eslint": "^8.19.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-compat": "^4.1.4",
+    "eslint-plugin-vue": "^9.2.0",
+    "jest": "^28.1.0",
+    "newman": "^4.5.7"
   }
 }
