@@ -211,11 +211,7 @@ repos:
   #       entry: zricethezav/gitleaks protect --verbose --redact --staged
   #       # entry: zricethezav/gitleaks detect --verbose
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-<<<<<<< HEAD
     rev: v1.82.0
-=======
-    rev: v1.77.2
->>>>>>> acc4004 (Add ansible-lint for python 3.8)
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
