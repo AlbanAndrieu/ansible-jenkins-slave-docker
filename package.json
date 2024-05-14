@@ -59,6 +59,6 @@
     "eslint-plugin-compat": "^4.1.4",
     "eslint-plugin-vue": "^9.2.0",
     "jest": "^28.1.0",
-    "newman": "^4.5.7"
+    "newman": "^6.1.2"
   }
 }
