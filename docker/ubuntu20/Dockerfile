@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.2.1
+# syntax=docker/dockerfile:1.7
 
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
@@ -310,7 +310,7 @@ RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (opti
 # hadolint ignore=DL3002
 USER root
 
-ENV GO_VERSION=${GO_VERSION:-"1.18"}
+ENV GO_VERSION=${GO_VERSION:-"1.19"}
 ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
 ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 

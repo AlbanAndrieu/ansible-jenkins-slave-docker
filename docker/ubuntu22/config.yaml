@@ -1,0 +1,296 @@
+---
+schemaVersion: "2.0.0"
+
+# globalEnvVars:
+#  - key: "PATH"
+#    value: "/opt/ansible/env38/bin:$PATH"
+#  - key: "JAVA_HOME"
+#    value: "/usr/lib/jvm/java-8-openjdk-amd64"
+
+fileExistenceTests:
+  - name: "Root"
+    path: "/"
+    shouldExist: true
+    permissions: "drwxr-xr-x"
+    uid: 0
+    gid: 0
+    isExecutableBy: "group"
+
+  # - name: 'entrypoint'
+  #   path: '/dockerd-entrypoint.sh'
+  #   shouldExist: true
+  #   permissions: '-rwxr-xr-x'
+  #   uid: 0
+  #   gid: 0
+  #   isExecutableBy: 'group'
+
+  - name: "ubuntu local"
+    path: "/home/ubuntu/.local/"
+    shouldExist: true
+    # permissions: "drwx------"
+    permissions: "drwxr-xr-x"
+    uid: 1000
+
+  # CHROME
+
+  # - name: "ubuntu local share applications"
+  #   path: "/home/ubuntu/.local/share/applications"
+  #   shouldExist: true
+  #   permissions: "drwxr-xr-x" # TODO ? --> drwxrwxrwx
+  #   uid: 1000
+  #
+  # - name: "ubuntu config"
+  #   path: "/home/ubuntu/.config/"
+  #   shouldExist: true
+  #   permissions: "drwxrwxrwx"
+  #   uid: 1000
+  #
+  # - name: "ubuntu .bashrc"
+  #   path: "/home/ubuntu/.bashrc"
+  #   shouldExist: true
+  #   permissions: "-rw-r--r--"
+  #   uid: 1000
+  #   gid: 1000
+
+  # - name: "ubuntu docker"
+  #   path: "/home/ubuntu/.docker/"
+  #   shouldExist: true
+  #   permissions: "drwxrwxrwx"
+  #   uid: 1000
+
+  - name: "ubuntu container-structure-test"
+    path: "/usr/local/bin/container-structure-test"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
+
+  # NPM cache cleaned (to spare disk space)
+
+  # - name: "ubuntu npm"
+  #   path: "/home/ubuntu/.npm/"
+  #   shouldExist: false
+
+  # check default pip (pip3)
+  - name: "pip"
+    path: "/usr/local/bin/pip" # /usr/bin/pip
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
+
+  - name: "pip"
+    path: "/usr/bin/pip"
+    shouldExist: true
+    permissions: "-rwxr-xr-x" # Lrwxrwxrwx
+
+  # check default python (python3)
+  - name: "python"
+    path: "/usr/bin/python"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+  - name: "check default python version"
+    path: "/usr/bin/python/"
+    shouldExist: false
+
+  # PYTHON pip cache cleaned (to spare disk space)
+
+  - name: "home .cache pip"
+    path: "/home/ubuntu/.cache/pip"
+    shouldExist: false
+
+  # NPM cache cleaned (to spare disk space)
+
+  #  - name: "jenkins npm"
+  #    path: "/home/ubuntu/.npm/"
+  #    shouldExist: false
+
+  - name: "npm"
+    path: "/usr/bin/npm"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+  - name: "node"
+    path: "/usr/bin/node"
+    shouldExist: true
+    permissions: "-rwxr-xr-x"
+
+  - name: "jest"
+    path: "/usr/bin/jest"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+  - name: "docker credentials"
+    path: "/home/ubuntu/.docker/config.json"
+    shouldExist: false
+
+  - name: "home .config configstore"
+    path: "/home/ubuntu/.config/configstore"
+    shouldExist: false
+
+  # - name: 'hadolint'
+  #   path: '/home/ubuntu/.linuxbrew/bin/hadolint'
+  #   shouldExist: true
+  #   permissions: '-rwxrwxrwx'
+
+  # TODO /home/ubuntu/.local/bin//ansible-lint
+
+  - name: "dockerfile_lint"
+    path: "/usr/bin/dockerfile_lint"
+    shouldExist: true
+    permissions: "Lrwxrwxrwx"
+
+  - name: "tmp"
+    path: "/tmp"
+    shouldExist: true
+    permissions: "dtrwxrwxrwx"
+
+# - name: "java java-openjdk"
+#   path: "/usr/lib/jvm/java-openjdk"
+#   shouldExist: true
+#   permissions: "Lrwxrwxrwx"
+#
+# - name: "java jre-openjdk"
+#   path: "/usr/lib/jvm/jre-openjdk"
+#   shouldExist: true
+#   permissions: "Lrwxrwxrwx"
+
+commandTests:
+  # - name: "check ubuntu user"
+  #   command: "whoami"
+  #   expectedOutput: ["ubuntu"]
+
+  # - name: "check ubuntu uid/gid used for config generation"
+  #   command: "id"
+  #   expectedOutput: ["uid=1000.ubuntu. gid=1000.docker. .*"]
+
+  - name: "check PATH"
+    command: "echo"
+    args: ["${PATH}"]
+    expectedOutput:
+      [
+        "/home/ubuntu/go/bin:/usr/local/go/bin:/home/ubuntu/.local/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      ]
+
+  - name: "check git version"
+    command: "git"
+    args: ["--version"]
+    expectedOutput: ["git version 2.34.*"]
+
+  - name: "check git-lfs version"
+    command: "git-lfs" # /usr/bin/git-lfs
+    args: ["version"]
+    expectedOutput: ["git-lfs/3..*"]
+
+  #  - name: "git config"
+  #    command: "git"
+  #    args: ["config", "--global", "--list"]
+  #    expectedOutput: ["user.email=alban.andrieu@free.fr.*"]
+  #
+  #  - name: "check openjdk 1.8.0"
+  #    command: "${JAVA_HOME}/bin/java"
+  #    args: ["-version"]
+  #    expectedError: ['openjdk version \"1\.8\..*\".*']
+
+  - name: "check node v18.19.0 version"
+    command: "node" # /usr/bin/node
+    args: ["--version"]
+    expectedOutput: ["v18.19.*"]
+
+  - name: "check npm 10.4.0 version"
+    command: "npm" # /usr/local/bin/npm
+    args: ["--version"]
+    expectedOutput: ["10.4.*"]
+
+  - name: "check newman 5.2.2 version"
+    command: "newman" # /usr/local/bin/newman
+    args: ["--version"]
+    expectedOutput: ["5.2..*"]
+
+  - name: "check jest 28.1.3 version"
+    command: "jest" # /usr/bin/jest
+    args: ["--version"]
+    expectedOutput: ["28.1..*"]
+
+  - name: "check default pip 23.3.2 version"
+    command: "pip"
+    args: ["--version"]
+    expectedOutput:
+      ["pip 23.3.* from /usr/local/lib/python3.10/dist-packages/pip.*.*"]
+
+  - name: "check default python version"
+    command: "python"
+    args: ["--version"]
+    expectedOutput: ["Python 3.10.*"]
+
+  - name: "check pip 3 23.3.1 version"
+    command: "pip3"
+    args: ["--version"]
+    expectedOutput:
+      ["pip 23.3.* from /usr/local/lib/python3.10/dist-packages/pip.*.*"]
+
+  - name: "check python 3 version"
+    command: "python3"
+    args: ["--version"]
+    expectedOutput: ["Python 3.10.*"]
+
+  # - name: "check python 3.8.10 version"
+  #   command: "python3.8"
+  #   args: ["--version"]
+  #   expectedOutput: ["Python 3.8.*"]
+
+  - name: "check python 3.10.12 version"
+    command: "python3.10"
+    args: ["--version"]
+    expectedOutput: ["Python 3.10.*"]
+
+  #  - name: "check ansible core 2.13.5 version"
+  #    command: "/home/ubuntu/.local/bin//ansible"  # /usr/local/bin/ansible
+  #    args: ["--version"]
+  #    expectedOutput: ["ansible.*core 2.13.*"]
+
+  - name: "check docker 20.10.21 version"
+    command: "docker"
+    args: ["--version"]
+    expectedOutput: ["Docker version 20.10.*"]
+
+  - name: "check aws 1.32.30 version"
+    command: "aws"
+    args: ["--version"]
+    expectedOutput: ["aws-cli/1.32.*"]
+
+  - name: "check flake8 6.0.0 version"
+    command: "flake8"
+    args: ["--version"]
+    expectedOutput: ["6.0.*"]
+
+  - name: "check pytest 7.2.2 version"
+    command: "pytest"
+    args: ["--version"]
+    expectedOutput: ["pytest 7.2.*"]
+
+  # - name: "check google-chrome 88.0 version"
+  #   command: "/usr/bin/google-chrome"
+  #   args: ["--version"]
+  #   expectedOutput: ["Google Chrome 88.0..*"]
+  #
+  # - name: "check google-chrome 88.0 version"
+  #   command: "/usr/bin/google-chrome"
+  #   args: ["--version"]
+  #   expectedOutput: ["Google Chrome 88..*"]
+
+metadataTest:
+  envVars:
+    - key: TZ
+      value: "Europe/Paris"
+    - key: "PATH"
+      value: "/home/ubuntu/go/bin:/usr/local/go/bin:/home/ubuntu/.local/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  #    - key: "JAVA_HOME"
+  #      value: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+  #    - key: "HOME"
+  #      value: "/home/ubuntu"
+  labels:
+    - key: "vendor"
+      value: "jusmundi"
+  exposedPorts: ["2375", "2376"]
+  volumes: ["/var/lib/docker"]
+  entrypoint: [dockerd-entrypoint.sh]
+  cmd: ["/bin/bash"]
+  workdir: "/tmp"

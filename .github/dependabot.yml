@@ -9,7 +9,7 @@ updates:
     directory: /
     # Check for updates once weekly
     schedule:
-      interval: weekly
+      interval: monthly
     allow:
       # Allow only direct updates for
       # Django and any packages starting "django"
@@ -26,10 +26,18 @@ updates:
     # Allow up to 10 open pull requests for pip dependencies
     open-pull-requests-limit: 10
 
+  - package-ecosystem: pip
+    directory: "/playbooks/files/python/"
+    schedule:
+      interval: "monthly"
+    labels: [ ]
+    ignore:
+      - dependency-name: "*"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: daily
+      interval: monthly
 
   # Enable version updates for npm
   - package-ecosystem: npm
@@ -37,7 +45,15 @@ updates:
     directory: /
     # Check the npm registry for updates every day (weekdays)
     schedule:
-      interval: daily
+      interval: monthly
+
+  - package-ecosystem: npm
+    directory: "/directory-to-exclude"
+    schedule:
+      interval: "monthly"
+    labels: [ ]
+    ignore:
+      - dependency-name: "*"
 
   # Enable version updates for Docker
   - package-ecosystem: docker
