@@ -50,7 +50,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
-    "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
+    "@secretlint/secretlint-rule-preset-recommend": "^8.2.4",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.30.5",
     "cspell": "^6.31.1",
