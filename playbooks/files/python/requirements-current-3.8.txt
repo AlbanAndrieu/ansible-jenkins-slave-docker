@@ -110,7 +110,7 @@ gcovr>=4.2
 git-pre-commit-hook-utils>=0.0.5
 git-url-parse==1.2.2
 gitdb2==4.0.2
-GitPython==3.1.1
+GitPython==3.1.30
 google-auth==1.14.1
 gprof2dot==2019.11.30
 graphviz==0.16
