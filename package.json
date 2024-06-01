@@ -45,7 +45,7 @@
     "cli": "^1.0.1",
     "jest-junit": "^16.0.0",
     "markdown-toc": "^1.2.0",
-    "secretlint": "^7.0.3"
+    "secretlint": "^8.2.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
