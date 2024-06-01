@@ -48,7 +48,7 @@
     "secretlint": "^7.0.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.3.0",
+    "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
