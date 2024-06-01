@@ -54,7 +54,7 @@
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.30.5",
     "cspell": "^8.8.1",
-    "eslint": "^8.19.0",
+    "eslint": "^8.57.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-compat": "^4.1.4",
     "eslint-plugin-vue": "^9.2.0",
