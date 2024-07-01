@@ -53,7 +53,7 @@
     "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.30.5",
-    "cspell": "^8.8.1",
+    "cspell": "^8.9.1",
     "eslint": "^8.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-compat": "^4.1.4",
