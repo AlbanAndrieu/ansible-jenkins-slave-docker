@@ -42,21 +42,20 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 RUN apt-get -q update --fix-missing \
   && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  git git-lfs rsync curl wget bash jq \
+  git rsync curl wget bash jq \
   apt-utils apt-transport-https ca-certificates software-properties-common \
   build-essential locales \
   bzip2 zip unzip tar xz-utils gpg-agent \
   gnupg2 tzdata \
   gettext-base \
-  vim nano \
+  nano \
   net-tools iputils-ping dnsutils inetutils-traceroute \
   openssh-client ssh-askpass \
-  libffi-dev libgit2-dev zlib1g-dev \
+  libffi-dev libgit2-dev zlib1g-dev libpq-dev \
   make maven \
-  lego \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-#TODO vault
+#TODO vault lego git-lfs vim
 
 # because of tzdata and the need of noninteractive
 ENV TZ "Europe/Paris"
@@ -79,7 +78,6 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
 ### DOCKER
 
 # dockerfile_lint - ignore
-#ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.21~3-0"}
 ENV DOCKER_VERSION=${DOCKER_VERSION:-"26.1.4-1"}
 
 # hadolint ignore=DL3006,DL4006
@@ -106,11 +104,6 @@ RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontain
 
 # RUN sed -i "s/# unqualified-search-registries.*/unqualified-search-registries\ =\ [\"docker.io\"]/" /etc/containers/registries.conf
 
-# hadolint ignore=DL3008
-#RUN apt-get -q update \
-#  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-#  && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 ### USER (should follow ### DOCKER)
 
 # Add user ubuntu to the image
@@ -127,7 +120,7 @@ RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontain
 
 FROM docker as python
 
-### PYTHON
+### PYTHON POETRY
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
@@ -136,20 +129,46 @@ USER root
 # hadolint ignore=DL3008
 RUN apt-get -q update \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  python3-setuptools python3 python3-pip python3-dev python3-apt python3-poetry \
+  python3-setuptools python3 python3-pip python3-dev python3-apt python3-venv \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
+# python3-poetry
 
 # Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
-ENV PIP_NO_CACHE_DIR=off
+# python
+ENV PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    # poetry
+    # https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.8.3 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    POETRY_NO_INTERACTION=1 \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1 \
+    # paths
+    # this is where our requirements + virtual environment will live
+    PYSETUP_PATH="/opt/pysetup"
+#     VENV_PATH="/code/.venv"
+#     VIRTUAL_ENV="${UBUNTU_USER_HOME}/.venv"
 
-# hadolint ignore=DL3006,DL4006
-#RUN ln -sv "$(which python3)" /usr/bin/python
-#RUN python3 -m pip install --no-cache-dir --upgrade pip==23.3.2 \
-#  && pip3 --version && python3 --version
+RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
+    python3 -m pip install --no-cache-dir --upgrade pip==24.2 \
+    && pip3 --version && python3 --version
+
+# Installs Poetry in its own environment to avoid problems with Ubuntu's Python
+RUN python3 -m venv $POETRY_HOME \
+    && $POETRY_HOME/bin/pip install --no-cache-dir --upgrade pip==24.2 \
+    && $POETRY_HOME/bin/pip install poetry==$POETRY_VERSION \
+    && $POETRY_HOME/bin/poetry --version
 
 ### DOCKER COMPOSE
 
@@ -166,12 +185,10 @@ RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
     && pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
     ansible-core==2.16.6
 
-# ENV PATH=/usr/local/bin:${PATH}
-
 # dockerfile_lint - ignore
 USER ${USER}
 
-RUN pip3 install --user --no-cache-dir pipenv==2023.7.23
+RUN pip3 install --user --no-cache-dir pipenv==2023.12.0
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${UBUNTU_USER_HOME}/
 
@@ -235,6 +252,7 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Composer
+# hadolint ignore=DL4006
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # NODE
@@ -252,8 +270,8 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
     npm set progress=false && \
     npm config set depth 0;
 RUN npm install -g npm@10.4.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 8.12.2
-RUN npm install -g yarn@1.22.19 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 jest-junit@14.0.1 && apt-get purge -y npm
+RUN npm -v && command -v npm # 9.5.0
+RUN npm install -g yarn@1.22.22 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 storybook@8.1.9 jest-junit@14.0.1 pyright@1.1.381 pyright-to-gitlab-ci@0.1.3 cloc@2.0.0-cloc && apt-get purge -y npm
 
 # GO
 
@@ -312,22 +330,24 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 # BUILDAH
 
 # hadolint ignore=DL3008,SC1091,DL3006,DL4006
-RUN . /etc/os-release \
-  && apt-get update \
-  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  ca-certificates curl gnupg2 && \
-  echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
-  curl -fsL "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key" | apt-key add - && \
-  apt-get update \
-  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  buildah \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
+#RUN . /etc/os-release \
+#  && apt-get update \
+#  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+#  ca-certificates curl gnupg2 && \
+#  echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+#  curl -fsL "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key" | apt-key add - && \
+#  apt-get update \
+#  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+#  buildah \
+#  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.44.1"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.52.1"}
+RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
+RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
 # hadolint ignore=DL3006,DL4006
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
 
 # CODE CLIMATE
 
