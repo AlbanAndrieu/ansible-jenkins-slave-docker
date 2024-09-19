@@ -87,6 +87,7 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable"
 # Install Docker from Docker Inc. repositories.
+# hadolint ignore=SC2046
 RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
   docker-ce=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
   docker-ce-cli=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
@@ -160,15 +161,16 @@ ENV PYTHONUNBUFFERED=1 \
 #     VENV_PATH="/code/.venv"
 #     VIRTUAL_ENV="${UBUNTU_USER_HOME}/.venv"
 
-RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
-    python3 -m pip install --no-cache-dir --upgrade pip==24.2 \
-    && pip3 --version && python3 --version
+# RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
+#     python3 -m pip install --no-cache-dir --upgrade pip==24.2 \
+#     && pip3 --version && python3 --version
 
 # Installs Poetry in its own environment to avoid problems with Ubuntu's Python
 RUN python3 -m venv $POETRY_HOME \
-    && $POETRY_HOME/bin/pip install --no-cache-dir --upgrade pip==24.2 \
     && $POETRY_HOME/bin/pip install poetry==$POETRY_VERSION \
     && $POETRY_HOME/bin/poetry --version
+
+#     && $POETRY_HOME/bin/pip install --no-cache-dir --upgrade pip==24.2 \
 
 ### DOCKER COMPOSE
 
@@ -181,14 +183,15 @@ RUN mkdir -p /etc/ansible
 RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
 RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
-    python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==24.2 \
-    && pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
+    pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
     ansible-core==2.16.6
+
+# python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==24.2 && \
 
 # dockerfile_lint - ignore
 USER ${USER}
 
-RUN pip3 install --user --no-cache-dir pipenv==2023.12.0
+# RUN pip3 install --user --no-cache-dir pipenv==2023.12.0
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${UBUNTU_USER_HOME}/
 
@@ -198,28 +201,6 @@ WORKDIR ${UBUNTU_USER_HOME}
 
 RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
 # --system to prevent the creation of a virtualenv at all.
-
-### PYTHON VENV
-
-#FROM python as builder
-#
-#USER root
-#
-## hadolint ignore=DL3008
-#RUN apt-get -q update \
-#  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-#  python3.8-venv\
-#  && apt-get clean && rm -rf /var/lib/apt/lists/*
-#
-#RUN python3 -m venv /opt/venv
-##Make sure we use the virtualenv:
-#ENV PATH="/opt/venv/bin:$PATH"
-#RUN pip3 install --no-cache-dir ansible
-#
-#FROM base
-#
-#COPY --from=builder /opt/venv /opt/venv
-#ENV PATH="/opt/venv/bin:$PATH"
 
 # PHP
 
