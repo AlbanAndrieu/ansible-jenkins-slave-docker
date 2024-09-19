@@ -2,12 +2,11 @@
 
 # This Dockerfile is used to build an image containing basic stuff to be used as a Jenkins slave build node.
 # Multistage build is not possible with Jenkins Docker Pipeline Plugin
-# FROM ubuntu:20.10
+# FROM ubuntu:24.10
 # See https://github.com/SeleniumHQ/docker-selenium/blob/4.8.3-20230328/Base/Dockerfile
-# focal
-# FROM selenium/standalone-chrome:4.8.3-20230328 as selenium
-FROM selenium/standalone-chrome:4.11.0-20230801 as selenium
+FROM selenium/standalone-chrome:4.11.0-20230801 as base
 
+# dockerfile_lint - ignore
 LABEL name="ansible-jenkins-slave" version="2.0.7" \
  description="Image used by our products to build Java/Javascript and CPP\
  this image is running on Ubuntu 20.10." \
@@ -15,6 +14,8 @@ LABEL name="ansible-jenkins-slave" version="2.0.7" \
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+ARG UBUNTU_USER_HOME=${UBUNTU_USER_HOME:-/home/ubuntu}
+ENV UBUNTU_USER_HOME=${UBUNTU_USER_HOME:-/home/ubuntu}
 ARG JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 ENV JENKINS_USER_HOME=${JENKINS_USER_HOME:-/home/jenkins}
 
@@ -72,27 +73,30 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 
 # hadolint ignore=DL3008
 RUN apt-get -q update --fix-missing \
-#  && apt-get full-upgrade -y \
+  && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  git git-lfs rsync curl wget bash jq \
+  git rsync curl wget bash jq \
   python-yaml python-jinja2 rsyslog \
   ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo numactl libnuma1 pciutils \
   apt-utils apt-transport-https ca-certificates software-properties-common \
   build-essential locales \
-  bzip2 zip unzip tar gpg-agent \
-#  iptables supervisor \
-  xz-utils ksh tzdata sudo lsof sshpass \
+  bzip2 zip unzip tar xz-utils gpg-agent \
+#  iptables supervisor sudo lsof \
+  gnupg2 tzdata \
+  gettext-base pass sshpass \
   systemd systemd-cron \
-  openjdk-8-jdk openjdk-11-dbg maven gcc g++ make cmake \
+  maven gcc g++ make cmake \
   net-tools iputils-ping dnsutils inetutils-traceroute \
   openssh-client ssh-askpass \
   gnome-keyring gnome-keyring \
-  gnupg2 pass \
   x11-apps libxss1 \
   libnss3 \
-  libffi-dev libgit2-dev \
+  libffi-dev libgit2-dev zlib1g-dev \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+#  git-lfs vim lego
+
+#TODO vault
 # because of tzdata and the need of noninteractive
 ENV TZ "Europe/Paris"
 RUN echo "${TZ}" > /etc/timezone
@@ -104,22 +108,22 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
-FROM selenium as docker
+FROM base as docker
 
-ENV USER=${USER:-jenkins}
+ENV USER=${USER:-ubuntu}
 ENV GROUP=${GROUP:-docker}
 ENV UID=${UID:-2000}
 ENV GID=${GID:-2000}
 
 # hadolint ignore=SC2059
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
-  printf "\033[1;32mJENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
+  printf "\033[1;32mUBUNTU_USER_HOME: ${UBUNTU_USER_HOME} \033[0m\n" && \
   printf "\033[1;32mWITH user: ${USER}\ngroup: ${GROUP} \033[0m\n"
 
 ### DOCKER
 
 # dockerfile_lint - ignore
-ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.3~3-0"}
+ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.21~3-0"}
 
 # hadolint ignore=DL3006,DL4006
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -128,9 +132,10 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable"
 # Install Docker from Docker Inc. repositories.
+# hadolint ignore=SC2046
 RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
-  docker-ce=5:${DOCKER_VERSION}~ubuntu-focal \
-  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu-focal \
+  docker-ce=5:${DOCKER_VERSION}~ubuntu-$(lsb_release -cs) \
+  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu-$(lsb_release -cs) \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # PODMAN
@@ -155,19 +160,27 @@ RUN apt-get -q update \
 #ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${UID}/bus
 RUN printenv DBUS_SESSION_BUS_ADDRESS
 
-# Add user jenkins to the image
-# Set password for the jenkins user (you may want to alter this).
-# Add the jenkins user to sudoers
+# Add user ubuntu to the image
+# Set password for the ubuntu user (you may want to alter this).
+# Add the ubuntu user to sudoers
 RUN groupmod -g ${GID} ${GROUP} \
+&& adduser --quiet --uid ${UID} --gid ${GID} \
+  --home ${UBUNTU_USER_HOME} \
+#  --no-create-home \
+  --disabled-password \
+  --gecos "" \
+  ${USER} \
+&& usermod -a -G ${GROUP} ${USER} \
+&& chown -R ${USER}:${GROUP} ${UBUNTU_USER_HOME}
 
 #RUN cat /etc/group | grep docker || true
 #RUN id docker
 #RUN getent passwd 2000 || true
 
 #RUN groupadd -g ${GID} ${GROUP} && \
-&& adduser --quiet --uid ${UID} --gid ${GID} --home ${JENKINS_USER_HOME} ${USER} \
+&& adduser --quiet --uid 2000--gid $2000 --home ${JENKINS_USER_HOME} jenkins \
 && echo "jenkins:jenkins1234" | chpasswd \
-&& usermod -a -G ${GROUP} ${USER}
+&& usermod -a -G jenkins jenkins
 # && echo "${USER}    ALL=(ALL)    ALL" >> /etc/sudoers
 
 # hadolint ignore=SC2059
@@ -177,7 +190,9 @@ RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
 
-### PYTHON
+FROM docker as python
+
+### PYTHON POETRY
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
@@ -186,16 +201,40 @@ USER root
 # hadolint ignore=DL3008
 RUN apt-get -q update \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  python3-setuptools python3 python3-pip python3-dev python3-apt \
+  python3-setuptools python3 python3-pip python3-dev python3-apt python3-poetry \
   python3-lxml \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# python3-poetry
+
 # Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
 
 # Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
-ENV PIP_NO_CACHE_DIR=off
+# python
+ENV PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    # poetry
+    # https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.7.1 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    POETRY_NO_INTERACTION=1 \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1 \
+    # paths
+    # this is where our requirements + virtual environment will live
+    PYSETUP_PATH="/opt/pysetup"
+#     VENV_PATH="/code/.venv"
+#     VIRTUAL_ENV="${UBUNTU_USER_HOME}/.venv"
+
 
 # hadolint ignore=DL3006,DL4006
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
@@ -203,18 +242,18 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
 #RUN ls -lrta /usr/local/bin/pip
 #RUN which pip
 RUN ln -sv "$(which python3)" /usr/bin/python
-RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==23.2.1 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir --upgrade pip==24.0 \
 #  && ln -sv "$(which pip3)" /usr/bin/pip3 \
   && pip3 --version && python3 --version
 
 ### DOCKER COMPOSE
 
-ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-1.29.2}
+ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.26.1}
 #RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
 #	&& chmod +x /usr/local/bin/docker-compose && docker-compose version
 
-RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2023.7.23 \
-  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core==2.13.8  zabbix-api==0.5.4 \
+RUN python3 -m pip install --proxy="${http_proxy}" --no-cache-dir pipenv==2023.12.0 \
+  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core==2.16.6 zabbix-api==0.5.4 \
   # awscli>=1.25.34 flake8>=4.0.1 semgrep>=0.94.0 pre-commit>=2.19.0 sphinx==2.3.1 \
   && pip3 --version && python3 --version
 
@@ -226,57 +265,96 @@ RUN ln -sv "$(which pip3)" /usr/bin/pip \
 # dockerfile_lint - ignore
 USER ${USER}
 
-RUN pip3 install --user --no-cache-dir pipenv==2023.7.23
+RUN pip3 install --user --no-cache-dir pipenv==2023.12.0
 
-COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${JENKINS_USER_HOME}/
-RUN cd ${JENKINS_USER_HOME} && python -m pipenv install --system --dev # --site-packages
+COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${UBUNTU_USER_HOME}/
+RUN cd ${UBUNTU_USER_HOME} && python -m pipenv install --system --dev # --site-packages
 # --system to prevent the creation of a virtualenv at all.
 
 ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
 
-WORKDIR ${JENKINS_USER_HOME}
+WORKDIR ${UBUNTU_USER_HOME}
+
+# PHP
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
 USER root
 
+ARG S6_OVERLAY_VERSION=3.1.2.1
+ENV PHP_VERSION=7.4
+
+# APACHE-PHP
+# dockerfile_lint - ignore
+# hadolint ignore=DL3008
+RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -yq --no-install-recommends \
+    apache2 php${PHP_VERSION} \
+    php${PHP_VERSION}-tidy \
+    php${PHP_VERSION}-dom \
+    php${PHP_VERSION}-mbstring \
+    php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-pgsql \
+    php${PHP_VERSION}-intl \
+    php${PHP_VERSION}-imap \
+    php${PHP_VERSION}-opcache \
+    php${PHP_VERSION}-xml \
+    php${PHP_VERSION}-common \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# COMPOSER
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Composer
+# hadolint ignore=DL4006
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# NODE
+
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
+USER root
+
+# This is used by nuxt, its dependencies require OpenSSLv2 where node v18 uses OpenSSLv3
+ENV NODE_OPTIONS="--openssl-legacy-provider"
+
 # hadolint ignore=DL3008,DL3015,DL3006,DL4006
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get update && apt-get install --no-install-recommends -y nodejs=16* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs=20* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
 
-RUN npm install -g npm@9.5.0 && apt-get purge -y npm
+RUN npm install -g npm@10.4.0 && apt-get purge -y npm
 RUN npm -v && command -v npm # 9.5.0
-RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.22.19 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 jest-junit@14.0.1 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
+RUN npm install -g bower@1.8.13 grunt@1.5.3 webdriver-manager@12.1.8 yarn@1.22.19 yo@latest shrinkwrap@0.4.0 json2csv@4.3.3 phantomas@1.20.1 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 storybook@8.1.9 jest-junit@14.0.1 xunit-viewer@5.1.11 bower-nexus3-resolver@1.0.2
 
 ### ANSIBLE
 
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible
 RUN printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
-ENV ANSIBLE_CONFIG=${JENKINS_USER_HOME}/ansible.cfg
+ENV ANSIBLE_CONFIG=${UBUNTU_USER_HOME}/ansible.cfg
 
 ARG ANSIBLE_VAULT_PASSWORD
 ENV ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD:-"microsoft"}
-RUN echo "${ANSIBLE_VAULT_PASSWORD}" > $JENKINS_USER_HOME/vault.passwd && cat $JENKINS_USER_HOME/vault.passwd
-#COPY ansible.cfg $JENKINS_USER_HOME/
-COPY *.yml $JENKINS_USER_HOME/
-#COPY roles $JENKINS_USER_HOME/
-COPY inventory $JENKINS_USER_HOME/inventory
-COPY playbooks $JENKINS_USER_HOME/playbooks
-RUN rm -Rf $JENKINS_USER_HOME/.ansible/roles/
-COPY package.json $JENKINS_USER_HOME/
+RUN echo "${ANSIBLE_VAULT_PASSWORD}" > $UBUNTU_USER_HOME/vault.passwd && cat $UBUNTU_USER_HOME/vault.passwd
+#COPY ansible.cfg $UBUNTU_USER_HOME/
+COPY *.yml $UBUNTU_USER_HOME/
+#COPY roles $UBUNTU_USER_HOME/
+COPY inventory $UBUNTU_USER_HOME/inventory
+COPY playbooks $UBUNTU_USER_HOME/playbooks
+RUN rm -Rf $UBUNTU_USER_HOME/.ansible/roles/
+COPY package.json $UBUNTU_USER_HOME/
 # hadolint ignore=SC2046
-RUN chown jenkins:$(id -gn jenkins) $JENKINS_USER_HOME $JENKINS_USER_HOME/.*
+RUN chown ${USER}:$(id -gn ${GROUP}) $UBUNTU_USER_HOME $UBUNTU_USER_HOME/.*
 
 # Execute
 #python36,brew are adding 2.7 G to the images
 
 # hadolint ignore=DL3008,DL3015
-RUN ansible-galaxy collection install -r "$JENKINS_USER_HOME/requirements.yml" --force
-RUN ansible-galaxy install -r "$JENKINS_USER_HOME/requirements.yml" -p "$JENKINS_USER_HOME/.ansible/roles/" --ignore-errors
-RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$JENKINS_USER_HOME/inventory/hosts" -c local \
+RUN ansible-galaxy collection install -r "$UBUNTU_USER_HOME/requirements.yml" --force
+RUN ansible-galaxy install -r "$UBUNTU_USER_HOME/requirements.yml" -p "$UBUNTU_USER_HOME/.ansible/roles/" --ignore-errors
+RUN ansible-playbook "$UBUNTU_USER_HOME/playbooks/jenkins-slave-docker.yml" -i "$UBUNTU_USER_HOME/inventory/hosts" -c local \
  -e "workspace=/tmp" \
  -e "jenkins_jdk8_enable=true" \
 # -e "jenkins_ssh_key_file={{ jenkins_home }}/.ssh/id_rsa" \
@@ -286,14 +364,14 @@ RUN ansible-playbook "$JENKINS_USER_HOME/playbooks/jenkins-slave-docker.yml" -i 
  -e "python_enabled=false" \
  -e "ansible_python_interpreter=/usr/bin/python3.8" \
  --skip-tags=restart,vm,python35,python36,python37,venv,requirements,brew,objc,kubernetes,nodejs,clang \
- --vault-id $JENKINS_USER_HOME/vault.passwd \
+ --vault-id $UBUNTU_USER_HOME/vault.passwd \
  -vvvv \
- && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$JENKINS_USER_HOME/roles" "$JENKINS_USER_HOME/playbooks" "$JENKINS_USER_HOME/inventory" "$JENKINS_USER_HOME/vault.passwd" "$JENKINS_USER_HOME/ansible.log" "$JENKINS_USER_HOME/requirements-*.txt" \
- && rm -Rf $JENKINS_USER_HOME/playbooks/.node_cache/ \
- && rm -Rf $JENKINS_USER_HOME/.cpan $JENKINS_USER_HOME/.ansible \
- && rm -Rf $JENKINS_USER_HOME/.npm $JENKINS_USER_HOME/.node_cache $JENKINS_USER_HOME/.cache/pip \
-# && rm -Rf $JENKINS_USER_HOME/.local/share \
- && chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME" && chmod -R 777 "${JENKINS_USER_HOME}"
+ && apt-get autoremove -y && apt-get clean && apt-get remove asciidoc -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/man/* /var/log/* "$UBUNTU_USER_HOME/roles" "$UBUNTU_USER_HOME/playbooks" "$UBUNTU_USER_HOME/inventory" "$UBUNTU_USER_HOME/vault.passwd" "$UBUNTU_USER_HOME/ansible.log" "$UBUNTU_USER_HOME/requirements-*.txt" \
+ && rm -Rf $UBUNTU_USER_HOME/playbooks/.node_cache/ \
+ && rm -Rf $UBUNTU_USER_HOME/.cpan $UBUNTU_USER_HOME/.ansible \
+ && rm -Rf $UBUNTU_USER_HOME/.npm $UBUNTU_USER_HOME/.node_cache $UBUNTU_USER_HOME/.cache/pip \
+# && rm -Rf $UBUNTU_USER_HOME/.local/share \
+ && chown -R "${USER}:$(id -gn ${GROUP})" "$UBUNTU_USER_HOME" && chmod -R 777 "${UBUNTU_USER_HOME}"
 
 #/usr/bin/python3.7 -m pip install --no-cache-dir --upgrade pip
 
@@ -310,7 +388,7 @@ RUN ifconfig | awk '/inet addr/{print substr($2,6)}' ## Display IP address (opti
 # hadolint ignore=DL3002
 USER root
 
-ENV GO_VERSION=${GO_VERSION:-"1.19"}
+ENV GO_VERSION=${GO_VERSION:-"1.22.4"}
 ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
 ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 
@@ -321,7 +399,7 @@ RUN curl -L -o /tmp/${GO_FILENAME} ${GO_URL} \
 #USER ${USER}
 
 ENV GOROOT=/usr/local/go
-ENV GOPATH=${JENKINS_USER_HOME}/go
+ENV GOPATH=${UBUNTU_USER_HOME}/go
 ENV GO111MODULE=on
 
 RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
@@ -335,9 +413,18 @@ RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
 
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
+# OPENJDK
+
+# Install openjdk to allow to run the selenium driver. The mkdir is here to avoid an issue during the installation.
+RUN mkdir -p /usr/share/man/man1 && \
+    apt-get update && apt-get install -y --no-install-recommends openjdk-8-jdk openjdk-17-jdk \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ENV JAVA_HOME=${JAVA_HOME:-""/usr/lib/jvm/java-1.17.0-openjdk-amd64""}
+
 # NOMAD
 
-ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.6.2"}
+ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.6.6"}
 ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
 ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
 
@@ -435,10 +522,10 @@ RUN curl -L -o /tmp/skaffold ${SKAFFOLD_URL} \
 #  && draft init \
 #  && bash -c "echo \"y\" | draft pack-repo remove github.com/Azure/draft" \
 #  && rm -rf /tmp/* \
-#  && chmod -R 777 ${JENKINS_USER_HOME}/.draft && ls -lrta ${JENKINS_USER_HOME}/.draft/plugins/  # for .draft/plugins
+#  && chmod -R 777 ${UBUNTU_USER_HOME}/.draft && ls -lrta ${UBUNTU_USER_HOME}/.draft/plugins/  # for .draft/plugins
 
 ARG AGENT_VERSION=${AGENT_VERSION:-"4.3"}
-ARG AGENT_WORKDIR=${JENKINS_USER_HOME}/agent
+ARG AGENT_WORKDIR=${UBUNTU_USER_HOME}/agent
 
 RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${AGENT_VERSION}/remoting-${AGENT_VERSION}.jar \
   && chmod 755 /usr/share/jenkins \
@@ -504,7 +591,7 @@ RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 # (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
 
 # drop back to the regular jenkins user - good practice
-USER jenkins
+USER ubuntu
 RUN mkdir ${HOME}/workspace && mkdir -p ${HOME}/.m2/repository
 
 RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0 && \
@@ -520,9 +607,9 @@ RUN helm plugin install https://github.com/chartmuseum/helm-push --version 0.9.0
 #RUN helm repo add custom ${HELM_CUSTOM_REPO_URL} --insecure-skip-tls-verify
 # && mkdir ${HOME}/.helm
 # Need to write on /home/jenkins/.config/helm/repositories.lock
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.config/helm/" && ls -lrta ${JENKINS_USER_HOME}/.config/helm/ || true
-#RUN ls -lrta ${JENKINS_USER_HOME}/.helm
-RUN chmod -R 777 "${JENKINS_USER_HOME}/.cache/helm/" && ls -lrta ${JENKINS_USER_HOME}/.cache/helm/ || true
+RUN chmod -R 777 "${UBUNTU_USER_HOME}/.config/helm/" && ls -lrta ${UBUNTU_USER_HOME}/.config/helm/ || true
+#RUN ls -lrta ${UBUNTU_USER_HOME}/.helm
+RUN chmod -R 777 "${UBUNTU_USER_HOME}/.cache/helm/" && ls -lrta ${UBUNTU_USER_HOME}/.cache/helm/ || true
 
 #RUN chmod g-w,o-w ${HOME} # Home directory on the server should not be writable by others
 #WARNING below give access to all servers
@@ -532,10 +619,10 @@ RUN chmod 700 ${HOME}/.ssh && chmod 600 ${HOME}/.ssh/id_rsa* && chmod 644 ${HOME
 #BELOW npm install is adding 700Mb to the images
 #RUN npm install --only=production && npm run update-webdriver
 
-# Will create $JENKINS_USER_HOME/.local/share/applications/mimeapps.list
+# Will create $UBUNTU_USER_HOME/.local/share/applications/mimeapps.list
 RUN google-chrome --version
 #RUN chromium-browser --version
-#RUN chown -R "jenkins:$(id -gn jenkins)" "$JENKINS_USER_HOME/.local" && chmod -R 777 "${JENKINS_USER_HOME}/.local"
+#RUN chown -R "${USER}:$(id -gn ${GROUP})" "$UBUNTU_USER_HOME/.local" && chmod -R 777 "${UBUNTU_USER_HOME}/.local"
 #.config
 
 # For github action

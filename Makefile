@@ -57,8 +57,8 @@ lint:
 .PHONY: build-docker
 build-docker:  ## Build container with docker
 	@echo "=> Building image..."
-	# docker build -t $(IMAGE) --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} --squash .
-	scripts/docker-build-20.sh
+	# docker build -t $(IMAGE) --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} .
+	scripts/docker-build-24.sh
 
 ## —— Docker Slim 🐳 ————————————————————————————————————————————————————————————————
 .PHONY: build-docker-slim

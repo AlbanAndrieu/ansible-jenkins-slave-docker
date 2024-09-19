@@ -136,6 +136,9 @@ roles:
     name: albanandrieu.shell
     version: master
 
+# cd roles
+# ln -s  /workspace/users/albandrieu30/ansible-shell albanandrieu.shell
+
   #- src: 'https://github.com/AlbanAndrieu/ansible-solaris'
   #  name: 'albanandrieu.solaris'
   #  version: master

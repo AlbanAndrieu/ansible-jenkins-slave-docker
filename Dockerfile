@@ -1,1 +1,1 @@
-docker/ubuntu20/Dockerfile
+docker/ubuntu24/Dockerfile

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.10
-FROM docker.io/ubuntu:22.04 as base
+FROM docker.io/ubuntu:24.04 as base
 # FROM selenium/standalone-chrome:4.8.3-20230328 as base
 # FROM selenium/standalone-chrome:4.11.0-20230801 as base
 
@@ -42,17 +42,18 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 RUN apt-get -q update --fix-missing \
   && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  git rsync curl wget bash jq \
+  git git-lfs rsync curl wget bash jq \
   apt-utils apt-transport-https ca-certificates software-properties-common \
   build-essential locales \
   bzip2 zip unzip tar xz-utils gpg-agent \
   gnupg2 tzdata \
   gettext-base \
-  nano \
+  vim nano \
   net-tools iputils-ping dnsutils inetutils-traceroute \
   openssh-client ssh-askpass \
   libffi-dev libgit2-dev zlib1g-dev \
   make maven \
+  lego \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #TODO vault
@@ -67,8 +68,8 @@ FROM base as docker
 
 ENV USER=${USER:-ubuntu}
 ENV GROUP=${GROUP:-docker}
-ENV UID=${UID:-1000}
-ENV GID=${GID:-1000}
+ENV UID=${UID:-2000}
+ENV GID=${GID:-2000}
 
 # hadolint ignore=SC2059
 RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
@@ -78,7 +79,8 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
 ### DOCKER
 
 # dockerfile_lint - ignore
-ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.21~3-0"}
+#ENV DOCKER_VERSION=${DOCKER_VERSION:-"20.10.21~3-0"}
+ENV DOCKER_VERSION=${DOCKER_VERSION:-"26.1.4-1"}
 
 # hadolint ignore=DL3006,DL4006
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -87,10 +89,9 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable"
 # Install Docker from Docker Inc. repositories.
-# hadolint ignore=SC2046
 RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
-  docker-ce=5:${DOCKER_VERSION}~ubuntu-$(lsb_release -cs) \
-  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu-$(lsb_release -cs) \
+  docker-ce=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
+  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # PODMAN
@@ -113,15 +114,14 @@ RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontain
 ### USER (should follow ### DOCKER)
 
 # Add user ubuntu to the image
-RUN groupmod -g ${GID} ${GROUP} \
-&& adduser --quiet --uid ${UID} --gid ${GID} \
-  --home ${UBUNTU_USER_HOME} \
-#  --no-create-home \
-  --disabled-password \
-  --gecos "" \
-  ${USER} \
-&& usermod -a -G ${GROUP} ${USER} \
-&& chown -R ${USER}:${GROUP} ${UBUNTU_USER_HOME}
+# RUN groupmod -g ${GID} ${GROUP} \
+# && adduser --quiet --uid ${UID} --gid ${GID} \
+#   --home ${UBUNTU_USER_HOME} \
+#   --disabled-password \
+#   --gecos "" \
+#   ${USER} \
+# && usermod -a -G ${GROUP} ${USER} \
+# && chown -R ${USER}:${GROUP} ${UBUNTU_USER_HOME}
 
 #USER ${USER}
 
@@ -147,17 +147,13 @@ ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=off
 
 # hadolint ignore=DL3006,DL4006
-#RUN curl https://bootstrap.pypa.io/get-pip.py | python3.8
-#RUN ls -lrta /usr/bin/pip
-#RUN ls -lrta /usr/local/bin/pip
-#RUN which pip
-RUN ln -sv "$(which python3)" /usr/bin/python
-RUN python3 -m pip install --no-cache-dir --upgrade pip==24.0 \
-  && pip3 --version && python3 --version
+#RUN ln -sv "$(which python3)" /usr/bin/python
+#RUN python3 -m pip install --no-cache-dir --upgrade pip==23.3.2 \
+#  && pip3 --version && python3 --version
 
 ### DOCKER COMPOSE
 
-ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.26.1}
+ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.27.0}
 
 ### ANSIBLE CORE
 
@@ -165,18 +161,12 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.26.1}
 RUN mkdir -p /etc/ansible
 RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
-#RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
-#  docker-compose==${DOCKER_COMPOSE_VERSION} ansible-core==2.16.6 \
-#  && pip3 --version && python3 --version
+RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
+    python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==24.2 \
+    && pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
+    ansible-core==2.16.6
 
-RUN python3 -m pip install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
-  ansible-core==2.16.6 \
-  && pip3 --version && python3 --version
-
-#RUN ln -sv "$(which pip3)" /usr/bin/pip \
-#  && ln -sv "$(which pip3)" /usr/bin/pip3
-
-#ENV PATH=/usr/local/bin:${PATH}
+# ENV PATH=/usr/local/bin:${PATH}
 
 # dockerfile_lint - ignore
 USER ${USER}
@@ -245,7 +235,6 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Composer
-# hadolint ignore=DL4006
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # NODE
@@ -263,8 +252,8 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
     npm set progress=false && \
     npm config set depth 0;
 RUN npm install -g npm@10.4.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 9.5.0
-RUN npm install -g yarn@1.22.19 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 storybook@8.1.9 jest-junit@14.0.1 && apt-get purge -y npm
+RUN npm -v && command -v npm # 8.12.2
+RUN npm install -g yarn@1.22.19 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 jest-junit@14.0.1 && apt-get purge -y npm
 
 # GO
 
@@ -272,46 +261,36 @@ RUN npm install -g yarn@1.22.19 dockerfile_lint@0.3.4 newman@5.2.2 newman-report
 # hadolint ignore=DL3002
 USER root
 
-# ENV GO_VERSION=${GO_VERSION:-"1.22.4"}
-# ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
-# ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
-#
-# RUN curl -L -o /tmp/${GO_FILENAME} ${GO_URL} \
-#  && tar -C /usr/local -xzf /tmp/${GO_FILENAME} \
-#  && rm -rf /tmp/*
+ENV GO_VERSION=${GO_VERSION:-"1.19"}
+ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
+ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 
-# hadolint ignore=DL3008
-RUN apt-get -q update \
-  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  golang-1.22 \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN curl -L -o /tmp/${GO_FILENAME} ${GO_URL} \
+  && tar -C /usr/local -xzf /tmp/${GO_FILENAME} \
+  && rm -rf /tmp/*
 
-# ENV GOROOT=/usr/local/go
-# ENV GOROOT=/usr/lib/go
-ENV GOROOT=/usr/lib/go-1.22
+#USER ${USER}
+
+ENV GOROOT=/usr/local/go
 ENV GOPATH=${UBUNTU_USER_HOME}/go
 ENV GO111MODULE=on
 
-# RUN ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
-# && ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
-# && ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest \
-# && ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest
-
-# && ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
+RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
+&& ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
+&& ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest \
+&& ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
+&& ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest
 
 #RUN ls -lrta /home/ubuntu/.cache/go-build/
 #RUN chown -R ${USER}:${GROUP} /home/ubuntu/go/ /home/ubuntu/.cache/
 
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
-RUN curl -L https://github.com/hashicorp/levant/releases/download/0.2.9/linux-amd64-levant -o levant
-# RUN mv levant /usr/bin/go/bin/ && chmod +x /usr/bin/go/bin/levant
-
 # OPENJDK
 
 # Install openjdk to allow to run the selenium driver. The mkdir is here to avoid an issue during the installation.
 #RUN mkdir -p /usr/share/man/man1 && \
-#    apt-get update && apt-get install -y --no-install-recommends openjdk-17-jdk \
+#    apt-get update && apt-get install -y openjdk-11-jdk \
 #    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # NOMAD
@@ -346,11 +325,9 @@ RUN . /etc/os-release \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.52.1"}
-RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
-RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"v0.44.1"}
 # hadolint ignore=DL3006,DL4006
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
 
 # CODE CLIMATE
 
