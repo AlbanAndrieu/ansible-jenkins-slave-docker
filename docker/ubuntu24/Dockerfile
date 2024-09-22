@@ -260,7 +260,7 @@ RUN npm install -g yarn@1.22.22 dockerfile_lint@0.3.4 newman@5.2.2 newman-report
 # hadolint ignore=DL3002
 USER root
 
-ENV GO_VERSION=${GO_VERSION:-"1.19"}
+ENV GO_VERSION=${GO_VERSION:-"1.23.1"}
 ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
 ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 
@@ -363,7 +363,7 @@ WORKDIR /tmp
 # hadolint ignore=DL3002
 USER root
 
-RUN sed -i -e 's|^\[machine\]|#\[machine\]|g' /usr/share/containers/containers.conf
+# RUN sed -i -e 's|^\[machine\]|#\[machine\]|g' /usr/share/containers/containers.conf
 
 COPY modprobe.sh /usr/local/bin/modprobe
 COPY dockerd-entrypoint.sh /usr/local/bin/
