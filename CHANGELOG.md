@@ -75,6 +75,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
+## [2.0.10] - TODO
+
+## [2.0.9] - 2024-09-24
+
+### Updated
+
+- selenium/standalone-chrome:4.25.0-20240922
+
 ## [2.0.8] - 2024-09-24
 
 ### Updated

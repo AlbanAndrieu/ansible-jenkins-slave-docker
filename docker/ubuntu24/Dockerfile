@@ -1,10 +1,11 @@
 # syntax=docker/dockerfile:1.10
-FROM docker.io/ubuntu:24.04 as base
+# FROM docker.io/ubuntu:24.04 as base
+FROM selenium/standalone-chrome:4.25.0-20240922 as base
 # FROM selenium/standalone-chrome:4.8.3-20230328 as base
 # FROM selenium/standalone-chrome:4.11.0-20230801 as base
 
 # dockerfile_lint - ignore
-LABEL name="jm-ubuntu" vendor="nabla" version="2.0.8"
+LABEL name="jm-ubuntu" vendor="nabla" version="2.0.9"
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
