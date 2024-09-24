@@ -1,3 +1,4 @@
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -74,12 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.8] - TODO
+## [2.0.8] - 2024-09-24
 
 ### Updated
 
-- TODO
-- node v18.20.2
+- ubuntu:24.04
+- node 20
+- go 1.23.1
 
 ## [2.0.7] - 2023-29-09
 
