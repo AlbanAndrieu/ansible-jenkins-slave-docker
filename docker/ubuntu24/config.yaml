@@ -1,11 +1,11 @@
 ---
 schemaVersion: "2.0.0"
 
-# globalEnvVars:
-#  - key: "PATH"
-#    value: "/opt/ansible/env38/bin:$PATH"
-#  - key: "JAVA_HOME"
-#    value: "/usr/lib/jvm/java-8-openjdk-amd64"
+globalEnvVars:
+  - key: "JAVA_HOME"
+    value: "/usr/lib/jvm/java-1.17.0-openjdk-amd64"
+#   - key: "PATH"
+#     value: "/opt/ansible/env38/bin:$PATH"
 
 fileExistenceTests:
   - name: "Root"
@@ -70,10 +70,10 @@ fileExistenceTests:
   #   shouldExist: false
 
   # check default pip (pip3)
-  - name: "pip"
+  - name: "pip local"
     path: "/usr/local/bin/pip" # /usr/bin/pip
-    shouldExist: true
-    permissions: "-rwxr-xr-x"
+    shouldExist: false
+    # permissions: "-rwxr-xr-x"
 
   - name: "pip"
     path: "/usr/bin/pip"
@@ -142,15 +142,10 @@ fileExistenceTests:
     shouldExist: true
     permissions: "dtrwxrwxrwx"
 
-# - name: "java java-openjdk"
-#   path: "/usr/lib/jvm/java-openjdk"
-#   shouldExist: true
-#   permissions: "Lrwxrwxrwx"
-#
-# - name: "java jre-openjdk"
-#   path: "/usr/lib/jvm/jre-openjdk"
-#   shouldExist: true
-#   permissions: "Lrwxrwxrwx"
+  - name: "java-1.17.0-openjdk-amd64"
+    path: "/usr/lib/jvm/java-1.17.0-openjdk-amd64/"
+    shouldExist: true
+    permissions: "drwxr-xr-x"
 
 commandTests:
   # - name: "check ubuntu user"
@@ -166,33 +161,28 @@ commandTests:
     args: ["${PATH}"]
     expectedOutput:
       [
-        "/home/ubuntu/go/bin:/usr/local/go/bin:/home/ubuntu/.local/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "/home/ubuntu/.local/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
       ]
 
   - name: "check git version"
     command: "git"
     args: ["--version"]
-    expectedOutput: ["git version 2.34.*"]
+    expectedOutput: ["git version 2.43.*"]
 
-  - name: "check git-lfs version"
-    command: "git-lfs" # /usr/bin/git-lfs
-    args: ["version"]
-    expectedOutput: ["git-lfs/3..*"]
+  # - name: "check git-lfs version"
+  #   command: "git-lfs" # /usr/bin/git-lfs
+  #   args: ["version"]
+  #   expectedOutput: ["git-lfs/3..*"]
 
   #  - name: "git config"
   #    command: "git"
   #    args: ["config", "--global", "--list"]
   #    expectedOutput: ["user.email=alban.andrieu@free.fr.*"]
-  #
-  #  - name: "check openjdk 1.8.0"
-  #    command: "${JAVA_HOME}/bin/java"
-  #    args: ["-version"]
-  #    expectedError: ['openjdk version \"1\.8\..*\".*']
 
-  - name: "check node v18.19.0 version"
+  - name: "check node v20.17.0 version"
     command: "node" # /usr/bin/node
     args: ["--version"]
-    expectedOutput: ["v18.19.*"]
+    expectedOutput: ["v20.17.*"]
 
   - name: "check npm 10.4.0 version"
     command: "npm" # /usr/local/bin/npm
@@ -209,57 +199,47 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["28.1..*"]
 
-  - name: "check default pip 23.3.2 version"
+  - name: "check default pip 24.0 version with python 3.12"
     command: "pip"
     args: ["--version"]
     expectedOutput:
-      ["pip 23.3.* from /usr/local/lib/python3.10/dist-packages/pip.*.*"]
+      ["pip 24.0.* from /usr/local/lib/python3/dist-packages/pip.*.*"]
 
-  - name: "check default python version"
-    command: "python"
-    args: ["--version"]
-    expectedOutput: ["Python 3.10.*"]
+  # - name: "check default python version"
+  #   command: "python"
+  #   args: ["--version"]
+  #   expectedOutput: ["Python 3.10.*"]
 
-  - name: "check pip 3 23.3.1 version"
+  - name: "check pip 3 24.0 version"
     command: "pip3"
     args: ["--version"]
     expectedOutput:
-      ["pip 23.3.* from /usr/local/lib/python3.10/dist-packages/pip.*.*"]
+      ["pip 24.0.* from /usr/lib/python3/dist-packages/pip.*.*"]
 
   - name: "check python 3 version"
     command: "python3"
     args: ["--version"]
     expectedOutput: ["Python 3.10.*"]
 
-  # - name: "check python 3.8.10 version"
-  #   command: "python3.8"
-  #   args: ["--version"]
-  #   expectedOutput: ["Python 3.8.*"]
-
-  - name: "check python 3.10.12 version"
-    command: "python3.10"
+  - name: "check python 3.12 version"
+    command: "python3.12"
     args: ["--version"]
-    expectedOutput: ["Python 3.10.*"]
+    expectedOutput: ["Python 3.12.*"]
 
   #  - name: "check ansible core 2.13.5 version"
   #    command: "/home/ubuntu/.local/bin//ansible"  # /usr/local/bin/ansible
   #    args: ["--version"]
   #    expectedOutput: ["ansible.*core 2.13.*"]
 
-  - name: "check docker 20.10.21 version"
+  - name: "check docker 26.1.4 version"
     command: "docker"
     args: ["--version"]
-    expectedOutput: ["Docker version 20.10.*"]
+    expectedOutput: ["Docker version 26.1.*"]
 
   - name: "check aws 1.32.30 version"
     command: "aws"
     args: ["--version"]
-    expectedOutput: ["aws-cli/1.32.*"]
-
-  - name: "check flake8 6.0.0 version"
-    command: "flake8"
-    args: ["--version"]
-    expectedOutput: ["6.0.*"]
+    expectedOutput: ["aws-cli/1.34.*"]
 
   - name: "check pytest 7.2.2 version"
     command: "pytest"

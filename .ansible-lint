@@ -8,41 +8,13 @@ exclude_paths:
   - ./.travis.yml
   - ./playbooks/group_vars/all/vault.yml
   - ./docker/
-  - ./roles/albanandrieu.*/
-  - ./roles/dj-wasabi.zabbix-agent/
-  - ./roles/Stouts.python/
-  - ./roles/Stouts.collectd/
-  - ./roles/andrewrothstein.*
-  - ./roles/angstwad.docker-ubuntu/
-  - ./roles/elliotweiser.osx-command-line-tools/
-  - ./roles/geerlingguy.*
-  - ./roles/ansible-role-nodejs/
-  - ./roles/ansible-swapfile/
-  - ./roles/ansiblebit.oracle-java/
-  - ./roles/common/
-  - ./roles/devbox.chrome/
-  - ./roles/docker/
-  - ./roles/idealista-java/
-  - ./roles/locale/
-  - ./roles/mac-dev-playbook/
-  - ./roles/maven/
-  - ./roles/nexus/
-  - ./roles/nodejs/
-  - ./roles/opencl/
-  - ./roles/repo-epel/
-  - ./roles/repo-remi/
-  - ./roles/security/
-  - ./roles/ssl-ca-certificate/
-  - ./roles/ssl-certificate/
-  - ./roles/vagrant/
-  - ./roles/yarn/
-  - ./roles/zabbix/
-  - ./roles/jermon.ansible-role-cpan/
-  - ./roles/anxs.perl/
+  - ./roles/
   - ./k8s/
   - ../../../../home/albandrieu/.cache
   - ./collections/*
   - ./ansible_collections/*
+  - megalinter-reports/*
+  - .gitlab-ci.yml
 # parseable: true
 # quiet: true
 # rulesdir:
@@ -53,6 +25,7 @@ skip_list:
   - '503'
   - '208'  # File permissions not mentioned
   - filenotfounderror
+  - 'fqcn-builtins'
 #   - skip_this_tag
 #   - and_this_one_too
 #   - skip_this_id

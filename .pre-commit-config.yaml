@@ -151,6 +151,7 @@ repos:
             docker/|
             requirements.yml|
             playbooks/group_vars/all/vault.yml|
+            roles/
           )$
   - repo: https://github.com/doublify/pre-commit-hindent.git
     rev: b3680b6ebf9f7cf29b19307f246adef66756feef

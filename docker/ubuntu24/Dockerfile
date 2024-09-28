@@ -209,35 +209,62 @@ RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
 # hadolint ignore=DL3002
 USER root
 
-ARG S6_OVERLAY_VERSION=3.1.2.1
 ENV PHP_VERSION=7.4
 
 # APACHE-PHP
-# dockerfile_lint - ignore
-# hadolint ignore=DL3008
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -yq --no-install-recommends \
+RUN add-apt-repository -y ppa:ondrej/php && apt-get update && \
+    apt-get install -yq --no-install-recommends \
     apache2 php${PHP_VERSION} \
+    php${PHP_VERSION}-fpm \
     php${PHP_VERSION}-tidy \
     php${PHP_VERSION}-dom \
     php${PHP_VERSION}-mbstring \
     php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-curl \
     php${PHP_VERSION}-pgsql \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-imap \
+    php${PHP_VERSION}-sockets \
     php${PHP_VERSION}-opcache \
-    php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-common \
+    php${PHP_VERSION}-apcu \
+    php${PHP_VERSION}-pdo \
+    php${PHP_VERSION}-redis \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN mkdir -p /var/run/apache2 && chmod 755 -R /var/run/apache2 && chown -R www-data:www-data /var/run/apache2
 
 # COMPOSER
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Composer
+# dockerfile_lint - ignore
 # hadolint ignore=DL4006
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# s6 OVERLAY
+
+ARG S6_OVERLAY_VERSION=3.2.0.0
+# ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && rm -rf /tmp/s6*
+
+# COPY oci/s6/apache2.sh /etc/s6-overlay/s6-rc.d/apache2/run
+# RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/apache2/type
+# RUN touch /etc/s6-overlay/s6-rc.d/user/contents.d/apache2
+#
+# COPY oci/s6/php-fpm.sh /etc/s6-overlay/s6-rc.d/php-fpm/run
+# RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/php-fpm/type
+# RUN touch /etc/s6-overlay/s6-rc.d/user/contents.d/php-fpm
+
 
 # NODE
+
+ENV NODE_VERSION=20
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
@@ -247,8 +274,8 @@ USER root
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
 # hadolint ignore=DL3008,DL3015,DL3006,DL4006
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get update && apt-get install --no-install-recommends -y nodejs=20* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs=${NODE_VERSION}* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0;
 RUN npm install -g npm@10.4.0 && apt-get purge -y npm
