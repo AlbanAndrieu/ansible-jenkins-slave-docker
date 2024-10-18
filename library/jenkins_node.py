@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Custom Ansible Module to configure Jenkins Node using REST API
 #
 # # See https://support.cloudbees.com/hc/en-us/articles/115003896171-Creating-node-with-the-REST-API for documentation

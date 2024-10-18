@@ -60,24 +60,17 @@ build-docker:  ## Build container with docker
 	# docker build -t $(IMAGE) --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} .
 	scripts/docker-build-24.sh
 
+.PHONY: docker-debug
+docker-debug:
+	@echo "docker run -it -u 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock -w /home/ubuntu/ -v "$(PWD)":/home/ubuntu/ $(IMAGE)"
+	@docker run -it -u 1000:1000 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /var/run/docker.sock:/var/run/docker.sock--rm --entrypoint /bin/bash -w /home/ubuntu/ -v "$(PWD)":/home/ubuntu/ $(IMAGE)
+
 ## —— Docker Slim 🐳 ————————————————————————————————————————————————————————————————
 .PHONY: build-docker-slim
 build-docker-slim:  ## Build container with docker-slim
 	@echo "=> Building image..."
 	@echo "docker-slim build --target $(IMAGE) --http-probe=my/sample-app"
 	docker-slim build --continue-after --target $(IMAGE) --http-probe=false
-
-## —— Buildah Docker 🐶🐳 ————————————————————————————————————————————————————————————————
-.PHONY: build-buildah-docker
-build-buildah-docker: ## Build container with buildah
-	@echo "=> Building image..."
-	buildah bud -t $(IMAGE) .
-
-## —— Buildah 🐶 ————————————————————————————————————————————————————————————————
-.PHONY: build-buildah
-build-buildah: ## Build container with buildah
-	@echo "=> Building image..."
-	./build-oci.sh
 
 ## —— Build 🚀 —————————————————————————————————————————————————————————————————
 .PHONY: build
@@ -186,15 +179,6 @@ sast-fs-docker:
 	@echo "=> Scanning trivy filesystem..."
 	time trivy filesystem --exit-code 2 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report-fs.md . 1>docker-trivy-fs.log 2>docker-trivy-fs-error.log
 
-## —— Tests Sast Buildah 👮😈🐶 —————————————————————————————————————————————————————————————————
-.PHONY: sast-buildah
-sast-buildah:
-	@echo "=> Scanning trivy image..."
-	rm -Rf "./archive/" || true
-	mkdir "./archive/" || true
-	buildah push $(IMAGE) docker-archive:./archive/built-with-buildah.tar:latest
-	time trivy image --exit-code 1 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report.md --input ./archive/built-with-buildah.tar 1>docker-trivy.log 2>docker-trivy-error.log
-
 ## —— Tests 👮😈 —————————————————————————————————————————————————————————————————
 .PHONY: sast
 sast: sast-fs-docker ## Run Trivy sast
@@ -209,15 +193,6 @@ deploy-docker: ## Push to registry
 	@echo "=> Pushing image..."
 	@echo "=> By Hand 👊 => docker push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
 	@echo "=> By Hand ✌ => docker push $(DOCKER_NAME):latest"
-
-## —— Deploy Buildah 💾🐶 ———————————————————————————————————————————————————————————————
-.PHONY: deploy-buildah
-deploy-buildah: ## Push to registry
-	@echo "=> Tagging image..."
-	buildah tag $(IMAGE) $(DOCKER_NAME):$(DOCKER_NEXT_TAG)
-	@echo "=> Pushing image..."
-	@echo "=> By Hand 👊 => buildah push $(DOCKER_NAME):$(DOCKER_NEXT_TAG)"
-	@echo "=> By Hand ✌ => buildah push $(DOCKER_NAME):latest"
 
 ## —— Deploy 💾👑 ———————————————————————————————————————————————————————————————
 .PHONY: deploy

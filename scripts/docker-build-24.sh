@@ -21,7 +21,7 @@ if [ -n "${DOCKER_BUILD_ARGS}" ]; then
   echo -e "${green} DOCKER_BUILD_ARGS is defined ${happy_smiley} : ${DOCKER_BUILD_ARGS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DOCKER_BUILD_ARGS, use the default one ${NC}"
-  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:172.17.0.57 --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} --build-arg CI_PIP_GITLABJUSMUNDI_TOKEN=$${CI_PIP_GITLABJUSMUNDI_TOKEN} --squash"
+  export DOCKER_BUILD_ARGS="--pull --network=host --add-host albandrieu.com:172.17.0.57 --build-arg ANSIBLE_VAULT_PASSWORD=${ANSIBLE_VAULT_PASSWORD} --build-arg CI_PIP_GITLABNABLA_TOKEN=${CI_PIP_GITLABNABLA_TOKEN}"
   #export DOCKER_BUILD_ARGS="--build-arg --no-cache --secret id=pip.conf,src=pip.conf --squash"
   echo -e "${magenta} DOCKER_BUILD_ARGS : ${DOCKER_BUILD_ARGS} ${NC}"
 fi
@@ -39,23 +39,19 @@ source "${WORKING_DIR}/run-ansible.sh"
 
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# "${WORKING_DIR}/clean.sh"
+# "${WORKING_DIR}/../clean.sh"
 
-#export DOCKER_BUILDKIT=1 # See https://github.com/moby/moby/issues/42261
-export DOCKER_BUILDKIT=0
-#export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
-#export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
+# export DOCKER_BUILDKIT=1 # See https://github.com/moby/moby/issues/42261
+# export DOCKER_BUILDKIT=0
+# export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
+# export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
 export BUILDKIT_STEP_LOG_MAX_SIZE=20971520
-#export BUILDKIT_STEP_LOG_MAX_SPEED=-1
+# export BUILDKIT_STEP_LOG_MAX_SPEED=-1
 export BUILDKIT_STEP_LOG_MAX_SPEED=1048576
 
 echo -e "${green} Building docker image ${NC}"
-
-#docker buildx create --use --name larger_log --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=50000000
-#buildx create --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=-1
-
-echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/../${DOCKER_FILE} -t \"${DOCKER_ORGANISATION}/${DOCKER_NAME}\" --tag \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" \"${WORKING_DIR}/..\" ${NC}"
-time docker build ${DOCKER_BUILD_ARGS} -f "${WORKING_DIR}/../${DOCKER_FILE}" -t "${DOCKER_ORGANISATION}/${DOCKER_NAME}" --tag "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" "${WORKING_DIR}/../"
+echo -e "${magenta} time docker build ${DOCKER_BUILD_ARGS} -f ${WORKING_DIR}/../${DOCKER_FILE} --tag \"${DOCKER_ORGANISATION}/${DOCKER_NAME}\" --tag \"${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}\" \"${WORKING_DIR}/..\" ${NC}"
+time docker build ${DOCKER_BUILD_ARGS} -f "${WORKING_DIR}/../${DOCKER_FILE}" --tag "${DOCKER_ORGANISATION}/${DOCKER_NAME}" --tag "${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}" "${WORKING_DIR}/../"
 RC=$?
 if [ ${RC} -ne 0 ]; then
   echo ""
@@ -95,8 +91,8 @@ export GROUP=${GROUP:-docker}
 export DOCKER_UID=${DOCKER_UID:-1004}
 export DOCKER_GID=${DOCKER_GID:-999}
 # shellcheck disable=SC2059
-printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" &&
-  printf "\033[1;32mWITH ${USER}\ngroup: ${GROUP} \033[0m\n"
+printf "\033[1;32mFROM UID:GID: ${DOCKER_UID}:${DOCKER_GID}- JENKINS_USER_HOME: ${JENKINS_USER_HOME} \033[0m\n" && \
+printf "\033[1;32mWITH ${USER}\ngroup: ${GROUP} \033[0m\n"
 
 echo -e "${green} User is. ${happy_smiley} : ${NC}"
 id "${USER}"
