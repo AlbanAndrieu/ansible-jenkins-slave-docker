@@ -215,6 +215,10 @@ WORKDIR ${UBUNTU_USER_HOME}
 RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
 # --system to prevent the creation of a virtualenv at all.
 
+# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
+# hadolint ignore=DL3002
+USER root
+
 # s6 OVERLAY
 
 # ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000
@@ -241,10 +245,6 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && tar -C / -Jxpf /tmp/s6-overl
 # RUN touch /etc/s6-overlay/s6-rc.d/user/contents.d/php-fpm
 
 # PHP
-
-# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
-# hadolint ignore=DL3002
-USER root
 
 ENV PHP_VERSION=7.4
 
@@ -290,20 +290,20 @@ RUN mkdir -p /var/run/apache2 && chmod 755 -R /var/run/apache2 && chown -R www-d
 RUN mkdir -p /run/php/ || true
 RUN chown -R www-data:www-data /run
 
-# PHP-FPM
-COPY oci/php.ini /etc/php/${PHP_VERSION}/fpm/php.ini
-COPY oci/pool-fpm.www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
-
-# Apache
-COPY oci/apache_ports.conf /etc/apache2/ports.conf
-COPY oci/apache_vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY oci/status.conf /etc/apache2/mods-enabled/status.conf
-COPY oci/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-COPY oci/apache.conf /etc/apache2/conf-available/z-app.conf
-# Cloudflare https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/
-COPY oci/remoteip.conf /etc/apache2/conf-enabled/remoteip.conf
-COPY oci/fullchain.pem /etc/fullchain.pem
-COPY oci/privkey.pem /etc/privkey.pem
+# # PHP-FPM
+# COPY oci/php.ini /etc/php/${PHP_VERSION}/fpm/php.ini
+# COPY oci/pool-fpm.www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+#
+# # Apache
+# COPY oci/apache_ports.conf /etc/apache2/ports.conf
+# COPY oci/apache_vhost.conf /etc/apache2/sites-available/000-default.conf
+# COPY oci/status.conf /etc/apache2/mods-enabled/status.conf
+# COPY oci/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+# COPY oci/apache.conf /etc/apache2/conf-available/z-app.conf
+# # Cloudflare https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/
+# COPY oci/remoteip.conf /etc/apache2/conf-enabled/remoteip.conf
+# COPY oci/fullchain.pem /etc/fullchain.pem
+# COPY oci/privkey.pem /etc/privkey.pem
 
 # COMPOSER
 
