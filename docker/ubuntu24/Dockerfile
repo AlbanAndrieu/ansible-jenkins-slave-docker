@@ -1,11 +1,9 @@
-# syntax=docker/dockerfile:1.10
+# syntax=docker/dockerfile:1.14
 # FROM docker.io/ubuntu:24.04 AS base
 FROM selenium/standalone-chrome:4.25.0-20240922 AS base
-# FROM selenium/standalone-chrome:4.8.3-20230328 AS base
-# FROM selenium/standalone-chrome:4.11.0-20230801 AS base
 
 # dockerfile_lint - ignore
-LABEL name="jm-ubuntu" vendor="nabla" version="2.0.9"
+LABEL name="jm-ubuntu" vendor="nabla" version="2.0.10"
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -19,9 +17,9 @@ ENV UBUNTU_USER_HOME=${UBUNTU_USER_HOME:-/home/ubuntu}
 #Below HOME is needed to override seluser (selenium user)
 ENV HOME=${UBUNTU_USER_HOME}
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 ENV TERM="xterm-256color"
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
@@ -54,15 +52,16 @@ RUN apt-get -q update --fix-missing \
   openssh-client ssh-askpass \
   libffi-dev libgit2-dev zlib1g-dev libpq-dev \
   make maven \
+  acl \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # because of tzdata and the need of noninteractive
-ENV TZ "Europe/Paris"
+ENV TZ="Europe/Paris"
 RUN echo "${TZ}" > /etc/timezone
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
     && dpkg-reconfigure --frontend noninteractive tzdata
 
-FROM base as docker
+FROM base AS docker
 
 ENV USER=${USER:-ubuntu}
 ENV GROUP=${GROUP:-docker}
@@ -119,7 +118,7 @@ RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
 
 #USER ${USER}
 
-FROM docker as python
+FROM docker AS python
 
 ### PYTHON
 
@@ -179,9 +178,11 @@ ENV PYTHONUNBUFFERED=1 \
     PYSETUP_PATH="/opt/pysetup"
 
 # Installs Poetry in its own environment to avoid problems with Ubuntu's Python
-RUN python3 -m venv $POETRY_HOME \
-    && $POETRY_HOME/bin/pip3 install poetry==$POETRY_VERSION \
-    && $POETRY_HOME/bin/poetry --version
+# hadolint ignore=SC2086
+RUN python3 -m venv "${POETRY_HOME}" \
+    && "${POETRY_HOME}/bin/pip" install --no-cache-dir --upgrade pip==25.0.1 \
+    && "${POETRY_HOME}/bin/pip" install poetry=="${POETRY_VERSION}" \
+    && "${POETRY_HOME}/bin/poetry" --version
 
 ### DOCKER COMPOSE
 
@@ -195,7 +196,7 @@ RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
 RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
     pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
-    ansible-core==2.16.6
+    ansible-core==2.17.8
 
 RUN ln -sv "$(which python3)" /usr/bin/python
 
@@ -220,6 +221,8 @@ RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
 USER root
 
 # s6 OVERLAY
+
+ENV PHP_VERSION=7.4
 
 # ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000
 # ENV S6_OVERLAY_VERSION=3.2.0.0
@@ -275,6 +278,7 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && \
     php${PHP_VERSION}-pdo \
     php${PHP_VERSION}-redis \
     php${PHP_VERSION}-xdebug \
+    php${PHP_VERSION}-sqlite3 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ensure Apache does not start automatically and disable the default site
@@ -297,11 +301,11 @@ RUN chown -R www-data:www-data /run
 # # Apache
 # COPY oci/apache_ports.conf /etc/apache2/ports.conf
 # COPY oci/apache_vhost.conf /etc/apache2/sites-available/000-default.conf
-# COPY oci/status.conf /etc/apache2/mods-enabled/status.conf
+# COPY oci/status.conf /etc/apache2/mods-available/status.conf
 # COPY oci/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 # COPY oci/apache.conf /etc/apache2/conf-available/z-app.conf
 # # Cloudflare https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/
-# COPY oci/remoteip.conf /etc/apache2/conf-enabled/remoteip.conf
+# COPY oci/remoteip.conf /etc/apache2/conf-available/remoteip.conf
 # COPY oci/fullchain.pem /etc/fullchain.pem
 # COPY oci/privkey.pem /etc/privkey.pem
 
@@ -326,7 +330,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # hadolint ignore=DL3002
 USER root
 
-# This is used by nuxt, its dependencies require OpenSSLv2 where node v18 uses OpenSSLv3
+# This is used by nuxt, its dependencies require OpenSSLv2 where node v20 uses OpenSSLv3
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 ENV NODE_VERSION=${NODE_VERSION:-"20"}
 
@@ -334,10 +338,8 @@ ENV NODE_VERSION=${NODE_VERSION:-"20"}
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=${NODE_VERSION}* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
-    npm config set depth 0;
-RUN npm install -g npm@10.4.0 && apt-get purge -y npm
-RUN npm -v && command -v npm # 9.5.0
-RUN npm install -g yarn@1.22.22 dockerfile_lint@0.3.4 newman@5.2.2 newman-reporter-htmlextra@1.19.7 jest@28.1.0 storybook@8.1.9 jest-junit@14.0.1 pyright@1.1.381 pyright-to-gitlab-ci@0.1.3 cloc@2.0.0-cloc && apt-get purge -y npm
+    npm config set depth 0 && \
+    npm install -g npm@10.8.2 && apt-get purge -y npm
 
 # GO
 
@@ -374,7 +376,7 @@ ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
 # Install openjdk to allow to run the selenium driver. The mkdir is here to avoid an issue during the installation.
 RUN mkdir -p /usr/share/man/man1 && \
-    apt-get update && apt-get install -y openjdk-11-jdk \
+    apt-get update && apt-get install -y openjdk-17-jdk \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # NOMAD
@@ -409,7 +411,7 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.56.2"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.59.1"}
 RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
 RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
 # hadolint ignore=DL3006,DL4006
@@ -435,19 +437,26 @@ RUN curl -LO https://storage.googleapis.com/container-structure-test/v1.16.0/con
 # checkov:skip=CKV_DOCKER_9:Ensure that APT isn't used
 # RUN curl -LO https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.deb && apt-get install --no-install-recommends -y ./dive_0.9.2_linux_amd64.deb && rm -f dive_0.9.2_linux_amd64.deb && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+WORKDIR ${UBUNTU_USER_HOME}
+
+COPY --chown=${USER}:${GROUP} package*.json ${UBUNTU_USER_HOME}/
+
+USER root
+
+# hadolint ignore=SC2121
+RUN --mount=type=cache,target=/root/.npm \
+  set npm_config_cache="${UBUNTU_USER_HOME}/.npm" && npm cache clean --force && npm set progress=false \
+  && npm install --save-dev \
+  && npm cache clean --force
+
 RUN chown -R ${USER}:${GROUP} "${UBUNTU_USER_HOME}/.npm"
 
 # dockerfile_lint - ignore
 USER ${USER}
 
-WORKDIR ${UBUNTU_USER_HOME}
-
-COPY --chown=${USER}:${GROUP} package*.json ${UBUNTU_USER_HOME}/
-RUN npm install
-
 WORKDIR /tmp
 
-#FROM prebuild as build
+#FROM prebuild AS build
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002

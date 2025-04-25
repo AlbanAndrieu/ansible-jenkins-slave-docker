@@ -75,7 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--lint disable no-undefined-references-->
 
-## [2.0.10] - TODO
+## [2.0.11] - TODO
+
+## [2.0.10] - 2025-04-25
+
+### Updated
+
+- Node 20.19.0, npm 10.8.2
 
 ## [2.0.9] - 2024-09-24
 

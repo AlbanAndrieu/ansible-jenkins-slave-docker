@@ -8,7 +8,7 @@ set -eo pipefail
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
-export DOCKER_TAG=${DOCKER_TAG:-"2.0.9"}
+export DOCKER_TAG=${DOCKER_TAG:-"2.0.10"}
 
 unset ANSIBLE_VAULT_PASSWORD_FILE
 
@@ -41,7 +41,7 @@ WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # "${WORKING_DIR}/../clean.sh"
 
-# export DOCKER_BUILDKIT=1 # See https://github.com/moby/moby/issues/42261
+export DOCKER_BUILDKIT=1 # See https://github.com/moby/moby/issues/42261
 # export DOCKER_BUILDKIT=0
 # export BUILDKIT_STEP_LOG_MAX_SIZE=50000000
 # export BUILDKIT_STEP_LOG_MAX_SIZE=1073741824
