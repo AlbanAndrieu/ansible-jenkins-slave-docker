@@ -28,7 +28,7 @@ jobs:
     #   image: nabla/ansible-jenkins-slave-docker:1.0.16
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 00
