@@ -1,5 +1,5 @@
 <!-- markdown-link-check-disable-next-line -->
-# [![Nabla](https://bababou.albandrieu.com/nabla/index/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu) Jenkins slave Docker image
+# [![Nabla](https://https://nabla.albandrieu.com/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu) Jenkins slave Docker image
 
 // spell-checker:disable
 
