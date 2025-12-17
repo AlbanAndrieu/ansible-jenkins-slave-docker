@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1.14
+# syntax=docker/dockerfile:1
 # FROM docker.io/ubuntu:24.04 AS base
 FROM selenium/standalone-chrome:4.25.0-20240922 AS base
 
 # dockerfile_lint - ignore
-LABEL name="jm-ubuntu" vendor="nabla" version="2.0.10"
+LABEL name="nabla-ubuntu" vendor="nabla" version="2.0.10"
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -332,7 +332,7 @@ USER root
 
 # This is used by nuxt, its dependencies require OpenSSLv2 where node v20 uses OpenSSLv3
 ENV NODE_OPTIONS="--openssl-legacy-provider"
-ENV NODE_VERSION=${NODE_VERSION:-"20"}
+ENV NODE_VERSION=${NODE_VERSION:-"24"}
 
 # hadolint ignore=DL3008,DL3015,DL3006,DL4006
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
@@ -347,7 +347,7 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
 # hadolint ignore=DL3002
 USER root
 
-ENV GO_VERSION=${GO_VERSION:-"1.23.1"}
+ENV GO_VERSION=${GO_VERSION:-"1.25.5"}
 ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
 ENV GO_URL=https://go.dev/dl/${GO_FILENAME}
 
@@ -361,8 +361,9 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=${UBUNTU_USER_HOME}/go
 ENV GO111MODULE=on
 
-RUN ${GOROOT}/bin/go install github.com/hashicorp/levant@main \
-&& ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
+RUN curl -L https://github.com/hashicorp/levant/releases/download/0.2.9/linux-amd64-levant -o levant
+
+RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
 && ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest \
 && ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
 && ${GOROOT}/bin/go install github.com/cweill/gotests/gotests@latest
@@ -376,12 +377,12 @@ ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 
 # Install openjdk to allow to run the selenium driver. The mkdir is here to avoid an issue during the installation.
 RUN mkdir -p /usr/share/man/man1 && \
-    apt-get update && apt-get install -y openjdk-17-jdk \
+    apt-get update && apt-get install -y --no-install-recommends openjdk-17-jdk \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # NOMAD
 
-ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.8.4"}
+ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.11.0"}
 ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
 ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
 
@@ -411,7 +412,7 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.59.1"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.68.1"}
 RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
 RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
 # hadolint ignore=DL3006,DL4006
