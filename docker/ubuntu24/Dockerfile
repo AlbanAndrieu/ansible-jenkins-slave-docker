@@ -38,7 +38,9 @@ RUN echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries \
 # build-essential has gcc, needed for python requirements
 
 # hadolint ignore=DL3008
-RUN apt-get -q update --fix-missing \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get -q update --fix-missing \
   && apt-get full-upgrade -y \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   git rsync curl wget bash jq \
@@ -53,6 +55,20 @@ RUN apt-get -q update --fix-missing \
   libffi-dev libgit2-dev zlib1g-dev libpq-dev \
   make maven \
   acl \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Dev
+
+# hadolint ignore=DL3008
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get -q update --fix-missing \
+  && apt-get full-upgrade -y \
+  && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
+  libcairo2 \
+  libleptonica-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev \
+  libreoffice-writer libreoffice-calc libreoffice-impress unpaper ocrmypdf \
+  tesseract-ocr-nor tesseract-ocr-fra tesseract-ocr-deu tesseract-ocr-eng tesseract-ocr-spa \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # because of tzdata and the need of noninteractive
@@ -76,7 +92,7 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
 ### DOCKER
 
 # dockerfile_lint - ignore
-ENV DOCKER_VERSION=${DOCKER_VERSION:-"26.1.4-1"}
+ENV DOCKER_VERSION=${DOCKER_VERSION:-"28.3.3-1"}
 
 # hadolint ignore=DL3006,DL4006
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -84,9 +100,12 @@ RUN add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) \
     stable"
+
 # Install Docker from Docker Inc. repositories.
 # hadolint ignore=SC2046,DL3008
-RUN apt-get update -qq && apt-get --no-install-recommends install -qqy \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get update -qq && apt-get --no-install-recommends install -qqy \
   docker-ce=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
   docker-ce-cli=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
   docker-buildx-plugin \
@@ -164,7 +183,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     # poetry
     # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.8.3 \
+    POETRY_VERSION=2.1.3 \
     # make poetry install to this location
     POETRY_HOME="/opt/poetry" \
     POETRY_NO_INTERACTION=1 \
@@ -179,10 +198,11 @@ ENV PYTHONUNBUFFERED=1 \
 
 # Installs Poetry in its own environment to avoid problems with Ubuntu's Python
 # hadolint ignore=SC2086
-RUN python3 -m venv "${POETRY_HOME}" \
-    && "${POETRY_HOME}/bin/pip" install --no-cache-dir --upgrade pip==25.0.1 \
-    && "${POETRY_HOME}/bin/pip" install poetry=="${POETRY_VERSION}" \
-    && "${POETRY_HOME}/bin/poetry" --version
+RUN --mount=type=cache,target=/root/.cache/pip \
+  python3 -m venv "${POETRY_HOME}" \
+  && "${POETRY_HOME}/bin/pip" install --no-cache-dir --upgrade pip==26.0.1 \
+  && "${POETRY_HOME}/bin/pip" install poetry=="${POETRY_VERSION}" \
+  && "${POETRY_HOME}/bin/poetry" --version
 
 ### DOCKER COMPOSE
 
@@ -194,18 +214,19 @@ ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.27.0}
 RUN mkdir -p /etc/ansible
 RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
-RUN rm /usr/lib/python*/EXTERNALLY-MANAGED && \
-    pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2023.12.0 \
-    ansible-core==2.17.8
+RUN --mount=type=cache,target=/root/.cache/pip \
+  rm /usr/lib/python*/EXTERNALLY-MANAGED && \
+  pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2025.0.4 \
+  ansible-core==2.17.14
 
 RUN ln -sv "$(which python3)" /usr/bin/python
 
-# python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==24.2 && \
+# python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==26.0.1 && \
 
 # dockerfile_lint - ignore
 USER ${USER}
 
-RUN pip3 install --user --no-cache-dir pipenv==2023.12.0
+RUN pip3 install --user --no-cache-dir pipenv==2025.0.4
 
 COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${UBUNTU_USER_HOME}/
 
@@ -216,13 +237,15 @@ WORKDIR ${UBUNTU_USER_HOME}
 RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
 # --system to prevent the creation of a virtualenv at all.
 
+# PHP
+
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
 USER root
 
-# s6 OVERLAY
+ENV PHP_VERSION=8.2
 
-ENV PHP_VERSION=7.4
+# s6 OVERLAY
 
 # ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000
 # ENV S6_OVERLAY_VERSION=3.2.0.0
@@ -271,7 +294,6 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && \
     php${PHP_VERSION}-curl \
     php${PHP_VERSION}-pgsql \
     php${PHP_VERSION}-intl \
-    php${PHP_VERSION}-imap \
     php${PHP_VERSION}-sockets \
     php${PHP_VERSION}-opcache \
     php${PHP_VERSION}-apcu \
@@ -304,7 +326,7 @@ RUN chown -R www-data:www-data /run
 # COPY oci/status.conf /etc/apache2/mods-available/status.conf
 # COPY oci/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 # COPY oci/apache.conf /etc/apache2/conf-available/z-app.conf
-# # Cloudflare https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/
+# Cloudflare https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/
 # COPY oci/remoteip.conf /etc/apache2/conf-available/remoteip.conf
 # COPY oci/fullchain.pem /etc/fullchain.pem
 # COPY oci/privkey.pem /etc/privkey.pem
@@ -332,14 +354,14 @@ USER root
 
 # This is used by nuxt, its dependencies require OpenSSLv2 where node v20 uses OpenSSLv3
 ENV NODE_OPTIONS="--openssl-legacy-provider"
-ENV NODE_VERSION=${NODE_VERSION:-"24"}
+ENV NODE_VERSION=${NODE_VERSION:-"25"}
 
 # hadolint ignore=DL3008,DL3015,DL3006,DL4006
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=${NODE_VERSION}* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0 && \
-    npm install -g npm@10.8.2 && apt-get purge -y npm
+    npm install -g npm@11.6.0 && apt-get purge -y npm
 
 # GO
 
@@ -412,7 +434,7 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.68.1"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.69.0"}
 RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
 RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
 # hadolint ignore=DL3006,DL4006
@@ -430,8 +452,10 @@ RUN mkdir -p /trivycache \
 
 # CST
 
+ENV CST_VERSION=${CST_VERSION:-"v1.16.0"}
+
 # RUN curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-RUN curl -LO https://storage.googleapis.com/container-structure-test/v1.16.0/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+RUN curl -LO https://storage.googleapis.com/container-structure-test/${CST_VERSION}/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
 # DIVE
 
@@ -457,8 +481,6 @@ USER ${USER}
 
 WORKDIR /tmp
 
-#FROM prebuild AS build
-
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
 USER root
@@ -478,10 +500,6 @@ RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 # (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
 
 RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh /usr/local/bin/modprobe
-
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/* && go clean -cache -modcache && rm -rf /home/ubuntu/.cache/ /home/ubuntu/go/pkg/mod/cache
-
-# USER ${USER}
 
 VOLUME /var/lib/docker
 
