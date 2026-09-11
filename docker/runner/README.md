@@ -5,7 +5,7 @@ This is the focused build-tool profile for current Nabla projects. It is deliber
 ## Baseline
 
 - Ubuntu 24.04 LTS
-- mise 2026.9.1
+- mise 2026.9.5, with the pinned release installer SHA-256 verified before execution
 - Python 3.13.x
 - uv 0.12.12
 - Node.js 25.9.0
