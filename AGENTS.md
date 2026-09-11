@@ -8,7 +8,7 @@ These instructions apply to the whole repository.
 
 - Reuse `scripts/docker-build-24.sh` for the Ubuntu 24 / Jenkins build image.
 - Do not add a parallel Dockerfile or a second runner-specific build script unless the repository owner explicitly asks for one.
-- The default Dockerfile for the canonical script is the repository-root `Dockerfile`.
+- The default Dockerfile for the canonical script is `docker/ubuntu24/Dockerfile`; keep it as the source of truth for the current Ubuntu 24 image.
 - `scripts/docker-build-24.sh` may bootstrap the `albanandrieu.shell` role because several scripts are symlinks into `roles/albanandrieu.shell/files/`.
 - In CI use `RUN_ANSIBLE_SETUP=false`: the full workstation Ansible provisioning is a local/admin operation and is too broad for a Docker image build job.
 
