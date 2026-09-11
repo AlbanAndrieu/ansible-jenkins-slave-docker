@@ -434,11 +434,16 @@ RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
 
 # TRIVY
 
-ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.69.0"}
+ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.71.2"}
+ENV TRIVY_SHA256="0510e71e2fd39bf863856d499c8dc19feb4e7336546394c502a8f5cc7ab27460"
 RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
 RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
-# hadolint ignore=DL3006,DL4006
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
+RUN curl -fsSL -o /tmp/trivy.tar.gz \
+      https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz \
+  && echo "${TRIVY_SHA256}  /tmp/trivy.tar.gz" | sha256sum -c - \
+  && tar -xzf /tmp/trivy.tar.gz -C /usr/local/bin trivy \
+  && rm -f /tmp/trivy.tar.gz \
+  && trivy --version
 
 RUN mkdir -p /trivycache \
  && chown -R root. /trivycache \
