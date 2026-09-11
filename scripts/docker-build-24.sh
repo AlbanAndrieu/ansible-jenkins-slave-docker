@@ -27,7 +27,7 @@ bootstrap_ansible_shell_role() {
   echo "Bootstrapping the albanandrieu.shell role required by scripts/*.sh symlinks"
   mkdir -p "${ROOT_DIR}/roles"
   local requirements_file
-  requirements_file="$(mktemp)"
+  requirements_file="$(mktemp --suffix=.yml)"
   cat >"${requirements_file}" <<'YAML'
 ---
 - src: https://github.com/AlbanAndrieu/ansible-shell.git
