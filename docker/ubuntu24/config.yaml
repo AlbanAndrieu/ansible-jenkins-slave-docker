@@ -110,10 +110,10 @@ commandTests:
     args: ["version"]
     expectedOutput: ["Nomad v1.11.0.*"]
 
-  - name: "Trivy 0.69"
+  - name: "Trivy 0.71.2"
     command: "trivy"
     args: ["--version"]
-    expectedOutput: ["Version: 0.69.0.*"]
+    expectedOutput: ["Version: 0.71.2.*"]
 
 metadataTest:
   envVars:
