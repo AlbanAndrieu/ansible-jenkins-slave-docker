@@ -1,76 +1,88 @@
-# AGENTS.md
+# Repository agent policy
 
-## Scope
+Keep context small, changes scoped, and publication deterministic.
 
-These instructions apply to the whole repository.
+## Bootstrap
 
-## Canonical build path
-
-- Reuse `scripts/docker-build-24.sh` for the Ubuntu 24 / Jenkins build image.
-- Do not add a parallel Dockerfile or a second runner-specific build script unless the repository owner explicitly asks for one.
-- The default Dockerfile for the canonical script is `docker/ubuntu24/Dockerfile`; keep it as the source of truth for the current Ubuntu 24 image.
-- `scripts/docker-build-24.sh` may bootstrap the `albanandrieu.shell` role because several scripts are symlinks into `roles/albanandrieu.shell/files/`.
-- In CI use `RUN_ANSIBLE_SETUP=false`: the full workstation Ansible provisioning is a local/admin operation and is too broad for a Docker image build job.
-
-## CI toolchain
-
-The current CI baseline is:
-
-- Ubuntu 24.04
-- Python 3.13.15
-- Ansible Core 2.21.4
-- Pipenv 2026.8.0
-- Node.js 25.9.0
-- npm 11.17.0
-- Docker Buildx
-- Container Structure Test 1.22.1
-
-Keep these values aligned between GitHub Actions, the Docker image and the projects that consume the runner. `fastapi-sample` is the Python 3.13 acceptance workload; `nabla-site-alban` is the Node/npm acceptance workload.
-
-The image contract in `docker/ubuntu24/config.yaml` should validate durable runtime capabilities rather than patch-level details that are intentionally allowed to float. When a Dockerfile toolchain is upgraded, update the contract in the same change.
-
-## Required validation after changes
-
-Run deterministic checks before publishing a branch whenever the local environment supports them:
+On a new checkout, install the repository hooks once:
 
 ```bash
-bash -n scripts/docker-build-24.sh
-bash -n scripts/docker-test.sh
-shellcheck scripts/docker-build-24.sh scripts/docker-test.sh
-
-CI=true \
-RUN_ANSIBLE_SETUP=false \
-DOCKER_TAG=agent-smoke \
-DOCKER_BUILD_ARGS='--pull' \
-bash scripts/docker-build-24.sh
-
-CST_CONFIG=docker/ubuntu24/config.yaml \
-bash scripts/docker-test.sh ansible-jenkins-slave-docker agent-smoke
+bash scripts/install-hooks.sh
 ```
 
-For workflow changes, also verify YAML/lint checks used by MegaLinter. If a formatter or linter changes files, commit those changes and rerun the gate until it is clean.
+The normal pre-commit hooks remain authoritative for deterministic formatting/linting. The separate pre-push hook runs the agent publication gate and reuses an exact local proof when the committed state has already passed.
 
-## GitHub Actions behavior
+## Before editing
 
-- Pull requests must build, validate the image contract and scan the image but must not push it to DockerHub.
-- DockerHub login/push is allowed only for trusted non-PR runs with configured credentials.
-- Do not make PR validation depend on repository secrets.
-- Prefer immutable action SHAs where a validated SHA is already known in the repository ecosystem.
-- Keep checkout shallow unless history is genuinely required.
-- Temporary feature-branch self-test triggers must be removed before merge.
+1. Inspect `git status --short`, the task, and only the relevant files.
+2. Prefer targeted search/diffs over recursive repository reads.
+3. Reuse existing pre-commit, Docker validation, CST, Trivy, CodeQL and MegaLinter contracts instead of inventing parallel validation.
+4. Keep canonical Ubuntu 24 image work on `scripts/docker-build-24.sh` + `docker/ubuntu24/Dockerfile`.
 
-## Secrets and build arguments
+## Local-first quality workflow
 
-- Do not print secrets.
-- Do not pass `ANSIBLE_VAULT_PASSWORD`, package tokens or other credentials as Docker build arguments unless the Dockerfile demonstrably needs them; build arguments are not an appropriate secret transport.
-- Prefer BuildKit secret mounts when a future build genuinely requires a credential.
+After an editing batch:
 
-## Runner / TrueNAS direction
+```bash
+bash scripts/agent-quality-gate.sh --fix
+# review deterministic formatter/linter rewrites
+# commit the reviewed change set
+bash scripts/agent-quality-gate.sh --publish
+```
 
-The planned TrueNAS LXC GitHub Actions runner should reuse this existing image/build contract. Do not mount the TrueNAS host Docker socket into the runner. Prefer an unprivileged runner and a separately controlled Docker/BuildKit endpoint for trusted Docker workloads.
+`--fix` repeatedly runs changed-file pre-commit hooks until deterministic rewrites converge or no further progress is possible. Do not analyze remote CI logs for formatter churn that can be fixed locally.
 
-## Pull requests
+`--publish` requires a clean committed tree, runs the canonical gate, and records an exact proof keyed to the committed HEAD, comparison base and local toolchain. The pre-push hook calls the same command and reuses that proof when it is still valid, avoiding duplicate expensive local work.
 
-- Keep changes focused and backward-compatible with the existing Jenkins image unless explicitly asked otherwise.
-- Do not merge automatically.
-- Explain any skipped local validation honestly; remote CI is not a substitute for a local gate when the local gate is available.
+Never use `git push --no-verify`. If a formatter/linter changes files, review and commit those changes, then rerun `--publish`.
+
+## Draft pull-request contract
+
+Keep iterative agent pull requests in **draft** while changes are still being edited or while the local publication checkpoint is not proven green.
+
+Draft PR CI is deliberately cheap: it runs only the dependency-free agent preflight. Docker image builds, MegaLinter and CodeQL wait until the PR becomes ready for review.
+
+Once the local `bash scripts/agent-quality-gate.sh --publish` gate is green, mark the PR **Ready for review**. The `ready_for_review` event then starts the authoritative remote gates.
+
+An API-only agent that cannot execute a real checkout must not claim the local gate passed. It should:
+
+1. keep the PR draft while iterating;
+2. publish one atomic commit/tree when possible;
+3. inspect the draft `Agent preflight` result;
+4. after that preflight succeeds, mark the atomic PR ready only when authoritative remote CI is required;
+5. disclose that no workstation-local publication gate was executed.
+
+This is the same cost-control contract used by newer Nabla repositories: cheap deterministic failures first, expensive GitHub Actions only after the branch is ready.
+
+## CI inspection efficiency
+
+Inspect CI progressively:
+
+1. workflow/check status;
+2. failing job;
+3. failing step;
+4. relevant log tail or artifact;
+5. full logs only when narrower evidence is insufficient.
+
+Avoid repeatedly polling unchanged runs. Prefer a fresh commit only when code/configuration actually changes; use failed-job reruns for infrastructure flakes.
+
+## MegaLinter transition
+
+MegaLinter auto-fix is temporarily retained as a fallback while this local-first gate is being proven. The target state is read-only MegaLinter validation with no PAT/GITHUB_TOKEN write path in PR CI once local `--fix` is reliable.
+
+## Semantic release target
+
+The repository is expected to converge toward the `fastapi-sample` release model:
+
+- Conventional Commit driven semantic-release on `master`;
+- full-history checkout with persisted credentials disabled;
+- a short-lived token from a dedicated release GitHub App;
+- only that release App may bypass the protected-branch ruleset when a release commit/tag must be pushed;
+- version/changelog/tag/GitHub Release generation is separated from ordinary PR validation;
+- Docker publication should consume the released version/tag rather than giving PR CI registry-write credentials.
+
+Do not grant broad administrator or generic GitHub Actions bypass solely to make release automation work.
+
+## Completion
+
+Report what changed, what was actually executed, whether the PR is still draft or ready, and any unresolved failure or risk. Never merge a PR without an explicit user request.

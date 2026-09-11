@@ -1,0 +1,11 @@
+minimum_pre_commit_version: 4.2.0
+repos:
+  - repo: local
+    hooks:
+      - id: quality-gate-pre-push
+        name: "✅ quality · Run agent-first publication gate before push"
+        language: system
+        entry: bash scripts/agent-quality-gate.sh --publish
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

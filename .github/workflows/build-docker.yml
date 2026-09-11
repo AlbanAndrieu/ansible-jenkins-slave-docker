@@ -25,7 +25,7 @@ on:
     - cron: "0 6 * * 3"
   pull_request:
     branches: [master, main]
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/build-docker.yml"
       - ".dockerignore"
@@ -63,7 +63,10 @@ env:
 
 jobs:
   build-docker:
-    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
+      github.actor != 'dependabot[bot]' &&
+      github.actor != 'dependabot-preview[bot]'
     name: Build Docker
     runs-on: ubuntu-24.04
     timeout-minutes: 45
