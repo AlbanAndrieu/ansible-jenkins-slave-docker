@@ -123,12 +123,12 @@ metadataTest:
       value: ".*/home/ubuntu/go/bin.*"
       isRegex: true
   unboundEnvVars:
-    - "ANSIBLE_VAULT_PASSWORD"
-    - "ANSIBLE_VAULT_PASS"
-    - "CI_PIP_GITLABNABLA_TOKEN"
-    - "CI_PIP_GITLABJUSMUNDI_TOKEN"
-    - "DOCKER_USERNAME"
-    - "DOCKER_PASSWORD"
+    - key: "ANSIBLE_VAULT_PASSWORD"
+    - key: "ANSIBLE_VAULT_PASS"
+    - key: "CI_PIP_GITLABNABLA_TOKEN"
+    - key: "CI_PIP_GITLABJUSMUNDI_TOKEN"
+    - key: "DOCKER_USERNAME"
+    - key: "DOCKER_PASSWORD"
   labels:
     - key: "vendor"
       value: "nabla"
