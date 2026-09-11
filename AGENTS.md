@@ -10,79 +10,71 @@ On a new checkout, install the repository hooks once:
 bash scripts/install-hooks.sh
 ```
 
-The normal pre-commit hooks remain authoritative for deterministic formatting/linting. The separate pre-push hook runs the agent publication gate and reuses an exact local proof when the committed state has already passed.
+The normal pre-commit hooks are authoritative for deterministic formatting/linting. The separate pre-push hook runs the publication gate and reuses an exact local proof when the committed state has already passed.
 
-## Before editing
+## Local-first publication contract
 
-1. Inspect `git status --short`, the task, and only the relevant files.
-2. Prefer targeted search/diffs over recursive repository reads.
-3. Reuse existing pre-commit, Docker validation, CST, Trivy, CodeQL and MegaLinter contracts instead of inventing parallel validation.
-4. Keep canonical Ubuntu 24 image work on `scripts/docker-build-24.sh` + `docker/ubuntu24/Dockerfile`.
-
-## Local-first quality workflow
-
-After an editing batch:
+After editing:
 
 ```bash
 bash scripts/agent-quality-gate.sh --fix
-# review deterministic formatter/linter rewrites
+# review every deterministic rewrite
 # commit the reviewed change set
 bash scripts/agent-quality-gate.sh --publish
 ```
 
-`--fix` repeatedly runs changed-file pre-commit hooks until deterministic rewrites converge or no further progress is possible. Do not analyze remote CI logs for formatter churn that can be fixed locally.
+`--fix` repeatedly runs changed-file pre-commit hooks until deterministic rewrites converge or no further progress is possible. If a formatter or linter changes files, review and commit those changes before publication. Do not spend remote CI minutes or agent tokens diagnosing formatter churn that can be resolved locally.
 
-`--publish` requires a clean committed tree, runs the canonical gate, and records an exact proof keyed to the committed HEAD, comparison base and local toolchain. The pre-push hook calls the same command and reuses that proof when it is still valid, avoiding duplicate expensive local work.
+`--publish` requires a clean committed tree, runs the canonical gate, and records an exact proof keyed to HEAD, comparison base and toolchain. The pre-push hook reuses that proof when it remains valid.
 
-Never use `git push --no-verify`. If a formatter/linter changes files, review and commit those changes, then rerun `--publish`.
+Never use `git push --no-verify` and never weaken validation merely to make a push pass.
 
 ## Draft pull-request contract
 
 Keep iterative agent pull requests in **draft** while changes are still being edited or while the local publication checkpoint is not proven green.
 
-Draft PR CI is deliberately cheap: it runs only the dependency-free agent preflight. Docker image builds, MegaLinter and CodeQL wait until the PR becomes ready for review.
+Draft PR CI runs only the dependency-free `Agent preflight`. Docker image builds, MegaLinter and CodeQL wait until the PR becomes Ready for review.
 
-Once the local `bash scripts/agent-quality-gate.sh --publish` gate is green, mark the PR **Ready for review**. The `ready_for_review` event then starts the authoritative remote gates.
+Once `bash scripts/agent-quality-gate.sh --publish` is green, mark the PR **Ready for review**. The `ready_for_review` event then starts authoritative remote gates.
 
-An API-only agent that cannot execute a real checkout must not claim the local gate passed. It should:
+An API-only agent that cannot execute a real checkout must not claim the local gate passed. It should keep the PR draft while iterating, publish atomic changes when possible, inspect the draft preflight, and only then mark the PR Ready when authoritative CI is required while explicitly disclosing that no workstation-local publication gate ran.
 
-1. keep the PR draft while iterating;
-2. publish one atomic commit/tree when possible;
-3. inspect the draft `Agent preflight` result;
-4. after that preflight succeeds, mark the atomic PR ready only when authoritative remote CI is required;
-5. disclose that no workstation-local publication gate was executed.
+If an authoritative remote gate rewrites the branch, return the PR to draft before continuing. Remote CI must not be used as an editing loop.
 
-This is the same cost-control contract used by newer Nabla repositories: cheap deterministic failures first, expensive GitHub Actions only after the branch is ready.
+## CI permissions and MegaLinter
 
-## CI inspection efficiency
+MegaLinter is **read-only**. It must not receive a PAT, persisted checkout credentials, or `contents: write`, and it must not auto-commit fixes or create fix PRs. Deterministic fixes belong in `agent-quality-gate.sh --fix` before push.
 
-Inspect CI progressively:
+Read-only validation jobs should use `permissions: contents: read` plus only narrowly required extra permissions. Release/publish write permissions belong in dedicated workflows, never ordinary PR validation.
 
-1. workflow/check status;
-2. failing job;
-3. failing step;
-4. relevant log tail or artifact;
-5. full logs only when narrower evidence is insufficient.
+## Docker contract
 
-Avoid repeatedly polling unchanged runs. Prefer a fresh commit only when code/configuration actually changes; use failed-job reruns for infrastructure flakes.
+Canonical Ubuntu 24 image work remains on:
 
-## MegaLinter transition
+- `scripts/docker-build-24.sh`
+- `docker/ubuntu24/Dockerfile`
+- `docker/ubuntu24/config.yaml`
 
-MegaLinter auto-fix is temporarily retained as a fallback while this local-first gate is being proven. The target state is read-only MegaLinter validation with no PAT/GITHUB_TOKEN write path in PR CI once local `--fix` is reliable.
+PR validation must build/test/scan but must not push DockerHub images or require registry secrets.
 
-## Semantic release target
+## Semantic-release target
 
-The repository is expected to converge toward the `fastapi-sample` release model:
+Converge toward the `fastapi-sample` release model:
 
 - Conventional Commit driven semantic-release on `master`;
 - full-history checkout with persisted credentials disabled;
-- a short-lived token from a dedicated release GitHub App;
-- only that release App may bypass the protected-branch ruleset when a release commit/tag must be pushed;
-- version/changelog/tag/GitHub Release generation is separated from ordinary PR validation;
-- Docker publication should consume the released version/tag rather than giving PR CI registry-write credentials.
+- short-lived token from a dedicated release GitHub App;
+- only that App may bypass the protected-branch ruleset when release commits/tags must be pushed;
+- synchronized version/changelog/tag/GitHub Release;
+- release-tag-driven Docker publication separated from PR CI;
+- no broad administrator or generic GitHub Actions bypass.
 
-Do not grant broad administrator or generic GitHub Actions bypass solely to make release automation work.
+Before implementing semantic-release mutations, define and test the authoritative version contract across every current version surface.
+
+## Efficiency
+
+Inspect CI progressively: workflow status -> failing job -> failing step -> relevant log tail/artifact -> full logs only when necessary. Prefer local compact failures over remote logs and avoid repeated polling or unnecessary commits that restart expensive workflows.
 
 ## Completion
 
-Report what changed, what was actually executed, whether the PR is still draft or ready, and any unresolved failure or risk. Never merge a PR without an explicit user request.
+Report what changed, what was actually executed, whether the PR is draft or ready, and any unresolved failure or risk. Never merge a PR without an explicit user request.
