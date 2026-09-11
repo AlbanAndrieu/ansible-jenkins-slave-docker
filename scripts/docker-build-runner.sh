@@ -28,7 +28,7 @@ docker run --rm "${IMAGE}" bash -lc '
   set -euo pipefail
   . /etc/os-release
   test "${VERSION_ID}" = "24.04"
-  test "$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")" = "3.13"
+  python --version 2>&1 | grep -Eq "^Python 3\.13\."
   test "$(node --version)" = "v25.9.0"
   test "$(npm --version)" = "11.17.0"
   mise --version
