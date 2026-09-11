@@ -23,8 +23,11 @@ The current CI baseline is:
 - Node.js 25.9.0
 - npm 11.17.0
 - Docker Buildx
+- Container Structure Test 1.22.1
 
 Keep these values aligned between GitHub Actions, the Docker image and the projects that consume the runner. `fastapi-sample` is the Python 3.13 acceptance workload; `nabla-site-alban` is the Node/npm acceptance workload.
+
+The image contract in `docker/ubuntu24/config.yaml` should validate durable runtime capabilities rather than patch-level details that are intentionally allowed to float. When a Dockerfile toolchain is upgraded, update the contract in the same change.
 
 ## Required validation after changes
 
@@ -32,24 +35,29 @@ Run deterministic checks before publishing a branch whenever the local environme
 
 ```bash
 bash -n scripts/docker-build-24.sh
-shellcheck scripts/docker-build-24.sh
+bash -n scripts/docker-test.sh
+shellcheck scripts/docker-build-24.sh scripts/docker-test.sh
 
 CI=true \
 RUN_ANSIBLE_SETUP=false \
 DOCKER_TAG=agent-smoke \
 DOCKER_BUILD_ARGS='--pull' \
 bash scripts/docker-build-24.sh
+
+CST_CONFIG=docker/ubuntu24/config.yaml \
+bash scripts/docker-test.sh ansible-jenkins-slave-docker agent-smoke
 ```
 
 For workflow changes, also verify YAML/lint checks used by MegaLinter. If a formatter or linter changes files, commit those changes and rerun the gate until it is clean.
 
 ## GitHub Actions behavior
 
-- Pull requests must build and scan the image but must not push it to DockerHub.
+- Pull requests must build, validate the image contract and scan the image but must not push it to DockerHub.
 - DockerHub login/push is allowed only for trusted non-PR runs with configured credentials.
 - Do not make PR validation depend on repository secrets.
 - Prefer immutable action SHAs where a validated SHA is already known in the repository ecosystem.
 - Keep checkout shallow unless history is genuinely required.
+- Temporary feature-branch self-test triggers must be removed before merge.
 
 ## Secrets and build arguments
 
