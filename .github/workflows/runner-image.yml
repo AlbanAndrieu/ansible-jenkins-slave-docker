@@ -1,0 +1,35 @@
+---
+name: Runner image
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "docker/runner/**"
+      - "scripts/docker-build-runner.sh"
+      - ".github/workflows/runner-image.yml"
+  push:
+    branches: [master]
+    paths:
+      - "docker/runner/**"
+      - "scripts/docker-build-runner.sh"
+      - ".github/workflows/runner-image.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runner-image-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and smoke runner image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Build and validate focused runner image
+        run: bash scripts/docker-build-runner.sh
