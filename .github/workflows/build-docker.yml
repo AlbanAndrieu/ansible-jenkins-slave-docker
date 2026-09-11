@@ -69,8 +69,6 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: package-lock.json
 
       - name: Upgrade npm and install Node CI tools
         run: |
