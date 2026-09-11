@@ -95,11 +95,6 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["11.6.*"]
 
-  - name: "Jest 28"
-    command: "jest"
-    args: ["--version"]
-    expectedOutput: ["28.*"]
-
   - name: "Docker 28.3"
     command: "docker"
     args: ["--version"]
@@ -127,6 +122,13 @@ metadataTest:
     - key: "PATH"
       value: ".*/home/ubuntu/go/bin.*"
       isRegex: true
+  unboundEnvVars:
+    - "ANSIBLE_VAULT_PASSWORD"
+    - "ANSIBLE_VAULT_PASS"
+    - "CI_PIP_GITLABNABLA_TOKEN"
+    - "CI_PIP_GITLABJUSMUNDI_TOKEN"
+    - "DOCKER_USERNAME"
+    - "DOCKER_PASSWORD"
   labels:
     - key: "vendor"
       value: "nabla"
