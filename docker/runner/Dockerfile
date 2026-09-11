@@ -28,7 +28,7 @@ ENV LANG=C.UTF-8 \
     MISE_CACHE_DIR=/var/cache/mise \
     MISE_INSTALL_PATH=/usr/local/bin/mise \
     MISE_YES=1 \
-    PATH=/usr/local/share/mise/shims:/usr/local/bin:/usr/bin:/bin
+    PATH=/usr/local/share/mise/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Keep the base intentionally small. Browser binaries and project dependencies are
 # installed from each consuming repository/lockfile, not baked independently here.
