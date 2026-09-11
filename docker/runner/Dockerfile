@@ -6,7 +6,8 @@ ARG UBUNTU_VERSION=24.04
 FROM ubuntu:${UBUNTU_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG MISE_VERSION=2026.9.1
+ARG MISE_VERSION=2026.9.5
+ARG MISE_INSTALLER_SHA256=321a141eefbe15f2c5eae16aeacfb04dee3d7bde5363be33d133fc1badb332ef
 ARG PYTHON_VERSION=3.13
 ARG NODE_VERSION=25.9.0
 ARG NPM_VERSION=11.17.0
@@ -48,6 +49,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libpq-dev \
         libssl-dev \
         openssh-client \
+        passwd \
         pkg-config \
         rsync \
         shellcheck \
@@ -57,9 +59,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         zip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install mise with its checksum-verifying installer and pin the installer release.
+# Pin and verify the mise installer itself before it downloads the pinned binary.
 RUN curl --proto '=https' --proto-redir '=https' --tlsv1.2 \
-        --fail --show-error --silent --location https://mise.run -o /tmp/install-mise.sh \
+        --fail --show-error --silent --location \
+        "https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/install.sh" \
+        -o /tmp/install-mise.sh \
+    && printf '%s  %s\n' "${MISE_INSTALLER_SHA256}" /tmp/install-mise.sh | sha256sum --check --strict \
     && MISE_VERSION="${MISE_VERSION}" sh /tmp/install-mise.sh \
     && rm -f /tmp/install-mise.sh \
     && mise --version
