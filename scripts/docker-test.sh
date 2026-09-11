@@ -9,6 +9,7 @@ DOCKER_TAG="${2:-${DOCKER_TAG:-latest}}"
 DOCKER_ORGANISATION="${DOCKER_ORGANISATION:-nabla}"
 CST_CONFIG="${CST_CONFIG:-docker/ubuntu24/config.yaml}"
 CST_VERSION="${CST_VERSION:-1.22.1}"
+CST_SHA256="${CST_SHA256:-fa35e89512a8978585f76cf41397956d2e3a30c62c2ad3fb857b1597074d14ca}"
 IMAGE="${DOCKER_ORGANISATION}/${DOCKER_NAME}:${DOCKER_TAG}"
 CONFIG_PATH="${ROOT_DIR}/${CST_CONFIG}"
 
@@ -45,6 +46,7 @@ if [[ -z "${CST_BIN}" ]]; then
     curl --fail --silent --show-error --location --retry 3 \
       "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-amd64" \
       --output "${tmp_bin}"
+    printf '%s  %s\n' "${CST_SHA256}" "${tmp_bin}" | sha256sum --check --status
     chmod +x "${tmp_bin}"
     mv "${tmp_bin}" "${CST_BIN}"
   fi
