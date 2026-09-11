@@ -2,8 +2,8 @@
 set -euo pipefail
 
 command -v pre-commit >/dev/null 2>&1 || {
-	echo "❌ pre-commit is required before installing repository hooks" >&2
-	exit 1
+  echo "❌ pre-commit is required before installing repository hooks" >&2
+  exit 1
 }
 
 ROOT="$(git rev-parse --show-toplevel)"
