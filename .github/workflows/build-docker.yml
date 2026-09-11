@@ -6,15 +6,41 @@ on:
     branches:
       - master
       - main
-    paths-ignore:
-      - "**.md"
+    paths:
+      - ".github/workflows/build-docker.yml"
+      - ".dockerignore"
+      - "docker/ubuntu24/**"
+      - "scripts/docker-build-24.sh"
+      - "scripts/docker-test.sh"
+      - "scripts/docker-validate.sh"
+      - "scripts/docker-env.sh"
+      - "scripts/run-ansible.sh"
+      - "Pipfile"
+      - "Pipfile.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "dockerd-entrypoint.sh"
+      - "modprobe.sh"
   schedule:
     - cron: "0 6 * * 3"
   pull_request:
     branches: [master, main]
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - "**.md"
+    paths:
+      - ".github/workflows/build-docker.yml"
+      - ".dockerignore"
+      - "docker/ubuntu24/**"
+      - "scripts/docker-build-24.sh"
+      - "scripts/docker-test.sh"
+      - "scripts/docker-validate.sh"
+      - "scripts/docker-env.sh"
+      - "scripts/run-ansible.sh"
+      - "Pipfile"
+      - "Pipfile.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "dockerd-entrypoint.sh"
+      - "modprobe.sh"
 
 permissions:
   contents: read
