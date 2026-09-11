@@ -112,8 +112,20 @@ jobs:
           CI: "true"
           RUN_ANSIBLE_SETUP: "false"
           DOCKER_TAG: ${{ github.sha }}
-          DOCKER_BUILD_ARGS: "--pull"
-        run: bash scripts/docker-build-24.sh
+          DOCKER_BUILD_ARGS: "--pull --progress=plain"
+        run: |
+          set -o pipefail
+          bash scripts/docker-build-24.sh 2>&1 | tee docker-build.log
+
+      - name: Summarize Docker build failure
+        if: failure() && hashFiles('docker-build.log') != ''
+        run: |
+          {
+            echo "### Docker build failure — last 200 lines"
+            echo '```text'
+            tail -n 200 docker-build.log
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Validate Ubuntu 24 image contract
         env:
