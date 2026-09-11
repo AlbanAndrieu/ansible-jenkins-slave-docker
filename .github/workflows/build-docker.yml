@@ -6,16 +6,41 @@ on:
     branches:
       - master
       - main
-      - feat/github-actions-runner-build # temporary self-test; removed before merge
-    paths-ignore:
-      - "**.md"
+    paths:
+      - ".github/workflows/build-docker.yml"
+      - ".dockerignore"
+      - "docker/ubuntu24/**"
+      - "scripts/docker-build-24.sh"
+      - "scripts/docker-test.sh"
+      - "scripts/docker-validate.sh"
+      - "scripts/docker-env.sh"
+      - "scripts/run-ansible.sh"
+      - "Pipfile"
+      - "Pipfile.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "dockerd-entrypoint.sh"
+      - "modprobe.sh"
   schedule:
     - cron: "0 6 * * 3"
   pull_request:
     branches: [master, main]
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - "**.md"
+    paths:
+      - ".github/workflows/build-docker.yml"
+      - ".dockerignore"
+      - "docker/ubuntu24/**"
+      - "scripts/docker-build-24.sh"
+      - "scripts/docker-test.sh"
+      - "scripts/docker-validate.sh"
+      - "scripts/docker-env.sh"
+      - "scripts/run-ansible.sh"
+      - "Pipfile"
+      - "Pipfile.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "dockerd-entrypoint.sh"
+      - "modprobe.sh"
 
 permissions:
   contents: read
@@ -32,6 +57,7 @@ env:
   NPM_VERSION: "11.17.0"
   ANSIBLE_CORE_VERSION: "2.21.4"
   PIPENV_VERSION: "2026.8.0"
+  CST_VERSION: "1.22.1"
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -86,8 +112,25 @@ jobs:
           CI: "true"
           RUN_ANSIBLE_SETUP: "false"
           DOCKER_TAG: ${{ github.sha }}
-          DOCKER_BUILD_ARGS: "--pull"
-        run: bash scripts/docker-build-24.sh
+          DOCKER_BUILD_ARGS: "--pull --progress=plain"
+        run: |
+          set -o pipefail
+          bash scripts/docker-build-24.sh 2>&1 | tee docker-build.log
+
+      - name: Summarize Docker build failure
+        if: failure() && hashFiles('docker-build.log') != ''
+        run: |
+          {
+            echo "### Docker build failure — last 200 lines"
+            echo '```text'
+            tail -n 200 docker-build.log
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Validate Ubuntu 24 image contract
+        env:
+          CST_CONFIG: docker/ubuntu24/config.yaml
+        run: bash scripts/docker-test.sh ansible-jenkins-slave-docker "${GITHUB_SHA}"
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
@@ -110,14 +153,14 @@ jobs:
           sarif_file: trivy-results.sarif
 
       - name: Login to DockerHub
-        if: github.event_name != 'pull_request' && github.ref_name != 'feat/github-actions-runner-build' && env.DOCKER_USERNAME != '' && env.DOCKER_PASSWORD != ''
+        if: github.event_name != 'pull_request' && env.DOCKER_USERNAME != '' && env.DOCKER_PASSWORD != ''
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
       - name: Push DockerHub image
-        if: github.event_name != 'pull_request' && github.ref_name != 'feat/github-actions-runner-build' && env.DOCKER_USERNAME != '' && env.DOCKER_PASSWORD != ''
+        if: github.event_name != 'pull_request' && env.DOCKER_USERNAME != '' && env.DOCKER_PASSWORD != ''
         run: |
           docker push "${IMAGE_NAME}:${GITHUB_SHA}"
           docker tag "${IMAGE_NAME}:${GITHUB_SHA}" "${IMAGE_NAME}:latest"
