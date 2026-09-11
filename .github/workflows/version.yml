@@ -7,15 +7,19 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.head_ref }} # checkout the correct branch name
-          fetch-depth: 00 # fetch the whole repo history
+          fetch-depth: 0 # fetch the whole repo history
+          persist-credentials: false
 
       - name: Git Version
-        uses: codacy/git-version@2.8.0
+        uses: codacy/git-version@80c816f11db8dea5e3a81025f598193015b51832 # 2.8.0
