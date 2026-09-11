@@ -7,7 +7,7 @@ ROOT_DIR="$(cd "${WORKING_DIR}/.." && pwd)"
 
 export DOCKER_NAME=${DOCKER_NAME:-"ansible-jenkins-slave-docker"}
 export DOCKER_TAG=${DOCKER_TAG:-"2.0.10"}
-export DOCKER_FILE=${DOCKER_FILE:-"Dockerfile"}
+export DOCKER_FILE=${DOCKER_FILE:-"docker/ubuntu24/Dockerfile"}
 export CST_CONFIG=${CST_CONFIG:-"docker/ubuntu24/config.yaml"}
 export DOCKER_BUILD_ARGS=${DOCKER_BUILD_ARGS:-"--pull"}
 export RUN_ANSIBLE_SETUP=${RUN_ANSIBLE_SETUP:-"true"}
