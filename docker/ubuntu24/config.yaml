@@ -73,7 +73,7 @@ commandTests:
   - name: "Ansible Core"
     command: "ansible"
     args: ["--version"]
-    expectedOutput: ["ansible.*core 2.17.*"]
+    expectedOutput: ["ansible.*core 2.20.1.*"]
 
   - name: "Pipenv"
     command: "pipenv"
