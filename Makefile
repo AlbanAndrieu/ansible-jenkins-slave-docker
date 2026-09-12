@@ -10,7 +10,7 @@ ME            = $(shell whoami)
 # Image
 DOCKER_NAME := $${CI_REGISTRY_IMAGE:-"nabla/ansible-jenkins-slave-docker"}
 DOCKER_TAG := $${DOCKER_TAG:-"latest"}
-DOCKER_NEXT_TAG := $${OCI_IMAGE_TAG:-"2.0.10""}
+DOCKER_NEXT_TAG := $${OCI_IMAGE_TAG:-"2.0.10"}
 IMAGE := $(DOCKER_NAME):$(DOCKER_TAG)
 
 TRIVY_VULN_TYPE = "os,library"
@@ -177,7 +177,7 @@ sast-docker:
 .PHONY: sast-fs-docker
 sast-fs-docker:
 	@echo "=> Scanning trivy filesystem..."
-	time trivy filesystem --exit-code 2 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report-fs.md . 1>docker-trivy-fs.log 2>docker-trivy-fs-error.log
+	time trivy filesystem --exit-code 2 --severity $(CS_SEVERITY_REPORT_THRESHOLD) $(TRIVY_GLOBAL_SECURITY_CHECKS) $(TRIVY_ARGS) --format table --output scan-report-fs.md . 1>docker-trivy-fs.log 2>docker-trivy-error.log
 
 ## —— Tests 👮😈 —————————————————————————————————————————————————————————————————
 .PHONY: sast
