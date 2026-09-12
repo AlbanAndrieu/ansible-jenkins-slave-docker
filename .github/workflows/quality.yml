@@ -1,0 +1,51 @@
+---
+name: Agent Quality
+
+on:
+  pull_request:
+    branches: [master, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    name: Agent preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Run dependency-free agent preflight
+        env:
+          QUALITY_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1' }}
+          QUALITY_LOG_TAIL: "80"
+        shell: bash
+        run: bash scripts/agent-quality-gate.sh --preflight
+
+      - name: Report draft preflight-only mode
+        if: github.event_name == 'pull_request' && github.event.pull_request.draft == true
+        shell: bash
+        run: |
+          {
+            echo "## Draft PR preflight"
+            echo
+            echo "Dependency-free Git/workflow/syntax preflight passed."
+            echo "Docker build, MegaLinter and CodeQL remain deferred until the PR is Ready for review."
+            echo
+            echo "Normal local publication checkpoint: \`bash scripts/agent-quality-gate.sh --publish\`."
+          } >> "${GITHUB_STEP_SUMMARY}"
