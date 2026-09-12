@@ -33,7 +33,8 @@ def main() -> int:
     version = package.get("version", "")
 
     try:
-        major, minor, _patch = version_tuple(version)
+        current_version = version_tuple(version)
+        major, minor, _patch = current_version
     except ValueError as exc:
         print(f"❌ VERSION_CONTRACT: package.json {exc}", file=sys.stderr)
         return 1
@@ -70,15 +71,21 @@ def main() -> int:
     if not re.search(rf"^## \[{re.escape(version)}\] - ", changelog, flags=re.MULTILINE):
         failures.append(f"CHANGELOG.md has no released section for {version}")
 
-    pending_versions = re.findall(r"^## \[(\d+\.\d+\.\d+)\] - TODO\s*$", changelog, flags=re.MULTILINE)
-    for pending in pending_versions:
+    todo_versions = re.findall(
+        r"^## \[(\d+\.\d+\.\d+)\] - TODO\s*$", changelog, flags=re.MULTILINE
+    )
+    active_pending: list[str] = []
+    for pending in todo_versions:
         try:
-            if version_tuple(pending) <= version_tuple(version):
-                failures.append(
-                    f"CHANGELOG.md pending version {pending} must be newer than current release {version}"
-                )
+            if version_tuple(pending) > current_version:
+                active_pending.append(pending)
         except ValueError as exc:
             failures.append(f"CHANGELOG.md {exc}")
+
+    if len(active_pending) > 1:
+        failures.append(
+            "CHANGELOG.md has multiple future TODO versions: " + ", ".join(active_pending)
+        )
 
     for label, (actual, expected) in expected_values.items():
         if actual != expected:
@@ -90,8 +97,8 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    pending = ", ".join(pending_versions) if pending_versions else "none"
-    print(f"✅ version contract: current={version} pending={pending}")
+    pending = active_pending[0] if active_pending else "none"
+    print(f"✅ version contract: current={version} next_todo={pending}")
     return 0
 
 
