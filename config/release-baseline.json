@@ -1,0 +1,7 @@
+{
+  "semantic_release_floor": "2.0.11",
+  "legacy_tag": "v2.0.11",
+  "legacy_tag_commit": "7251ccca3c91498650489471e0b0dcb4cf19c488",
+  "legacy_source_version": "2.0.10",
+  "note": "v2.0.11 was published on 2025-04-25 from a commit whose embedded release metadata still said 2.0.10. Preserve the historical tag/release and start future semantic-release versions strictly above 2.0.11."
+}

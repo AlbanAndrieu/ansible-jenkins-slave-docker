@@ -55,7 +55,21 @@ Canonical Ubuntu 24 image work remains on:
 - `docker/ubuntu24/Dockerfile`
 - `docker/ubuntu24/config.yaml`
 
-PR validation must build/test/scan but must not push DockerHub images or require registry secrets.
+`Build Docker` must always report on a Ready PR so it can safely become a required check. A cheap Git/Bash scope classifier may skip Python/Node setup, image build, CST and Trivy for unrelated changes, but the check itself must still complete successfully with an explicit no-op summary.
+
+PR validation must build/test/scan when Docker-relevant paths change, but it must never push DockerHub images or receive registry credentials. DockerHub credentials are limited to non-PR publication steps until publication moves into its dedicated semantic-release-driven workflow.
+
+## Version contract
+
+`package.json` `version` is the current-release source of truth until semantic-release owns version mutation. The dependency-free preflight runs `scripts/check-version-consistency.py`, which requires these release surfaces to agree with it:
+
+- `package.json` `branchVersion` and `branchPattern`;
+- `scripts/docker-build-24.sh` default `DOCKER_TAG`;
+- `Makefile` default `DOCKER_NEXT_TAG`;
+- `docker/ubuntu24/Dockerfile` version label;
+- the released-version section in `CHANGELOG.md`.
+
+Historical `CHANGELOG.md` `TODO` sections older than the current release are legacy documentation debt, not release intent. At most one future `TODO` version may be treated as the pending semantic-release baseline while migration is in progress.
 
 ## Semantic-release target
 
@@ -69,7 +83,7 @@ Converge toward the `fastapi-sample` release model:
 - release-tag-driven Docker publication separated from PR CI;
 - no broad administrator or generic GitHub Actions bypass.
 
-Before implementing semantic-release mutations, define and test the authoritative version contract across every current version surface.
+Before implementing semantic-release mutations, keep the version contract green and reconcile the pending changelog baseline deliberately.
 
 ## Efficiency
 

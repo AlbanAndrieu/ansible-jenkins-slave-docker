@@ -121,6 +121,8 @@ command -v python3 >/dev/null 2>&1 || {
   exit 1
 }
 
+run_compact "release version consistency" python3 scripts/check-version-consistency.py
+
 run_compact "GitHub Actions immutable SHA pins" python3 - <<'PY'
 from pathlib import Path
 import re
