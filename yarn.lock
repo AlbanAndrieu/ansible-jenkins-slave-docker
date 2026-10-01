@@ -1038,9 +1038,13 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mdn/browser-compat-data@^5.2.34", "@mdn/browser-compat-data@^5.3.13":
-  version "5.3.19"
-  resolved "https://registry.npmjs.org/@mdn/browser-compat-data/-/browser-compat-data-5.3.19.tgz"
+"@mdn/browser-compat-data@^5.6.19":
+  version "5.7.6"
+  resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-5.7.6.tgz#190d4663fa03688d85b31f415641c763cb376f29"
+
+"@mdn/browser-compat-data@^6.1.1":
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-6.1.5.tgz#a6d726667db8004ac43de06b700491d7ad9fb2bf"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1626,11 +1630,11 @@ assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz"
 
-ast-metadata-inferer@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.npmjs.org/ast-metadata-inferer/-/ast-metadata-inferer-0.8.0.tgz"
+ast-metadata-inferer@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/ast-metadata-inferer/-/ast-metadata-inferer-0.8.1.tgz#85081bf30308acd4c35fb8694658b4c5f6f3ee60"
   dependencies:
-    "@mdn/browser-compat-data" "^5.2.34"
+    "@mdn/browser-compat-data" "^5.6.19"
 
 astral-regex@^2.0.0:
   version "2.0.0"
@@ -1731,9 +1735,9 @@ base64-js@^1.1.2:
   version "1.5.1"
   resolved "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz"
 
-baseline-browser-mapping@^2.11.20:
-  version "2.11.22"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.22.tgz#d8b612f54517d8b3a31734623779e5ab8c5ff0b9"
+baseline-browser-mapping@^2.11.26:
+  version "2.11.26"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.26.tgz#01bf6774efb3fbb9de20afc6b923ab85c7d230a6"
 
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
@@ -1776,15 +1780,15 @@ brotli@~1.3.2:
   dependencies:
     base64-js "^1.1.2"
 
-browserslist@^4.21.10, browserslist@^4.24.0:
-  version "4.28.9"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.28.9.tgz#07ce6b449b90af880eb9bfb7cd39372cc4f71c8c"
+browserslist@^4.24.0, browserslist@^4.25.2:
+  version "4.29.3"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.29.3.tgz#9c8dafe96ab1c8e40e21c1274bdfa05aaee46476"
   dependencies:
-    baseline-browser-mapping "^2.11.20"
-    caniuse-lite "^1.0.30001810"
-    electron-to-chromium "^1.5.420"
-    node-releases "^2.0.54"
-    update-browserslist-db "^1.3.2"
+    baseline-browser-mapping "^2.11.26"
+    caniuse-lite "^1.0.30001813"
+    electron-to-chromium "^1.5.439"
+    node-releases "^2.0.57"
+    update-browserslist-db "^1.3.3"
 
 bser@2.1.1:
   version "2.1.1"
@@ -1816,13 +1820,9 @@ camelcase@^6.2.0:
   version "6.3.0"
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-6.3.0.tgz"
 
-caniuse-lite@^1.0.30001524:
-  version "1.0.30001541"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001541.tgz"
-
-caniuse-lite@^1.0.30001810:
-  version "1.0.30001810"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001810.tgz#4970b477dea3278374de9bc43aa8f5d39fc3cda2"
+caniuse-lite@^1.0.30001813:
+  version "1.0.30001814"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001814.tgz#7a9e1d107dd60f6ad3dacc74df6f6d53a9dbcf9b"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -2303,9 +2303,9 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-electron-to-chromium@^1.5.420:
-  version "1.5.427"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.427.tgz#f8693d109cf116d4a6efa98bc620b9fc7f265f67"
+electron-to-chromium@^1.5.439:
+  version "1.5.443"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.443.tgz#192b675e73bd809480cb9dc98babf3d370f1ac39"
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -2361,17 +2361,17 @@ eslint-config-google@^0.14.0:
   version "0.14.0"
   resolved "https://registry.npmjs.org/eslint-config-google/-/eslint-config-google-0.14.0.tgz"
 
-eslint-plugin-compat@^4.1.4:
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/eslint-plugin-compat/-/eslint-plugin-compat-4.2.0.tgz"
+eslint-plugin-compat@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-compat/-/eslint-plugin-compat-6.2.1.tgz#5784ea09b52426b8e6f55881535d3300c1d534d9"
   dependencies:
-    "@mdn/browser-compat-data" "^5.3.13"
-    ast-metadata-inferer "^0.8.0"
-    browserslist "^4.21.10"
-    caniuse-lite "^1.0.30001524"
+    "@mdn/browser-compat-data" "^6.1.1"
+    ast-metadata-inferer "^0.8.1"
+    browserslist "^4.25.2"
     find-up "^5.0.0"
+    globals "^15.7.0"
     lodash.memoize "^4.1.2"
-    semver "^7.5.4"
+    semver "^7.6.2"
 
 eslint-plugin-vue@^9.2.0:
   version "9.17.0"
@@ -2772,6 +2772,10 @@ globals@^13.19.0:
   resolved "https://registry.npmjs.org/globals/-/globals-13.22.0.tgz"
   dependencies:
     type-fest "^0.20.2"
+
+globals@^15.7.0:
+  version "15.15.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-15.15.0.tgz#7c4761299d41c32b075715a4ce1ede7897ff72a8"
 
 globby@^11.1.0:
   version "11.1.0"
@@ -4028,9 +4032,9 @@ node-oauth1@1.2.4:
   dependencies:
     crypto-js "~3.3.0"
 
-node-releases@^2.0.54:
-  version "2.0.55"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.55.tgz#c52faedb68001dcfe77495b5ed1ac5827a1788fc"
+node-releases@^2.0.57:
+  version "2.0.57"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.57.tgz#47827d34b86a98b4b7afacc1222878c286b6ef2d"
 
 normalize-package-data@^2.5.0:
   version "2.5.0"
@@ -4683,7 +4687,7 @@ semver@7.3.5:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@7.5.4, semver@^7.3.4, semver@^7.3.5, semver@^7.3.6, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4:
+semver@7.5.4:
   version "7.5.4"
   resolved "https://registry.npmjs.org/semver/-/semver-7.5.4.tgz"
   dependencies:
@@ -4693,9 +4697,9 @@ semver@^6.3.0, semver@^6.3.1:
   version "6.3.1"
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
 
-semver@^7.6.1:
-  version "7.6.2"
-  resolved "https://registry.npmjs.org/semver/-/semver-7.6.2.tgz"
+semver@^7.3.4, semver@^7.3.5, semver@^7.3.6, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4, semver@^7.6.1, semver@^7.6.2:
+  version "7.8.5"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.8.5.tgz#39b646037dd50c14fb451e7e4cac58ed8b863f69"
 
 serialised-error@1.1.3:
   version "1.1.3"
@@ -5155,7 +5159,7 @@ universalify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/universalify/-/universalify-2.0.0.tgz"
 
-update-browserslist-db@^1.3.2:
+update-browserslist-db@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/update-browserslist-db/-/update-browserslist-db-1.3.3.tgz#197e21fb2561fa89f8b94fad605a2b296a18993a"
   dependencies:
