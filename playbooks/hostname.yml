@@ -8,11 +8,12 @@
     - albanandrieu.ansible_hostname
 
   vars:
-    hostname_enabled: true,
+    hostname_enabled: true
     hostname_hostname_loopback: "{{ ansible_hostname }} home.albandrieu.com"
     # force inventory_hostname
     #       inventory_hostname: albandrieu.albandrieu.com
-    hosts:
+    # the albanandrieu.ansible_hostname role reads this name
+    hosts: # noqa: var-naming[no-reserved]
       # For docker
       #         - { name: "{{ hostname_hostname }}", ip: 127.0.1.1 }
       #         - { name: mydatabase, ip: 127.0.1.1 }

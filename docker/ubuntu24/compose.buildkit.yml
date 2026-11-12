@@ -1,0 +1,40 @@
+---
+# Rootless BuildKit next to the runner image: the runner keeps only the Docker
+# CLI and buildx, without dockerd, Docker socket, privileged mode or root.
+#
+#   docker compose -f docker/ubuntu24/compose.buildkit.yml up -d buildkitd
+#   docker compose -f docker/ubuntu24/compose.buildkit.yml run --rm runner
+#   docker buildx create --use --name buildkitd --driver remote tcp://buildkitd:1234
+#   docker buildx build .   # plain `docker build` looks for a daemon
+#
+# Ubuntu 23.10+ hosts block rootlesskit until
+# kernel.apparmor_restrict_unprivileged_userns=0 (BuildKit docs/rootless.md).
+name: nabla-runner
+
+services:
+  buildkitd:
+    image: moby/buildkit:v0.34.2-rootless@sha256:c8252268760e1baba80780d63d738ef9f260fb7c7c0973c78494cb9ddd99eda1
+    # shortcut: plain TCP, open to every container on the build network; add mTLS before sharing it.
+    command: ["--addr", "tcp://0.0.0.0:1234"]
+    # Upstream rootless requirements; the builder itself never runs privileged.
+    security_opt:
+      - seccomp=unconfined
+      - apparmor=unconfined
+      - systempaths=unconfined
+    volumes:
+      - buildkit-cache:/home/user/.local/share/buildkit
+    networks: [build]
+
+  runner:
+    image: nabla/ansible-jenkins-slave-docker:2.0.10
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    depends_on: [buildkitd]
+    networks: [build]
+
+volumes:
+  buildkit-cache:
+
+networks:
+  build:

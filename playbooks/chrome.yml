@@ -4,7 +4,9 @@
   become: true
 
   roles:
+    # the chrome role defines these names, renaming them would break it
     - role: chrome
-      google_talkplugin_enabled: false
-      google_remotedesktop_enabled: true
-      google_agent_pkg_state: latest # Package states: absent, build-dep, fixed, latest, present
+      google_talkplugin_enabled: false # noqa: var-naming[no-role-prefix]
+      google_remotedesktop_enabled: true # noqa: var-naming[no-role-prefix]
+      # Package states: absent, build-dep, fixed, latest, present
+      google_agent_pkg_state: latest # noqa: var-naming[no-role-prefix]

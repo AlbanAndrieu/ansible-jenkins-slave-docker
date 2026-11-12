@@ -4,7 +4,7 @@
 
 # sudo docker login hub.docker.com
 
-#- hosts: docker-cleaning
+# - hosts: docker-cleaning
 #  become: true
 #
 #  tasks:
@@ -29,7 +29,8 @@
 #        - docker
 #        - vm
 
-- hosts: docker-cleaning
+- name: Remove container which are running since more than 1 day
+  hosts: docker-cleaning
   become: true
 
   tasks:
@@ -61,18 +62,18 @@
     #      ignore_errors: true
     #      changed_when: false
 
-    - name: Remove container which are running since more than 1 day
+    - name: Remove container which are running since more than 1 day # noqa: risky-shell-pipe
       shell: docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up [0-9]+ days' | awk '{print $1}')
-      ignore_errors: true
+      failed_when: false
       changed_when: false
       tags:
         - clean
         - docker
         - vm
 
-    - name: Remove container which are running since more than 10 hours
+    - name: Remove container which are running since more than 10 hours # noqa: risky-shell-pipe
       shell: docker kill $(docker ps | grep -Ev 'cadvisor|logstash|kibana|elasticsearch' | grep -E 'Up 1[0-9] hours' | awk '{print $1}')
-      ignore_errors: true
+      failed_when: false
       changed_when: false
       tags:
         - clean
@@ -82,25 +83,25 @@
     - name: Remove reclaimable volumes
       command: "docker system prune --volumes -f "
       changed_when: false
-      ignore_errors: true
+      failed_when: false
       tags:
         - clean
         - docker
         - vm
 
-    #TODO below is slow, we have to pull all the images again after
+    # TODO below is slow, we have to pull all the images again after
     - name: Remove reclaimable images and volumes
       command: docker system prune -a -f --filter until=20m
       changed_when: false
-      ignore_errors: true
+      failed_when: false
       tags:
         - clean
         - docker
         - vm
 
-    - name: Remove hanging and old nabla docker images
+    - name: Remove hanging and old nabla docker images # noqa: risky-shell-pipe
       shell: docker rmi $(docker image ls | grep -i nabla | grep -E 'days|weeks|months ago' | grep -v jenkins-slave | awk '{print $3}')
-      ignore_errors: true
+      failed_when: false
       changed_when: false
       tags:
         - clean
@@ -122,10 +123,10 @@
     - name: Check image is fully available
       command: docker inspect -f . nabla/ansible-jenkins-slave-docker:latest
       changed_when: false
-#docker ps -a -s
-#docker images
+# docker ps -a -s
+# docker images
 
-#- hosts: docker-cleaning
+# - hosts: docker-cleaning
 #  become: true
 #
 #  tasks:
