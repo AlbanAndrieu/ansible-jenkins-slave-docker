@@ -2,22 +2,22 @@
 # ansible-galaxy collection install devsec.hardening
 # ansible-playbook playbooks/hardening.yml --become --ask-become-pass -vvvvv
 
-- name: "sandbox"
+- name: "Sandbox"
   hosts: localhost
-  gather_facts: yes
-  #become: true
+  gather_facts: true
+  # become: true
 
   tasks:
-    - debug:
+    - name: Show ansible_version.full
+      debug:
         var: ansible_version.full
-    - debug:
+    - name: Show ansible_en.container
+      debug:
         var: ansible_en.container
 
-- hosts: localhost
-  #become: true
-
-  collections:
-    - devsec.hardening
+- name: Harden OS and SSH
+  hosts: localhost
+  # become: true
 
   roles:
     - devsec.hardening.os_hardening
@@ -28,7 +28,7 @@
     os_auditd_enabled: false
     os_pam_enabled: false
     os_securetty_enabled: false
-    #os_security_auto_logout: 60
+    # os_security_auto_logout: 60
     os_sysctl_enabled: false
     sysctl_overwrite:
       # Enable IPv4 traffic forwarding.
@@ -40,9 +40,9 @@
       # NOK podman images
       kernel.unprivileged_userns_clone: 1
       kernel.unprivileged_bpf_disabled: 0
-    #os_security_suid_sgid_system_whitelist:
+    # os_security_suid_sgid_system_whitelist:
     # - '/usr/bin/ssh-agent'
-    #os_security_suid_sgid_whitelist:
+    # os_security_suid_sgid_whitelist:
     #  -
     os_selinux_enabled: false
     ssh_permit_root_login: true

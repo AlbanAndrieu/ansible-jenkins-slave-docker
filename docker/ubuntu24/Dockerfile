@@ -1,9 +1,13 @@
 # syntax=docker/dockerfile:1
-# FROM docker.io/ubuntu:24.04 AS base
-FROM selenium/standalone-chrome:4.25.0-20240922 AS base
+# Selenium 4.52 is built on ubuntu:resolute (26.04 LTS).
+# shortcut: dated tag without @sha256, the dockerfile_lint hook rejects digests; pin it once that hook is dropped
+FROM selenium/standalone-chrome:4.52.0-20261101 AS base
 
 # dockerfile_lint - ignore
 LABEL name="nabla-ubuntu" vendor="nabla" version="2.0.10"
+# dockerfile_lint requires these exact keys
+# hadolint ignore=DL3048
+LABEL Name="nabla-ubuntu" Version="2.0.10"
 
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -24,7 +28,7 @@ ENV TERM="xterm-256color"
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
-USER root
+USER 0
 
 # Enable retry logic for apt up to 10 times
 # Configure apt to always assume Y
@@ -50,8 +54,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   gnupg2 tzdata \
   gettext-base \
   nano \
-  net-tools iputils-ping dnsutils inetutils-traceroute \
-  openssh-client ssh-askpass \
+  net-tools iputils-ping bind9-dnsutils inetutils-traceroute \
+  openssh-client \
   libffi-dev libgit2-dev zlib1g-dev libpq-dev \
   make maven \
   acl \
@@ -67,7 +71,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
   libcairo2 \
   libleptonica-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev \
-  libreoffice-writer libreoffice-calc libreoffice-impress unpaper ocrmypdf \
+  unpaper ocrmypdf \
   tesseract-ocr-nor tesseract-ocr-fra tesseract-ocr-deu tesseract-ocr-eng tesseract-ocr-spa \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -80,7 +84,7 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && locale-gen en_US.UTF-8 \
 FROM base AS docker
 
 ENV USER=${USER:-ubuntu}
-ENV GROUP=${GROUP:-docker}
+ENV GROUP=${GROUP:-ubuntu}
 ENV UID=${UID:-2000}
 ENV GID=${GID:-2000}
 
@@ -92,50 +96,23 @@ RUN printf "\033[1;32mFROM UID:GID: ${UID}:${GID} \033[0m\n" && \
 ### DOCKER
 
 # dockerfile_lint - ignore
-ENV DOCKER_VERSION=${DOCKER_VERSION:-"28.3.3-1"}
+ENV DOCKER_VERSION=${DOCKER_VERSION:-"29.9.3-1"}
 
-# hadolint ignore=DL3006,DL4006
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-RUN add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) \
-    stable"
+# apt-key no longer exists on Ubuntu 26.04: the repository is signed-by its own key.
+RUN install -m 0755 -d /etc/apt/keyrings \
+  && curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc \
+  && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+    > /etc/apt/sources.list.d/docker.list
 
-# Install Docker from Docker Inc. repositories.
+# Docker CLI and buildx only: no dockerd. Builds go to a remote rootless
+# BuildKit, see compose.buildkit.yml.
 # hadolint ignore=SC2046,DL3008
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   --mount=type=cache,target=/var/lib/apt,sharing=locked \
   apt-get update -qq && apt-get --no-install-recommends install -qqy \
-  docker-ce=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
-  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu.24.04~$(lsb_release -cs) \
+  docker-ce-cli=5:${DOCKER_VERSION}~ubuntu.26.04~$(lsb_release -cs) \
   docker-buildx-plugin \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# PODMAN
-
-# hadolint ignore=DL3006,DL4006
-# RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key \
-#   | gpg --dearmor  \
-#   echo \
-#   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg] \
-#     https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/ /" \
-#   | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-
-# RUN sed -i "s/# unqualified-search-registries.*/unqualified-search-registries\ =\ [\"docker.io\"]/" /etc/containers/registries.conf
-
-### USER (should follow ### DOCKER)
-
-# Add user ubuntu to the image
-# RUN groupmod -g ${GID} ${GROUP} \
-# && adduser --quiet --uid ${UID} --gid ${GID} \
-#   --home ${UBUNTU_USER_HOME} \
-#   --disabled-password \
-#   --gecos "" \
-#   ${USER} \
-# && usermod -a -G ${GROUP} ${USER} \
-# && chown -R ${USER}:${GROUP} ${UBUNTU_USER_HOME}
-
-#USER ${USER}
 
 FROM docker AS python
 
@@ -143,107 +120,62 @@ FROM docker AS python
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
-USER root
+USER 0
 
+# Ubuntu 26.04 LTS Python 3.14; no pip: Python tools come from uv.
 # hadolint ignore=DL3008
 RUN apt-get -q update \
   && apt-get -q -o Dpkg::Options::="--force-confnew" --no-install-recommends install -y \
-  python3-setuptools python3 python3-pip python3-dev python3-apt python3-venv \
+  python3-setuptools python3 python3-dev python3-apt python3-venv \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-### OLDER PYTHON 3.10
-
-# dockerfile_lint - ignore
-# hadolint ignore=DL3008
-RUN add-apt-repository -y ppa:deadsnakes/ppa && apt-get update && \
-  apt-get install -yq --no-install-recommends \
-  python3.10 \
-  python3.10-dev \
-  python3.10-venv \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-#RUN python3.10 -m venv /opt/venv
-##Make sure we use the virtualenv:
-#ENV PATH="/opt/venv/bin:$PATH"
-#RUN pip3 install --no-cache-dir ansible
-
-#COPY --from=builder /opt/venv /opt/venv
-#ENV PATH="/opt/venv/bin:$PATH"
-
-### PYTHON POETRY
 
 # Turns off buffering for easier container logging
-# python
 ENV PYTHONUNBUFFERED=1 \
     # prevents python creating .pyc files
     PYTHONDONTWRITEBYTECODE=1 \
-    # pip
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    # poetry
     # https://python-poetry.org/docs/configuration/#using-environment-variables
     POETRY_VERSION=2.1.3 \
-    # make poetry install to this location
-    POETRY_HOME="/opt/poetry" \
     POETRY_NO_INTERACTION=1 \
     # make poetry create the virtual environment in the project's root
     # it gets named `.venv`
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    # do not ask any interactive question
-    POETRY_NO_INTERACTION=1 \
-    # paths
-    # this is where our requirements + virtual environment will live
-    PYSETUP_PATH="/opt/pysetup"
+    POETRY_VIRTUALENVS_IN_PROJECT=true
 
-# Installs Poetry in its own environment to avoid problems with Ubuntu's Python
-# hadolint ignore=SC2086
-RUN --mount=type=cache,target=/root/.cache/pip \
-  python3 -m venv "${POETRY_HOME}" \
-  && "${POETRY_HOME}/bin/pip" install --no-cache-dir --upgrade pip==26.0.1 \
-  && "${POETRY_HOME}/bin/pip" install poetry=="${POETRY_VERSION}" \
-  && "${POETRY_HOME}/bin/poetry" --version
+### UV
 
-### DOCKER COMPOSE
+ENV UV_VERSION=${UV_VERSION:-"0.13.7"}
+ENV UV_SHA256="c5221ff41b7892bfc223543883600125f6a47fe845093e0f5bdff4f359196d83"
+# hadolint ignore=DL4006
+RUN curl -fsSL -o /tmp/uv.tar.gz \
+      https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz \
+  && echo "${UV_SHA256}  /tmp/uv.tar.gz" | sha256sum -c - \
+  && tar -xzf /tmp/uv.tar.gz -C /usr/local/bin --strip-components=1 \
+  && rm -f /tmp/uv.tar.gz \
+  && uv --version
 
-ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION:-2.27.0}
-
-### ANSIBLE CORE
+### ANSIBLE CORE, ANSIBLE LINT, PIPENV, POETRY
 
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible
 RUN printf "[local]\nlocalhost ansible_connection=local\n" > /etc/ansible/hosts
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-  rm /usr/lib/python*/EXTERNALLY-MANAGED && \
-  pip3 install --proxy=${http_proxy} --no-cache-dir pipenv==2025.0.4 \
-  ansible-core==2.17.14
+# Each tool gets its own environment on the system Python, outside the
+# EXTERNALLY-MANAGED system site-packages. Downloads are refused only during
+# the build, so jobs keep uv's default interpreter resolution.
+ENV UV_TOOL_DIR=/opt/uv/tools \
+    UV_TOOL_BIN_DIR=/usr/local/bin
+RUN export UV_PYTHON_DOWNLOADS=never UV_NO_CACHE=1 \
+  && uv tool install --python /usr/bin/python3 ansible-core==2.20.1 \
+  && uv tool install --python /usr/bin/python3 ansible-lint==26.10.1 --with ansible-core==2.20.1 \
+  && uv tool install --python /usr/bin/python3 pipenv==2025.0.4 \
+  && uv tool install --python /usr/bin/python3 poetry=="${POETRY_VERSION}"
 
-RUN ln -sv "$(which python3)" /usr/bin/python
-
-# python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip==26.0.1 && \
-
-# dockerfile_lint - ignore
-USER ${USER}
-
-RUN pip3 install --user --no-cache-dir pipenv==2025.0.4
-
-COPY --chown=${USER}:${GROUP} Pipfile Pipfile.lock ${UBUNTU_USER_HOME}/
-
-ENV PATH=${UBUNTU_USER_HOME}/.local/bin/:${PATH}
-
-WORKDIR ${UBUNTU_USER_HOME}
-
-RUN python3 -m pipenv install --system --dev --site-packages --ignore-pipfile
-# --system to prevent the creation of a virtualenv at all.
+RUN ln -sfv "$(which python3)" /usr/bin/python
 
 # PHP
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
-USER root
-
-ENV PHP_VERSION=8.2
+USER 0
 
 # s6 OVERLAY
 
@@ -272,32 +204,24 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && tar -C / -Jxpf /tmp/s6-overl
 
 # PHP
 
-ENV PHP_VERSION=7.4
+# Ubuntu 26.04 LTS PHP; dom, opcache, pdo and sockets are built in.
+ENV PHP_VERSION=8.5
 
 # APACHE-PHP
 # dockerfile_lint - ignore
 # hadolint ignore=DL3008
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update && \
+RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
     apache2 php${PHP_VERSION} \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# hadolint ignore=DL3008
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update && \
-    apt-get install -yq --no-install-recommends \
     php${PHP_VERSION}-fpm \
     php${PHP_VERSION}-tidy \
-    php${PHP_VERSION}-dom \
+    php${PHP_VERSION}-xml \
     php${PHP_VERSION}-mbstring \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-curl \
     php${PHP_VERSION}-pgsql \
     php${PHP_VERSION}-intl \
-    php${PHP_VERSION}-sockets \
-    php${PHP_VERSION}-opcache \
     php${PHP_VERSION}-apcu \
-    php${PHP_VERSION}-pdo \
     php${PHP_VERSION}-redis \
     php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-sqlite3 \
@@ -350,7 +274,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
-USER root
+USER 0
 
 # This is used by nuxt, its dependencies require OpenSSLv2 where node v20 uses OpenSSLv3
 ENV NODE_OPTIONS="--openssl-legacy-provider"
@@ -367,7 +291,7 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
 
 # checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
 # hadolint ignore=DL3002
-USER root
+USER 0
 
 ENV GO_VERSION=${GO_VERSION:-"1.25.5"}
 ENV GO_FILENAME=go${GO_VERSION}.linux-amd64.tar.gz
@@ -383,8 +307,6 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=${UBUNTU_USER_HOME}/go
 ENV GO111MODULE=on
 
-RUN curl -L https://github.com/hashicorp/levant/releases/download/0.2.9/linux-amd64-levant -o levant
-
 RUN ${GOROOT}/bin/go install github.com/aquasecurity/tfsec/cmd/tfsec@latest \
 && ${GOROOT}/bin/go install github.com/minamijoyo/tfupdate@latest \
 && ${GOROOT}/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest \
@@ -398,25 +320,10 @@ ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 # OPENJDK
 
 # Install openjdk to allow to run the selenium driver. The mkdir is here to avoid an issue during the installation.
+# hadolint ignore=DL3008
 RUN mkdir -p /usr/share/man/man1 && \
     apt-get update && apt-get install -y --no-install-recommends openjdk-17-jdk \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# NOMAD
-
-ENV NOMAD_VERSION=${NOMAD_VERSION:-"1.11.0"}
-ENV NOMAD_FILENAME=nomad_${NOMAD_VERSION}_linux_amd64.zip
-ENV NOMAD_URL=https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/${NOMAD_FILENAME}
-
-# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
-# hadolint ignore=DL3002
-USER root
-
-RUN curl -L -o /tmp/${NOMAD_FILENAME} ${NOMAD_URL} \
-  && unzip /tmp/${NOMAD_FILENAME} -d /tmp \
-  && chmod +x /tmp/nomad \
-  && mv /tmp/nomad /bin/nomad \
-  && rm -rf /tmp/*
 
 # BUILDAH
 
@@ -438,6 +345,7 @@ ENV TRIVY_VERSION=${TRIVY_VERSION:-"0.71.2"}
 ENV TRIVY_SHA256="0510e71e2fd39bf863856d499c8dc19feb4e7336546394c502a8f5cc7ab27460"
 RUN curl -sSL -o /tmp/html.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/html.tpl
 RUN curl -sSL -o /tmp/gitlab-codequality.tpl https://github.com/aquasecurity/trivy/raw/v${TRIVY_VERSION}/contrib/gitlab-codequality.tpl
+# hadolint ignore=DL4006
 RUN curl -fsSL -o /tmp/trivy.tar.gz \
       https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz \
   && echo "${TRIVY_SHA256}  /tmp/trivy.tar.gz" | sha256sum -c - \
@@ -471,7 +379,7 @@ WORKDIR ${UBUNTU_USER_HOME}
 
 COPY --chown=${USER}:${GROUP} package*.json ${UBUNTU_USER_HOME}/
 
-USER root
+USER 0
 
 # hadolint ignore=SC2121
 RUN --mount=type=cache,target=/root/.npm \
@@ -481,36 +389,18 @@ RUN --mount=type=cache,target=/root/.npm \
 
 RUN chown -R ${USER}:${GROUP} "${UBUNTU_USER_HOME}/.npm"
 
+# the selenium base image lets every user sudo to root without a password
+RUN sed -i '/^ALL ALL = (ALL) NOPASSWD: ALL$/d' /etc/sudoers \
+  && visudo -c
+
 # dockerfile_lint - ignore
-USER ${USER}
+USER 1000
 
 WORKDIR /tmp
 
-# checkov:skip=CKV_DOCKER_8:Ensure the last USER is not root
-# hadolint ignore=DL3002
-USER root
-
-# RUN sed -i -e 's|^\[machine\]|#\[machine\]|g' /usr/share/containers/containers.conf
-
-COPY modprobe.sh /usr/local/bin/modprobe
-COPY dockerd-entrypoint.sh /usr/local/bin/
-
-# https://github.com/docker-library/docker/pull/166
-#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
-#   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-setting DOCKER_TLS_VERIFY and DOCKER_CERT_PATH
-# (For this to work, at least the "client" subdirectory of this path needs to be shared between the client and server containers via a volume, "docker cp", or other means of data sharing.)
-ENV DOCKER_TLS_CERTDIR=/certs
-# also, ensure the directory pre-exists and has wide enough permissions for "dockerd-entrypoint.sh" to create subdirectories, even when run in "rootless" mode
-RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
-# (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
-
-RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh /usr/local/bin/modprobe
-
-VOLUME /var/lib/docker
-
-EXPOSE 2375 2376
-
-ENTRYPOINT ["dockerd-entrypoint.sh"]
+# GitHub Actions `container:` and Jenkins `agent { docker }` start their own
+# command and UID: no entrypoint, no daemon, no root at runtime.
+ENTRYPOINT []
 CMD ["/bin/bash"]
 
 HEALTHCHECK NONE

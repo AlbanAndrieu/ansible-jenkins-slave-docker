@@ -1,26 +1,33 @@
 ---
-#ansible-playbook -i ./inventory/production -v playbooks/java.yml --limit test3.albandrieu.com --ask-become-pass -vvvv | tee setup.log
+# ansible-playbook -i ./inventory/production -v playbooks/java.yml --limit test3.albandrieu.com --ask-become-pass -vvvv | tee setup.log
 
-- hosts: all
+- name: Group hosts by distribution
+  hosts: all
   gather_facts: true
-  gather_subset: hardware
+  gather_subset: [hardware]
   tasks:
-    - name: group hosts by distribution
-      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+    - name: Group hosts by distribution
+      group_by:
+        key: "{{ ansible_distribution }}-{{ ansible_distribution_version }}"
 
-- hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
+- name: Group hosts for supported distributions
+  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*:Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
   gather_facts: false
   tasks:
-    - name: group hosts for supported distributions
-      group_by: key="supported"
+    - name: Group hosts for supported distributions
+      group_by:
+        key: "supported"
 
-- hosts: "!supported"
+- name: Fail for unsupported distribution
+  hosts: "!supported"
   gather_facts: false
   tasks:
-    - name: fail for unsupported distribution
-      fail: msg="{{ ansible_distribution }} {{ ansible_distribution_version }} is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise
-        Linux 6/7, CentOS 6/7, or Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
-    - debug: msg="Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
+    - name: Fail for unsupported distribution
+      fail:
+        msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise Linux 6/7, CentOS 6/7, or Ubuntu 12.04/13.04/14.04/16.04/17.04/18.04/19.04/20.04."
+    - name: Show distribution version
+      debug:
+        msg: "Version {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}"
 
 - name: Install java 8 License
   hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*
@@ -28,23 +35,43 @@
   ignore_errors: true
 
   tasks:
-    - name: jdk8 | Accept Java 8 License
-      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+    - name: Jdk8 | Accept Java 8 License
+      debconf:
+        name: 'oracle-java8-installer'
+        question: 'shared/accepted-oracle-license-v1-1'
+        value: 'true'
+        vtype: 'select'
 
-    - name: jdk9 | Accept Java 9 License
-      debconf: name='oracle-java9-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+    - name: Jdk9 | Accept Java 9 License
+      debconf:
+        name: 'oracle-java9-installer'
+        question: 'shared/accepted-oracle-license-v1-1'
+        value: 'true'
+        vtype: 'select'
 
-    - name: jdk10 | Accept Java 10 License
-      debconf: name='oracle-java10-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+    - name: Jdk10 | Accept Java 10 License
+      debconf:
+        name: 'oracle-java10-installer'
+        question: 'shared/accepted-oracle-license-v1-1'
+        value: 'true'
+        vtype: 'select'
 
-    - name: jdk11 | Accept Java 11 License
-      debconf: name='oracle-java11-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+    - name: Jdk11 | Accept Java 11 License
+      debconf:
+        name: 'oracle-java11-installer'
+        question: 'shared/accepted-oracle-license-v1-1'
+        value: 'true'
+        vtype: 'select'
 
-    - name: jdk12 | Accept Java 12 License
-      debconf: name='oracle-java12-installer' question='shared/accepted-oracle-license-v1-2' value='true' vtype='select'
+    - name: Jdk12 | Accept Java 12 License
+      debconf:
+        name: 'oracle-java12-installer'
+        question: 'shared/accepted-oracle-license-v1-2'
+        value: 'true'
+        vtype: 'select'
 # debian | ubuntu | Java 11
 
-#- name: Install java (1)
+# - name: Install java (1)
 #  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: true
 #
@@ -59,7 +86,7 @@
 #      become: true
 #      become_user: root
 #
-#- name: Install java (2)
+# - name: Install java (2)
 #  hosts: Ubuntu-20*:Ubuntu-19*:Ubuntu-18*:Ubuntu-17*:Ubuntu-16*:Ubuntu-14*:Ubuntu-13*:Ubuntu-12*
 #  become: true
 #
@@ -70,7 +97,7 @@
 #      oracle_java_home: "/usr/lib/jvm/java-11-oracle"
 
 # redhat | centos 7 | Java 8
-#- name: Install java
+# - name: Install java
 #  hosts: RedHat-7*:RedHat-6*:RedHat-5*:CentOS-7*:CentOS-6*
 #  become: true
 #

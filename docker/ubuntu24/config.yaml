@@ -10,17 +10,17 @@ fileExistenceTests:
     path: "/"
     shouldExist: true
 
-  - name: "ubuntu local bin"
-    path: "/home/ubuntu/.local/bin"
-    shouldExist: true
-
   - name: "python3"
     path: "/usr/bin/python3"
     shouldExist: true
 
-  - name: "legacy python 3.10"
-    path: "/usr/bin/python3.10"
+  - name: "uv"
+    path: "/usr/local/bin/uv"
     shouldExist: true
+
+  - name: "no pip: Python tools come from uv"
+    path: "/usr/bin/pip3"
+    shouldExist: false
 
   - name: "node"
     path: "/usr/bin/node"
@@ -34,6 +34,14 @@ fileExistenceTests:
     path: "/usr/bin/docker"
     shouldExist: true
 
+  - name: "docker buildx plugin"
+    path: "/usr/libexec/docker/cli-plugins/docker-buildx"
+    shouldExist: true
+
+  - name: "no Docker daemon in the runner"
+    path: "/usr/bin/dockerd"
+    shouldExist: false
+
   - name: "container structure test"
     path: "/usr/local/bin/container-structure-test"
     shouldExist: true
@@ -46,34 +54,52 @@ fileExistenceTests:
     path: "/usr/local/go/bin/go"
     shouldExist: true
 
-  - name: "nomad"
+  - name: "no LibreOffice"
+    path: "/usr/bin/soffice"
+    shouldExist: false
+
+  - name: "no Nomad"
     path: "/bin/nomad"
-    shouldExist: true
+    shouldExist: false
 
   - name: "docker credentials are not baked into the image"
     path: "/home/ubuntu/.docker/config.json"
     shouldExist: false
 
+fileContentTests:
+  - name: "no passwordless sudo to root"
+    path: "/etc/sudoers"
+    excludedContents: ["NOPASSWD"]
+
 commandTests:
-  - name: "git is from Ubuntu 24"
+  - name: "git is from Ubuntu 26.04"
     command: "git"
     args: ["--version"]
-    expectedOutput: ["git version 2.43.*"]
+    expectedOutput: ["git version 2.53.*"]
 
-  - name: "default Python is Ubuntu 24 Python 3.12"
+  - name: "default Python is Ubuntu 26.04 Python 3.14"
     command: "python3"
     args: ["--version"]
-    expectedOutput: ["Python 3.12.*"]
-
-  - name: "legacy Python 3.10 remains available"
-    command: "python3.10"
-    args: ["--version"]
-    expectedOutput: ["Python 3.10.*"]
+    expectedOutput: ["Python 3.14.*"]
 
   - name: "Ansible Core"
     command: "ansible"
     args: ["--version"]
     expectedOutput: ["ansible.*core 2.20.1.*"]
+
+  - name: "Ansible Lint"
+    command: "ansible-lint"
+    args: ["--version"]
+    # rich colours the version even without a TTY
+    envVars:
+      - key: "NO_COLOR"
+        value: "1"
+    expectedOutput: ["ansible-lint 26.10.1 using ansible-core:2.20.1"]
+
+  - name: "PHP 8.5 from Ubuntu 26.04"
+    command: "php"
+    args: ["--version"]
+    expectedOutput: ["PHP 8.5.*"]
 
   - name: "Pipenv"
     command: "pipenv"
@@ -81,7 +107,7 @@ commandTests:
     expectedOutput: ["pipenv, version 2025.0.4.*"]
 
   - name: "Poetry"
-    command: "/opt/poetry/bin/poetry"
+    command: "poetry"
     args: ["--version"]
     expectedOutput: ["Poetry.*2.1.3.*"]
 
@@ -95,20 +121,15 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["11.6.*"]
 
-  - name: "Docker 28.3"
+  - name: "Docker 29.9"
     command: "docker"
     args: ["--version"]
-    expectedOutput: ["Docker version 28.3.*"]
+    expectedOutput: ["Docker version 29.9.*"]
 
   - name: "Go 1.25.5"
     command: "/usr/local/go/bin/go"
     args: ["version"]
     expectedOutput: ["go version go1.25.5.*"]
-
-  - name: "Nomad 1.11"
-    command: "nomad"
-    args: ["version"]
-    expectedOutput: ["Nomad v1.11.0.*"]
 
   - name: "Trivy 0.71.2"
     command: "trivy"
@@ -132,6 +153,7 @@ metadataTest:
   labels:
     - key: "vendor"
       value: "nabla"
-  entrypoint: ["dockerd-entrypoint.sh"]
+  entrypoint: []
   cmd: ["/bin/bash"]
   workdir: "/tmp"
+  user: "1000"

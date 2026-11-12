@@ -4,15 +4,15 @@ exclude_paths:
   - .direnv/
   - .github/
   - .gitlab/
-  - ./requirements.yml
-  - ./.travis.yml
-  - ./playbooks/group_vars/all/vault.yml
-  - ./docker/
-  - ./roles/
-  - ./k8s/
+  - requirements.yml
+  - .travis.yml
+  - playbooks/group_vars/all/vault.yml
+  - docker/
+  - roles/
+  - k8s/
   - ../../../../home/albandrieu/.cache
-  - ./collections/*
-  - ./ansible_collections/*
+  - collections/*
+  - ansible_collections/*
   - megalinter-reports/*
   - .gitlab-ci.yml
 # parseable: true
