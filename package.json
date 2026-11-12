@@ -9,7 +9,7 @@
   ],
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=16.15.0",
+    "node": ">=22.12.0",
     "npm": ">=8.5.5",
     "node-gyp": ">=3.0.3",
     "grunt": ">=1.5.3"
@@ -45,12 +45,12 @@
     "cli": "^1.0.1",
     "jest-junit": "^16.0.0",
     "markdown-toc": "^1.2.0",
-    "secretlint": "^7.0.3"
+    "secretlint": "^13.0.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.3.0",
+    "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "@secretlint/secretlint-rule-preset-recommend": "^6.0.2",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.1.0",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.30.5",
     "cspell": "^8.8.1",
@@ -58,7 +58,7 @@
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-compat": "^6.2.1",
     "eslint-plugin-vue": "^9.2.0",
-    "jest": "^28.1.0",
+    "jest": "^30.5.2",
     "newman": "^4.5.7"
   }
 }
