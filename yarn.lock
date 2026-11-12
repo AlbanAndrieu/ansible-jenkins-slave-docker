@@ -307,11 +307,12 @@
     resolve-global "1.0.0"
     yargs "^17.0.0"
 
-"@commitlint/config-conventional@^17.3.0":
-  version "17.7.0"
-  resolved "https://registry.npmjs.org/@commitlint/config-conventional/-/config-conventional-17.7.0.tgz"
+"@commitlint/config-conventional@^21.2.3":
+  version "21.2.3"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-21.2.3.tgz#ae8a53f6671245ad0d55698b17c711d0b7e705d8"
   dependencies:
-    conventional-changelog-conventionalcommits "^6.1.0"
+    "@commitlint/types" "^21.2.3"
+    conventional-changelog-conventionalcommits "^10.0.0"
 
 "@commitlint/config-validator@^17.6.7":
   version "17.6.7"
@@ -435,6 +436,17 @@
   resolved "https://registry.npmjs.org/@commitlint/types/-/types-17.4.4.tgz"
   dependencies:
     chalk "^4.1.0"
+
+"@commitlint/types@^21.2.3":
+  version "21.2.3"
+  resolved "https://registry.yarnpkg.com/@commitlint/types/-/types-21.2.3.tgz#004da63f916654309485f5c1ec4dcba8bd2ebe78"
+  dependencies:
+    conventional-commits-parser "^7.0.0"
+    picocolors "^1.1.1"
+
+"@conventional-changelog/template@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@conventional-changelog/template/-/template-1.4.0.tgz#30a8680f2ab8d3a60a08e86bebb33fe8f0f8f100"
 
 "@cspell/cspell-bundled-dicts@8.8.1":
   version "8.8.1"
@@ -1230,6 +1242,10 @@
   version "7.0.7"
   resolved "https://registry.npmjs.org/@secretlint/types/-/types-7.0.7.tgz"
 
+"@simple-libs/stream-utils@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@simple-libs/stream-utils/-/stream-utils-2.0.0.tgz#758d2a0876b4d672dac1eae212cdbab452670d3c"
+
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
   resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.24.51.tgz"
@@ -1595,6 +1611,10 @@ argparse@^1.0.10, argparse@^1.0.7:
 argparse@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz"
+
+argue-cli@^3.1.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/argue-cli/-/argue-cli-3.2.0.tgz#15b9ff31e0ce316c9fd1ff1761188fa81995f1c5"
 
 array-ify@^1.0.0:
   version "1.0.0"
@@ -2021,11 +2041,11 @@ conventional-changelog-angular@^6.0.0:
   dependencies:
     compare-func "^2.0.0"
 
-conventional-changelog-conventionalcommits@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-6.1.0.tgz"
+conventional-changelog-conventionalcommits@^10.0.0:
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-10.4.0.tgz#a75bb40f10731d66e0b4209dc1dd3ee0cf2925f3"
   dependencies:
-    compare-func "^2.0.0"
+    "@conventional-changelog/template" "^1.4.0"
 
 conventional-commits-parser@^4.0.0:
   version "4.0.0"
@@ -2035,6 +2055,13 @@ conventional-commits-parser@^4.0.0:
     is-text-path "^1.0.1"
     meow "^8.1.2"
     split2 "^3.2.2"
+
+conventional-commits-parser@^7.0.0:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/conventional-commits-parser/-/conventional-commits-parser-7.1.2.tgz#4dca0779b338bab96fe994e864dfedf3c1908b03"
+  dependencies:
+    "@simple-libs/stream-utils" "^2.0.0"
+    argue-cli "^3.1.0"
 
 convert-source-map@^1.4.0, convert-source-map@^1.6.0:
   version "1.9.0"
