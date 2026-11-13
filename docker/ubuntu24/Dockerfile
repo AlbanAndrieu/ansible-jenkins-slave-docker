@@ -375,6 +375,22 @@ RUN curl -LO https://storage.googleapis.com/container-structure-test/${CST_VERSI
 # checkov:skip=CKV_DOCKER_9:Ensure that APT isn't used
 # RUN curl -LO https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.deb && apt-get install --no-install-recommends -y ./dive_0.9.2_linux_amd64.deb && rm -f dive_0.9.2_linux_amd64.deb && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# GITHUB ACTIONS RUNNER
+
+# Self-hosted agent: nabla-compose apps/github-runner starts it with a one-time JIT config.
+ENV ACTIONS_RUNNER_VERSION=${ACTIONS_RUNNER_VERSION:-"2.338.2"}
+ENV ACTIONS_RUNNER_SHA256="baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40"
+# hadolint ignore=DL4006
+RUN curl -fsSL -o /tmp/actions-runner.tar.gz \
+      https://github.com/actions/runner/releases/download/v${ACTIONS_RUNNER_VERSION}/actions-runner-linux-x64-${ACTIONS_RUNNER_VERSION}.tar.gz \
+  && echo "${ACTIONS_RUNNER_SHA256}  /tmp/actions-runner.tar.gz" | sha256sum -c - \
+  && mkdir -p /opt/actions-runner \
+  && tar -xzf /tmp/actions-runner.tar.gz -C /opt/actions-runner \
+  && rm -f /tmp/actions-runner.tar.gz \
+  && /opt/actions-runner/bin/installdependencies.sh \
+  && apt-get clean && rm -rf /var/lib/apt/lists/* \
+  && chown -R 1000:1000 /opt/actions-runner
+
 USER 0
 
 # the selenium base image lets every user sudo to root without a password
