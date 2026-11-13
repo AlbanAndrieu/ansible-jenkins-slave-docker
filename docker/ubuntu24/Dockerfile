@@ -278,14 +278,14 @@ USER 0
 
 # This is used by nuxt, its dependencies require OpenSSLv2 where node v20 uses OpenSSLv3
 ENV NODE_OPTIONS="--openssl-legacy-provider"
-ENV NODE_VERSION=${NODE_VERSION:-"25"}
+ENV NODE_VERSION=${NODE_VERSION:-"26"}
 
 # hadolint ignore=DL3008,DL3015,DL3006,DL4006
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get update && apt-get install --no-install-recommends -y nodejs=${NODE_VERSION}* && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm set progress=false && \
     npm config set depth 0 && \
-    npm install -g npm@11.6.0 && apt-get purge -y npm
+    apt-get purge -y npm
 
 # GO
 
@@ -375,19 +375,7 @@ RUN curl -LO https://storage.googleapis.com/container-structure-test/${CST_VERSI
 # checkov:skip=CKV_DOCKER_9:Ensure that APT isn't used
 # RUN curl -LO https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.deb && apt-get install --no-install-recommends -y ./dive_0.9.2_linux_amd64.deb && rm -f dive_0.9.2_linux_amd64.deb && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR ${UBUNTU_USER_HOME}
-
-COPY --chown=${USER}:${GROUP} package*.json ${UBUNTU_USER_HOME}/
-
 USER 0
-
-# hadolint ignore=SC2121
-RUN --mount=type=cache,target=/root/.npm \
-  set npm_config_cache="${UBUNTU_USER_HOME}/.npm" && npm cache clean --force && npm set progress=false \
-  && npm install --save-dev \
-  && npm cache clean --force
-
-RUN chown -R ${USER}:${GROUP} "${UBUNTU_USER_HOME}/.npm"
 
 # the selenium base image lets every user sudo to root without a password
 RUN sed -i '/^ALL ALL = (ALL) NOPASSWD: ALL$/d' /etc/sudoers \

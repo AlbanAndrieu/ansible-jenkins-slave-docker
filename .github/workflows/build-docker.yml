@@ -15,12 +15,6 @@ on:
       - "scripts/docker-validate.sh"
       - "scripts/docker-env.sh"
       - "scripts/run-ansible.sh"
-      - "Pipfile"
-      - "Pipfile.lock"
-      - "package.json"
-      - "package-lock.json"
-      - "dockerd-entrypoint.sh"
-      - "modprobe.sh"
   schedule:
     - cron: "0 6 * * 3"
   pull_request:
@@ -38,8 +32,8 @@ concurrency:
 env:
   IMAGE_NAME: nabla/ansible-jenkins-slave-docker
   PYTHON_VERSION: "3.13.15"
-  NODE_VERSION: "25.9.0"
-  NPM_VERSION: "11.17.0"
+  NODE_VERSION: "26.13.1"
+  NPM_VERSION: "11.20.0"
   ANSIBLE_CORE_VERSION: "2.21.4"
   PIPENV_VERSION: "2026.8.0"
   CST_VERSION: "1.22.1"
@@ -89,7 +83,7 @@ jobs:
           if [[ "${EVENT_NAME}" == "pull_request" ]]; then
             while IFS= read -r path; do
               case "${path}" in
-                .github/workflows/build-docker.yml|.dockerignore|docker/ubuntu24/*|scripts/docker-build-24.sh|scripts/docker-test.sh|scripts/docker-validate.sh|scripts/docker-env.sh|scripts/run-ansible.sh|Pipfile|Pipfile.lock|package.json|package-lock.json|dockerd-entrypoint.sh|modprobe.sh)
+                .github/workflows/build-docker.yml|.dockerignore|docker/ubuntu24/*|scripts/docker-build-24.sh|scripts/docker-test.sh|scripts/docker-validate.sh|scripts/docker-env.sh|scripts/run-ansible.sh)
                   docker_required=true
                   reason="Docker-relevant pull request change: ${path}"
                   break
