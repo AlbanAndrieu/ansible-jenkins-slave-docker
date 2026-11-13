@@ -54,6 +54,11 @@ fileExistenceTests:
     path: "/usr/local/go/bin/go"
     shouldExist: true
 
+  - name: "GitHub Actions runner owned by the runtime user"
+    path: "/opt/actions-runner/run.sh"
+    shouldExist: true
+    uid: 1000
+
   - name: "no LibreOffice"
     path: "/usr/bin/soffice"
     shouldExist: false
@@ -130,6 +135,11 @@ commandTests:
     command: "/usr/local/go/bin/go"
     args: ["version"]
     expectedOutput: ["go version go1.25.5.*"]
+
+  - name: "GitHub Actions runner 2.338.2"
+    command: "/opt/actions-runner/bin/Runner.Listener"
+    args: ["--version"]
+    expectedOutput: ["2.338.2"]
 
   - name: "Trivy 0.71.2"
     command: "trivy"
